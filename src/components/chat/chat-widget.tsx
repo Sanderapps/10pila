@@ -4,6 +4,8 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { BrandLogo } from "@/components/brand-logo";
+import { BoltIcon } from "@/components/icons";
 import { AssistantMascot } from "./assistant-mascot";
 
 type ChatProductCard = {
@@ -222,8 +224,8 @@ export function ChatWidget() {
     }
 
     if (Array.isArray(data.quickActions) && data.quickActions.length > 0) {
-        setServerQuickActions({ pathname, actions: data.quickActions });
-      }
+      setServerQuickActions({ pathname, actions: data.quickActions });
+    }
 
     setMessages((current) => [
       ...current,
@@ -289,19 +291,25 @@ export function ChatWidget() {
         {open ? (
           <motion.section
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="pointer-events-auto mr-4 grid h-[min(560px,calc(100vh-110px))] w-[min(410px,calc(100vw-24px))] grid-rows-[auto_1fr_auto] overflow-hidden rounded-[8px] border border-[var(--line)] bg-[rgba(10,12,15,0.95)] shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl max-sm:mr-3"
+            className="chat-shell pointer-events-auto mr-4 grid h-[min(560px,calc(100vh-110px))] w-[min(410px,calc(100vw-24px))] grid-rows-[auto_1fr_auto] overflow-hidden rounded-[8px] border border-[var(--line)] bg-[rgba(10,12,15,0.95)] shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl max-sm:mr-3"
             exit={{ opacity: 0, y: 14, scale: 0.98 }}
             initial={{ opacity: 0, y: 14, scale: 0.98 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
           >
-            <div className="flex items-center justify-between gap-3 border-b border-[var(--line)] p-3">
+            <div className="chat-head flex items-center justify-between gap-3 border-b border-[var(--line)] p-3">
               <div className="flex items-center gap-3">
                 <div className="grid size-14 place-items-center rounded-full bg-black/40 ring-1 ring-[var(--line)]">
                   <AssistantMascot compact thinking={loading} />
                 </div>
                 <div>
-                  <p className="text-sm font-black">10PILA bot</p>
-                  <p className="text-xs text-[var(--muted)]">vendedor tech com banco na mao</p>
+                  <BrandLogo variant="compact" className="scale-[0.88] origin-left" />
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <span className="chip bg-black/40 text-[var(--accent)]">
+                      <BoltIcon className="size-3.5" />
+                      vendedor tech
+                    </span>
+                    <span className="text-xs text-[var(--muted)]">banco na mao</span>
+                  </div>
                 </div>
               </div>
               <button className="btn secondary min-h-9 px-3" onClick={closeChat} type="button">
@@ -314,8 +322,8 @@ export function ChatWidget() {
                 <div
                   className={
                     message.role === "user"
-                      ? "ml-8 rounded-lg bg-[var(--accent)] p-3 text-black"
-                      : "mr-8 rounded-lg bg-black/40 p-3"
+                      ? "chat-bubble-user ml-8 rounded-lg bg-[var(--accent)] p-3 text-black"
+                      : "chat-bubble-assistant mr-8 rounded-lg bg-black/40 p-3"
                   }
                   key={`${message.role}-${index}`}
                 >
@@ -324,7 +332,7 @@ export function ChatWidget() {
                     <div className="mt-3 grid gap-2">
                       {message.products.slice(0, 3).map((product) => (
                         <article
-                          className="grid gap-2 rounded-lg border border-[var(--line)] bg-black/30 p-2"
+                          className="chat-product-card grid gap-2 rounded-lg border border-[var(--line)] bg-black/30 p-2"
                           key={product.id}
                         >
                           <div className="flex gap-2">
@@ -361,14 +369,19 @@ export function ChatWidget() {
                   ) : null}
                 </div>
               ))}
-              {loading ? <p className="text-[var(--muted)]">Consultando Gemini + banco...</p> : null}
+              {loading ? (
+                <div className="chat-loading-row">
+                  <span className="chat-loading-dot" />
+                  <span>Consultando Gemini + banco...</span>
+                </div>
+              ) : null}
             </div>
 
             <div className="grid gap-2 border-t border-[var(--line)] p-3">
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {quickActions.map((action) => (
                   <button
-                    className="chip shrink-0 transition hover:border-[var(--line-strong)] hover:text-[var(--foreground)]"
+                    className="quick-chip shrink-0"
                     key={action}
                     onClick={() => onQuickAction(action)}
                     type="button"
@@ -397,13 +410,17 @@ export function ChatWidget() {
           {hint ? (
             <motion.button
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="absolute bottom-20 right-16 max-w-[220px] rounded-[8px] border border-[var(--line)] bg-[rgba(8,10,14,0.96)] px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] shadow-[0_16px_40px_rgba(0,0,0,0.38)]"
+              className="chat-hint absolute bottom-20 right-16 max-w-[220px] rounded-[8px] border border-[var(--line)] bg-[rgba(8,10,14,0.96)] px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] shadow-[0_16px_40px_rgba(0,0,0,0.38)]"
               exit={{ opacity: 0, y: 8, scale: 0.96 }}
               initial={{ opacity: 0, y: 8, scale: 0.96 }}
               onClick={openChat}
               transition={{ duration: 0.18, ease: "easeOut" }}
               type="button"
             >
+              <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-normal text-[var(--accent)]">
+                <BoltIcon className="size-3" />
+                IA 10PILA
+              </span>
               {hint}
             </motion.button>
           ) : null}
