@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CartActions } from "@/components/cart-actions";
+import { CartIcon, ShieldIcon, TruckIcon } from "@/components/icons";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
@@ -23,7 +24,10 @@ export default async function CartPage() {
   return (
     <main className="container grid gap-8 py-10">
       <div>
-        <p className="font-bold text-[var(--accent)]">carrinho</p>
+        <p className="eyebrow">
+          <CartIcon />
+          carrinho
+        </p>
         <h1 className="text-4xl font-black">Setup quase comprado</h1>
       </div>
 
@@ -54,6 +58,9 @@ export default async function CartPage() {
                     <div>
                       <h2 className="text-xl font-bold">{item.product.name}</h2>
                       <p className="text-sm text-[var(--muted)]">{centsToBRL(price)} cada</p>
+                      <p className="mt-1 text-sm font-bold text-[var(--accent)]">
+                        {centsToBRL(price * item.quantity)} no item
+                      </p>
                     </div>
                     <CartActions
                       itemId={item.id}
@@ -65,10 +72,20 @@ export default async function CartPage() {
               );
             })}
           </section>
-          <aside className="panel grid h-fit gap-4 p-5">
+          <aside className="panel sticky top-24 grid h-fit gap-4 p-5">
             <p className="text-sm text-[var(--muted)]">Subtotal</p>
             <p className="text-3xl font-black text-[var(--accent)]">{centsToBRL(subtotal)}</p>
-            <Link className="btn" href="/checkout">
+            <div className="grid gap-2 text-sm text-[var(--muted)]">
+              <span className="chip">
+                <ShieldIcon />
+                estoque validado
+              </span>
+              <span className="chip">
+                <TruckIcon />
+                frete calculado no checkout
+              </span>
+            </div>
+            <Link className="btn shine" href="/checkout">
               Ir para checkout
             </Link>
           </aside>

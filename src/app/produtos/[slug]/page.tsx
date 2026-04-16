@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/add-to-cart-button";
+import { BoltIcon, ShieldIcon, SparkIcon, TruckIcon } from "@/components/icons";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
 
@@ -21,32 +22,57 @@ export default async function ProductPage({
   }
 
   const price = product.promotionalCents ?? product.priceCents;
+  const hasDiscount = product.promotionalCents !== null;
 
   return (
     <main className="container grid gap-8 py-10 md:grid-cols-[1fr_0.9fr]">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-[var(--line)] bg-black">
+      <div className="panel shine relative aspect-[4/3] overflow-hidden bg-black p-2">
+        <div className="absolute left-5 top-5 z-10 flex flex-wrap gap-2">
+          {hasDiscount ? (
+            <span className="chip border-[var(--accent)] bg-black/70 text-[var(--accent)]">
+              <BoltIcon />
+              oferta ativa
+            </span>
+          ) : null}
+          <span className="chip bg-black/70">estoque proprio</span>
+        </div>
         <Image
           src={product.imageUrl}
           alt={product.name}
           fill
           sizes="(max-width: 768px) 100vw, 600px"
-          className="object-cover"
+          className="rounded-lg object-cover"
           priority
         />
       </div>
       <section className="grid content-start gap-5">
-        <p className="font-bold text-[var(--accent)]">produto</p>
+        <p className="eyebrow">
+          <SparkIcon />
+          produto
+        </p>
         <h1 className="text-4xl font-black">{product.name}</h1>
-        <p className="text-[var(--muted)]">{product.description}</p>
-        <div>
+        <p className="text-lg text-[var(--muted)]">{product.description}</p>
+        <div className="surface grid gap-2 p-4">
           {product.promotionalCents ? (
             <p className="text-[var(--muted)] line-through">{centsToBRL(product.priceCents)}</p>
           ) : null}
           <p className="text-4xl font-black text-[var(--accent)]">{centsToBRL(price)}</p>
+          <p className="text-sm text-[var(--muted)]">Pix, cartao e boleto no PagBank sandbox.</p>
         </div>
-        <p className="text-sm text-[var(--muted)]">
-          {product.stock > 0 ? `${product.stock} unidades disponiveis` : "Sem estoque agora"}
-        </p>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <span className="chip">
+            <ShieldIcon />
+            {product.stock > 0 ? `${product.stock} disponiveis` : "sem estoque"}
+          </span>
+          <span className="chip">
+            <TruckIcon />
+            frete fixo
+          </span>
+          <span className="chip">
+            <BoltIcon />
+            envio manual
+          </span>
+        </div>
         {product.stock > 0 ? (
           <AddToCartButton maxQuantity={product.stock} productId={product.id} />
         ) : (
@@ -54,6 +80,11 @@ export default async function ProductPage({
             Indisponivel
           </button>
         )}
+        <div className="panel grid gap-2 p-4 text-sm text-[var(--muted)]">
+          <p className="font-bold text-[var(--foreground)]">Ficha rapida</p>
+          <p>Sem variacoes no MVP. Quantidade limitada ao estoque real.</p>
+          <p>Chat IA consulta esse produto pelo banco e manda o link certo.</p>
+        </div>
       </section>
     </main>
   );

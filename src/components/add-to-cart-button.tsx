@@ -52,7 +52,7 @@ export function AddToCartButton({
 
   return (
     <div className="grid gap-2">
-      <div className="flex w-fit items-center gap-2 rounded-lg border border-[var(--line)] p-2">
+      <div className="surface flex w-fit items-center gap-2 p-2">
         <button
           className="btn secondary"
           disabled={loading || quantity <= 1}
@@ -80,11 +80,11 @@ export function AddToCartButton({
         </button>
       </div>
       <button className="btn" disabled={loading} onClick={addToCart}>
-        {loading ? "Adicionando..." : "Adicionar ao carrinho"}
+        {loading ? "Adicionando ao setup..." : "Adicionar ao carrinho"}
       </button>
       {message ? <p className="text-sm text-[var(--muted)]">{message}</p> : null}
       {showFeedback ? (
-        <div className="fixed right-4 bottom-4 z-50 grid w-[min(420px,calc(100vw-32px))] gap-3 rounded-lg border border-[var(--line)] bg-black p-4">
+        <div className="surface fixed right-4 bottom-4 z-50 grid w-[min(420px,calc(100vw-32px))] gap-3 p-4 shadow-2xl">
           <p className="font-bold">Produto adicionado. Carrinho ganhou buff.</p>
           <div className="flex flex-wrap gap-2">
             <a className="btn" href="/carrinho">

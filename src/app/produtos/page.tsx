@@ -1,4 +1,5 @@
 import { ProductCard } from "@/components/product-card";
+import { SearchIcon, SparkIcon } from "@/components/icons";
 import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
@@ -6,10 +7,18 @@ export const dynamic = "force-dynamic";
 export default async function ProductsPage({
   searchParams
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; sort?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, sort } = await searchParams;
   const query = q?.trim();
+  const orderBy =
+    sort === "price-asc"
+      ? [{ promotionalCents: "asc" as const }, { priceCents: "asc" as const }]
+      : sort === "price-desc"
+        ? [{ promotionalCents: "desc" as const }, { priceCents: "desc" as const }]
+        : sort === "stock"
+          ? [{ stock: "desc" as const }]
+          : [{ featured: "desc" as const }, { updatedAt: "desc" as const }];
   const products = await prisma.product.findMany({
     where: {
       active: true,
@@ -22,16 +31,41 @@ export default async function ProductsPage({
           }
         : {})
     },
-    orderBy: [{ featured: "desc" }, { updatedAt: "desc" }]
+    orderBy
   });
 
   return (
     <main className="container grid gap-8 py-10">
-      <div className="grid gap-3">
-        <p className="font-bold text-[var(--accent)]">catalogo</p>
-        <h1 className="text-4xl font-black">Garimpo tech do 10PILA</h1>
-        <form className="flex max-w-xl gap-2">
-          <input className="input" name="q" placeholder="Buscar por teclado, fone, hub..." />
+      <div className="grid gap-4">
+        <p className="eyebrow">
+          <SparkIcon />
+          catalogo
+        </p>
+        <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+          <div>
+            <h1 className="text-4xl font-black">Garimpo tech do 10PILA</h1>
+            <p className="mt-2 max-w-xl text-[var(--muted)]">
+              Busca direta no estoque: achou, tem pagina, preço e status sem enrolacao.
+            </p>
+          </div>
+          <span className="chip">{products.length} item(ns)</span>
+        </div>
+        <form className="surface grid gap-3 p-3 md:grid-cols-[1fr_180px_auto]">
+          <label className="relative">
+            <SearchIcon className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[var(--muted)]" />
+            <input
+              className="input pl-10"
+              defaultValue={query}
+              name="q"
+              placeholder="Buscar por teclado, fone, hub..."
+            />
+          </label>
+          <select className="input" defaultValue={sort ?? ""} name="sort">
+            <option value="">Destaques</option>
+            <option value="price-asc">Menor preco</option>
+            <option value="price-desc">Maior preco</option>
+            <option value="stock">Mais estoque</option>
+          </select>
           <button className="btn" type="submit">
             Buscar
           </button>
@@ -45,9 +79,10 @@ export default async function ProductsPage({
           ))}
         </div>
       ) : (
-        <p className="panel p-5 text-[var(--muted)]">
-          Nada encontrado. Talvez o produto ainda esteja no multiverso do fornecedor.
-        </p>
+        <section className="panel grid gap-3 p-6 text-[var(--muted)]">
+          <p className="text-xl font-black text-[var(--foreground)]">Nada encontrado.</p>
+          <p>Talvez o produto ainda esteja no multiverso do fornecedor. Tenta outro termo.</p>
+        </section>
       )}
     </main>
   );
