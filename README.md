@@ -32,8 +32,8 @@ Variaveis obrigatorias para operar localmente:
 
 - `DATABASE_URL`: URL PostgreSQL.
 - `AUTH_SECRET`: segredo forte para NextAuth.
-- `NEXTAUTH_URL`: URL base do NextAuth, normalmente `http://localhost:3000`.
 - `NEXT_PUBLIC_APP_URL`: URL publica da aplicacao, normalmente `http://localhost:3000`.
+- `NEXTAUTH_URL`: URL base do NextAuth, normalmente `http://localhost:3000`.
 - `FREIGHT_FIXED_PRICE`: frete fixo em reais, por exemplo `19.90`.
 - `ADMIN_SEED_EMAIL`: email do admin criado no seed.
 - `ADMIN_SEED_PASSWORD`: senha do admin criado no seed.
@@ -47,6 +47,48 @@ Variaveis opcionais no MVP:
 - `PAGBANK_API_URL`: base da API PagBank, por padrao `https://sandbox.api.pagseguro.com`.
 - `GEMINI_API_KEY`: ativa resposta generativa do chat no backend.
 - `GEMINI_MODEL`: modelo Gemini usado pelo chat, por padrao `gemini-3.1-flash-lite-preview`.
+
+## Variaveis de ambiente usadas hoje
+
+Obrigatorias agora no Railway:
+
+- `DATABASE_URL`: conexao do PostgreSQL usada pelo Prisma.
+- `AUTH_SECRET`: segredo das sessoes/auth.
+- `NEXT_PUBLIC_APP_URL`: URL publica usada em links e redirecionamentos.
+- `NEXTAUTH_URL`: URL canonica do Auth.js em producao.
+- `FREIGHT_FIXED_PRICE`: valor do frete fixo do MVP.
+- `ADMIN_SEED_EMAIL`: email do admin usado no seed.
+- `ADMIN_SEED_PASSWORD`: senha do admin usada no seed.
+- `PAGBANK_API_URL`: base da API do PagBank, hoje em sandbox.
+- `PAGBANK_ACCESS_TOKEN`: token do checkout hospedado PagBank.
+
+Obrigatoria quando voce quiser validar assinatura do webhook PagBank:
+
+- `PAGBANK_WEBHOOK_SECRET`: segredo para validar o webhook recebido em `/api/payments/pagbank/webhook`.
+
+Obrigatorias quando voce ativar Gemini:
+
+- `GEMINI_API_KEY`: chave do Gemini usada no backend.
+- `GEMINI_MODEL`: modelo Gemini; se faltar, o codigo cai no default `gemini-3.1-flash-lite-preview`.
+
+Obrigatorias quando voce ativar Google login:
+
+- `GOOGLE_CLIENT_ID`: client ID OAuth.
+- `GOOGLE_CLIENT_SECRET`: client secret OAuth.
+
+Variaveis de plataforma que o Railway injeta automaticamente, mas o projeto nao depende diretamente como configuracao manual:
+
+- `RAILWAY_ENVIRONMENT`
+- `RAILWAY_ENVIRONMENT_ID`
+- `RAILWAY_ENVIRONMENT_NAME`
+- `RAILWAY_PRIVATE_DOMAIN`
+- `RAILWAY_PROJECT_ID`
+- `RAILWAY_PROJECT_NAME`
+- `RAILWAY_PUBLIC_DOMAIN`
+- `RAILWAY_SERVICE_10PILA_APP_URL`
+- `RAILWAY_SERVICE_ID`
+- `RAILWAY_SERVICE_NAME`
+- `RAILWAY_STATIC_URL`
 
 4. Rode migration e seed:
 
