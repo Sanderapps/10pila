@@ -4,6 +4,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { BotSignalIllustration } from "@/components/brand-illustrations";
 import { BrandLogo } from "@/components/brand-logo";
 import { BoltIcon } from "@/components/icons";
 import { AssistantMascot } from "./assistant-mascot";
@@ -458,6 +459,21 @@ export function ChatWidget() {
                 setShowScrollButton(!nearBottom);
               }}
             >
+              {messages.length === 1 && !loading ? (
+                <div className="chat-welcome-panel">
+                  <div className="chat-welcome-art">
+                    <BotSignalIllustration className="size-20" />
+                  </div>
+                  <div className="grid gap-2">
+                    <p className="text-xs font-black uppercase text-[var(--accent-2)]">
+                      assistente 10PILA
+                    </p>
+                    <p className="text-sm text-[var(--muted)]">
+                      Me chama para comparar produto, achar o mais barato, puxar link certo ou fechar o carrinho sem enrolacao.
+                    </p>
+                  </div>
+                </div>
+              ) : null}
               {messages.map((message, index) => (
                 <div
                   className={

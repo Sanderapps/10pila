@@ -167,3 +167,97 @@ export function ProductPulseIllustration({ className }: IllustrationProps) {
     </BaseFrame>
   );
 }
+
+export function LoadingDropIllustration({ className }: IllustrationProps) {
+  return (
+    <BaseFrame className={className}>
+      <path
+        d="M32 44h56"
+        stroke="rgba(247,251,255,0.22)"
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+      <rect
+        x="36"
+        y="50"
+        width="48"
+        height="24"
+        rx="8"
+        stroke="#F7FBFF"
+        strokeOpacity="0.68"
+        strokeWidth="2.6"
+      />
+      <path
+        d="M40 84c8-5 15-7 23-7 7 0 14 2 21 6"
+        stroke="#3df5a5"
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+      <path
+        d="M63 31h8l-6 15h9L56 62l6-13h-9l10-18Z"
+        fill="#55c8ff"
+        fillOpacity="0.92"
+      />
+      <circle cx="87" cy="31" r="4" fill="#3df5a5" opacity="0.9" />
+    </BaseFrame>
+  );
+}
+
+export function OrderSignalIllustration({ className }: IllustrationProps) {
+  return (
+    <BaseFrame className={className}>
+      <path
+        d="M36 42h24l8 8v26H36V42Z"
+        stroke="#F7FBFF"
+        strokeOpacity="0.74"
+        strokeWidth="2.6"
+      />
+      <path d="M60 42v10h10" stroke="#F7FBFF" strokeOpacity="0.74" strokeWidth="2.6" />
+      <path
+        d="M42 61h20M42 69h14"
+        stroke="rgba(247,251,255,0.28)"
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+      <path
+        d="M75 33c5 3 8 8 8 14 0 7-4 12-10 15"
+        stroke="#55c8ff"
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+      <path
+        d="M30 84c7-5 14-7 23-7 9 0 16 2 23 7"
+        stroke="#3df5a5"
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+    </BaseFrame>
+  );
+}
+
+export function BotSignalIllustration({ className }: IllustrationProps) {
+  return (
+    <BaseFrame className={className}>
+      <rect
+        x="36"
+        y="36"
+        width="48"
+        height="34"
+        rx="12"
+        stroke="#F7FBFF"
+        strokeOpacity="0.78"
+        strokeWidth="2.6"
+      />
+      <path d="M54 49h4M66 49h4" stroke="#55c8ff" strokeLinecap="round" strokeWidth="4" />
+      <path d="M53 61c4 2 10 2 14 0" stroke="#3df5a5" strokeLinecap="round" strokeWidth="3" />
+      <path d="M60 28v8" stroke="#F7FBFF" strokeLinecap="round" strokeWidth="2.6" />
+      <circle cx="60" cy="24" r="4" fill="#3df5a5" opacity="0.92" />
+      <path
+        d="M28 78c8-6 18-9 30-9 12 0 22 3 31 9"
+        stroke="rgba(85,200,255,0.34)"
+        strokeLinecap="round"
+        strokeWidth="2.6"
+      />
+    </BaseFrame>
+  );
+}

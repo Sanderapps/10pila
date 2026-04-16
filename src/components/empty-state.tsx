@@ -16,7 +16,7 @@ export function EmptyState({
   art
 }: EmptyStateProps) {
   return (
-    <section className="empty-state">
+    <section className="empty-state empty-state-premium">
       <div className="empty-state-art" aria-hidden="true">
         {art ?? (
           <svg className="size-20" fill="none" viewBox="0 0 80 80">

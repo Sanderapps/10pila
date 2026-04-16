@@ -1,0 +1,43 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="frameStroke" x1="122" y1="94" x2="868" y2="904" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A9FFE9"/>
+      <stop offset="0.4" stop-color="#4AF0B4"/>
+      <stop offset="0.76" stop-color="#55C8FF"/>
+      <stop offset="1" stop-color="#2A76FF"/>
+    </linearGradient>
+    <linearGradient id="panelGlow" x1="192" y1="170" x2="818" y2="844" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3DF5A5" stop-opacity="0.18"/>
+      <stop offset="0.56" stop-color="#55C8FF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#55C8FF" stop-opacity="0.03"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <path d="M242 92H780L924 232V780L780 924H242L98 780V232L242 92Z" fill="#05080C"/>
+  <path d="M242 92H780L924 232V780L780 924H242L98 780V232L242 92Z" stroke="url(#frameStroke)" stroke-width="18"/>
+  <path d="M284 142H760L872 252V760L760 874H284L152 760V252L284 142Z" fill="url(#panelGlow)"/>
+  <path d="M190 274H832" stroke="#55C8FF" stroke-opacity="0.14" stroke-width="6" stroke-linecap="round"/>
+  <path d="M190 742H832" stroke="#3DF5A5" stroke-opacity="0.14" stroke-width="6" stroke-linecap="round"/>
+
+  <path d="M232 246H336V618H232V246Z" fill="#F6FEFF"/>
+  <path d="M390 246H620L680 306V516L620 576H390L330 516V306L390 246ZM438 374V454H572V374H438Z" fill="#F6FEFF"/>
+  <path d="M604 194H734L648 462H778L486 672L588 450H444L604 194Z" fill="url(#frameStroke)" filter="url(#softGlow)"/>
+
+  <g fill="#DFFFF6">
+    <path d="M230 764H302L354 816V884H302V848H230V940H158V764H230ZM230 824H276L288 812V796L276 784H230V824Z"/>
+    <path d="M392 764H464V940H392V764Z"/>
+    <path d="M518 764H590V872H688V940H518V764Z"/>
+    <path d="M772 764H842L922 940H850L834 904H748L734 940H662L772 764ZM770 858H806L788 810L770 858Z"/>
+  </g>
+
+  <path d="M156 964H650" stroke="url(#frameStroke)" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="836" cy="190" r="18" fill="#55C8FF"/>
+  <circle cx="884" cy="190" r="18" fill="#3DF5A5"/>
+</svg>

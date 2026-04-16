@@ -1,27 +1,34 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BrandLogo } from "@/components/brand-logo";
 import { BoltIcon, ShieldIcon, SparkIcon, TruckIcon } from "@/components/icons";
 import { ProductCard } from "@/components/product-card";
+import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
+  const user = await getCurrentUser();
   const featured = await prisma.product.findMany({
     where: { active: true },
     orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],
     take: 6
   });
 
+  const secondaryCta =
+    user?.role === "ADMIN"
+      ? { href: "/admin", label: "Abrir admin" }
+      : user
+        ? { href: "/carrinho", label: "Ir para o carrinho" }
+        : { href: "/auth/register", label: "Criar conta" };
+
   return (
     <main>
-      <section className="container grid gap-8 py-10 md:grid-cols-[1.05fr_0.95fr] md:items-center md:py-14">
-        <div className="grid gap-6 float-in">
-          <BrandLogo animated variant="compact" className="w-fit" />
+      <section className="container grid gap-10 py-10 md:grid-cols-[1.02fr_0.98fr] md:items-center md:gap-12 md:py-14">
+        <div className="hero-copy grid gap-6 float-in">
           <p className="eyebrow">
             <SparkIcon />
-            Importados tech com estoque proprio
+            curadoria 10PILA com estoque proprio
           </p>
           <h1 className="max-w-3xl text-5xl font-black leading-tight md:text-7xl">
             Gadget bom, preço direto, papo reto.
@@ -30,12 +37,12 @@ export default async function HomePage() {
             O 10PILA junta achadinhos tech, setup e utilidades importadas sem
             prometer milagre. O que aparece aqui vem do estoque da loja.
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="hero-cta-row flex flex-wrap gap-3">
             <Link className="btn shine" href="/produtos">
               Ver catalogo
             </Link>
-            <Link className="btn secondary" href="/auth/register">
-              Criar conta
+            <Link className="btn secondary" href={secondaryCta.href}>
+              {secondaryCta.label}
             </Link>
           </div>
           <div className="grid gap-3 text-sm text-[var(--muted)] sm:grid-cols-3">
@@ -53,8 +60,8 @@ export default async function HomePage() {
             </span>
           </div>
         </div>
-        <div className="hero-card panel shine relative overflow-hidden p-4">
-          <div className="absolute left-4 right-4 top-4 z-10 flex items-center justify-between">
+        <div className="hero-card panel shine relative overflow-hidden p-5 md:p-6">
+          <div className="absolute left-4 right-4 top-4 z-10 flex items-center justify-between gap-2">
             <span className="chip bg-black/60 text-[var(--accent)]">drop do dia</span>
             <span className="chip bg-black/60">10PILA checked</span>
           </div>

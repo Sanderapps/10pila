@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { EmptyState } from "@/components/empty-state";
+import { OrderSignalIllustration } from "@/components/brand-illustrations";
 import { CheckoutForm } from "@/components/checkout-form";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
@@ -53,7 +55,8 @@ export default async function CheckoutPage({
       </div>
 
       {recentOrder ? (
-        <section className="panel grid gap-3 p-5">
+        <section className="panel order-return-shell grid gap-4 overflow-hidden p-5">
+          <div className="order-return-backdrop" />
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-2xl font-bold">Retorno do pagamento</h2>
@@ -64,13 +67,18 @@ export default async function CheckoutPage({
             </div>
             <span className="chip text-[var(--accent)]">{recentOrder.status}</span>
           </div>
-          <div className="grid gap-2 text-sm text-[var(--muted)]">
-            <p>
-              Total do pedido: <strong className="text-[var(--foreground)]">{centsToBRL(recentOrder.totalCents)}</strong>
-            </p>
-            <p>
-              A 10PILA recebe voce de volta aqui para acompanhar o que aconteceu e retomar o fluxo sem parecer saida seca do site.
-            </p>
+          <div className="grid gap-4 lg:grid-cols-[120px_1fr] lg:items-center">
+            <div className="grid place-items-center">
+              <OrderSignalIllustration className="size-24" />
+            </div>
+            <div className="grid gap-2 text-sm text-[var(--muted)]">
+              <p>
+                Total do pedido: <strong className="text-[var(--foreground)]">{centsToBRL(recentOrder.totalCents)}</strong>
+              </p>
+              <p>
+                A 10PILA te recebe de volta aqui para continuar o fluxo sem cara de saida seca do site. Pedido, pagamento e proximos passos ficam no mesmo trilho.
+              </p>
+            </div>
           </div>
           {recentOrder.payment?.checkoutUrl ? (
             <div className="flex flex-wrap gap-3">
@@ -103,12 +111,17 @@ export default async function CheckoutPage({
       ) : null}
 
       {items.length === 0 && !recentOrder ? (
-        <section className="panel grid gap-4 p-5">
-          <p className="text-[var(--muted)]">Seu carrinho esta vazio.</p>
-          <Link className="btn w-fit" href="/produtos">
-            Ver catalogo
-          </Link>
-        </section>
+        <EmptyState
+          art={<OrderSignalIllustration className="size-24" />}
+          eyebrow="checkout"
+          title="Checkout aguardando itens"
+          description="Sem item no carrinho, nao existe fechamento. Escolhe um produto e volta que o resumo entra no trilho."
+          actions={
+            <Link className="btn w-fit" href="/produtos">
+              Ver catalogo
+            </Link>
+          }
+        />
       ) : null}
 
       {items.length > 0 ? (

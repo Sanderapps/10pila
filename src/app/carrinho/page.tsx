@@ -42,12 +42,17 @@ export default async function CartPage() {
               carrinho
             </>
           }
-          title="Carrinho vazio"
-          description="Ainda nao entrou nenhum gadget aqui. Escolhe um item e o checkout ja fica no jeito."
+          title="Seu setup ainda esta sem pecas"
+          description="Nada caiu no carrinho ainda. Puxa um drop pro radar e a 10PILA monta o fechamento daqui."
           actions={
-            <Link className="btn" href="/produtos">
-              Ver produtos
-            </Link>
+            <>
+              <Link className="btn" href="/produtos">
+                Ver produtos
+              </Link>
+              <Link className="btn secondary" href="/">
+                Voltar para home
+              </Link>
+            </>
           }
         />
       ) : (

@@ -9,11 +9,11 @@ export async function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-black/45 backdrop-blur-xl">
-      <div className="container flex min-h-16 items-center justify-between gap-4 py-3">
-        <Link href="/" className="transition hover:opacity-100">
+      <div className="container flex min-h-[68px] items-center justify-between gap-3 py-3 md:min-h-16 md:gap-4">
+        <Link href="/" className="header-brand transition hover:opacity-100">
           <BrandLogo animated className="opacity-95" />
         </Link>
-        <nav className="flex flex-wrap items-center justify-end gap-3 text-sm text-[var(--muted)]">
+        <nav className="flex flex-wrap items-center justify-end gap-2 text-[0.82rem] text-[var(--muted)] sm:gap-3 sm:text-sm">
           <Link className="nav-link" href="/produtos">
             Produtos
           </Link>

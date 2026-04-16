@@ -90,12 +90,17 @@ export default async function ProductsPage({
               busca
             </>
           }
-          title="Nada encontrado"
-          description="Esse termo nao puxou item nenhum do estoque. Tenta categoria, marca ou um nome mais curto."
+          title="Radar sem sinal"
+          description="Esse termo nao puxou nenhum drop do estoque. Tenta um nome mais curto, categoria ou outro tipo de gadget."
           actions={
-            <Link className="btn secondary" href="/produtos">
-              Limpar busca
-            </Link>
+            <>
+              <Link className="btn secondary" href="/produtos">
+                Limpar busca
+              </Link>
+              <Link className="btn" href="/">
+                Ver destaques
+              </Link>
+            </>
           }
         />
       )}

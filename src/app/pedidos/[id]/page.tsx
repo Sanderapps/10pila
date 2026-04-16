@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { OrderSignalIllustration } from "@/components/brand-illustrations";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
@@ -30,6 +31,13 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
 
       <section className="panel grid gap-3 p-5 lg:grid-cols-[1fr_280px]">
         <div className="grid gap-3">
+          <div className="mb-1 flex items-center gap-3">
+            <OrderSignalIllustration className="size-18" />
+            <div className="grid gap-1">
+              <p className="text-sm font-black uppercase text-[var(--accent-2)]">pedido em trilho</p>
+              <p className="text-sm text-[var(--muted)]">Pagamento, itens e acompanhamento no mesmo painel.</p>
+            </div>
+          </div>
           <h2 className="text-2xl font-bold">Itens</h2>
           {order.items.map((item) => (
             <div className="flex items-start justify-between gap-3 border-b border-[var(--line)] pb-3" key={item.id}>
@@ -44,7 +52,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
           ))}
         </div>
 
-        <aside className="grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4 h-fit">
+        <aside className="order-sidebar grid h-fit gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
           <p className="text-sm text-[var(--muted)]">Pagamento</p>
           <p className="text-xl font-black">{order.payment?.status ?? "PENDING"}</p>
           <p className="text-sm text-[var(--muted)]">Total {centsToBRL(order.totalCents)}</p>
