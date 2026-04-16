@@ -33,12 +33,12 @@ export default async function ProductPage({
       <div className="panel shine relative aspect-[4/3] overflow-hidden bg-black p-2">
         <div className="absolute left-5 top-5 z-10 flex flex-wrap gap-2">
           {hasDiscount ? (
-            <span className="chip border-[var(--accent)] bg-black/70 text-[var(--accent)]">
+            <span className="chip brand-badge border-[var(--accent)] bg-black/70 text-[var(--accent)]">
               <BoltIcon />
               oferta ativa
             </span>
           ) : null}
-          <span className="chip bg-black/70">estoque proprio</span>
+          <span className="chip brand-badge bg-black/70">estoque na mao</span>
         </div>
         <Image
           src={product.imageUrl}
@@ -70,11 +70,11 @@ export default async function ProductPage({
           </span>
           <span className="chip">
             <TruckIcon />
-            frete fixo
+            frete no trilho
           </span>
           <span className="chip">
             <BoltIcon />
-            envio manual
+            drop validado
           </span>
         </div>
         {product.stock > 0 ? (

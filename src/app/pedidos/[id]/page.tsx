@@ -56,6 +56,11 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
           <p className="text-sm text-[var(--muted)]">Pagamento</p>
           <p className="text-xl font-black">{order.payment?.status ?? "PENDING"}</p>
           <p className="text-sm text-[var(--muted)]">Total {centsToBRL(order.totalCents)}</p>
+          {order.discountCents > 0 ? (
+            <p className="text-sm text-[var(--accent)]">
+              Desconto {order.couponCode ? `(${order.couponCode}) ` : ""}- {centsToBRL(order.discountCents)}
+            </p>
+          ) : null}
           <div className="flex flex-wrap gap-2">
             {order.payment?.checkoutUrl ? (
               <Link className="btn" href={order.payment.checkoutUrl}>

@@ -2,11 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { CartOrbitIllustration } from "@/components/brand-illustrations";
 import { CartActions } from "@/components/cart-actions";
+import { CartSummary } from "@/components/cart-summary";
 import { EmptyState } from "@/components/empty-state";
-import { CartIcon, ShieldIcon, TruckIcon } from "@/components/icons";
+import { CartIcon } from "@/components/icons";
+import { resolveCartCoupon } from "@/lib/commerce/cart-pricing";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
-import { centsToBRL } from "@/lib/utils/money";
+import { centsToBRL, freightCents } from "@/lib/utils/money";
 
 export const dynamic = "force-dynamic";
 
@@ -22,9 +24,12 @@ export default async function CartPage() {
     const price = item.product.promotionalCents ?? item.product.priceCents;
     return total + price * item.quantity;
   }, 0);
+  const freight = freightCents();
+  const coupon = await resolveCartCoupon(user.id, subtotal, freight);
+  const total = coupon?.totalCents ?? subtotal + freight;
 
   return (
-    <main className="container grid gap-8 py-10">
+    <main className="container grid gap-8 py-10 pb-32 lg:pb-10">
       <div>
         <p className="eyebrow">
           <CartIcon />
@@ -89,23 +94,13 @@ export default async function CartPage() {
               );
             })}
           </section>
-          <aside className="panel sticky top-24 grid h-fit gap-4 p-5">
-            <p className="text-sm text-[var(--muted)]">Subtotal</p>
-            <p className="text-3xl font-black text-[var(--accent)]">{centsToBRL(subtotal)}</p>
-            <div className="grid gap-2 text-sm text-[var(--muted)]">
-              <span className="chip">
-                <ShieldIcon />
-                estoque validado
-              </span>
-              <span className="chip">
-                <TruckIcon />
-                frete calculado no checkout
-              </span>
-            </div>
-            <Link className="btn shine" href="/checkout">
-              Ir para checkout
-            </Link>
-          </aside>
+          <CartSummary
+            couponCode={coupon?.code ?? null}
+            discount={coupon ? centsToBRL(coupon.discountCents) : null}
+            freightLabel={coupon && coupon.effectiveFreightCents === 0 ? "gratis" : "calculado no checkout"}
+            subtotal={centsToBRL(subtotal)}
+            total={centsToBRL(total)}
+          />
         </div>
       )}
     </main>

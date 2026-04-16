@@ -438,7 +438,7 @@ export function ChatWidget() {
                   <div className="mt-1 flex flex-wrap items-center gap-2">
                     <span className="chip bg-black/40 text-[var(--accent)]">
                       <BoltIcon className="size-3.5" />
-                      assistente 10PILA
+                      assistente oficial
                     </span>
                   </div>
                 </div>
@@ -594,7 +594,7 @@ export function ChatWidget() {
             >
               <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-normal text-[var(--accent)]">
                 <BoltIcon className="size-3" />
-                IA 10PILA
+                PilaBot online
               </span>
               {hint}
             </motion.button>

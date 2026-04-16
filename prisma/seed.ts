@@ -85,6 +85,30 @@ const products = [
   }
 ];
 
+const coupons = [
+  {
+    code: "BEMVINDO10",
+    type: "PERCENT" as const,
+    value: 10,
+    minOrderCents: 10000,
+    firstPurchaseOnly: true
+  },
+  {
+    code: "MENOS20",
+    type: "FIXED" as const,
+    value: 2000,
+    minOrderCents: 15000,
+    firstPurchaseOnly: false
+  },
+  {
+    code: "FRETEGRATIS",
+    type: "FREE_SHIPPING" as const,
+    value: null,
+    minOrderCents: 12000,
+    firstPurchaseOnly: false
+  }
+];
+
 async function main() {
   const email = process.env.ADMIN_SEED_EMAIL ?? "admin@10pila.local";
   const password = process.env.ADMIN_SEED_PASSWORD ?? "change-me-before-deploy";
@@ -138,6 +162,14 @@ async function main() {
         quantity: product.stock,
         note: "Estoque inicial do seed"
       }
+    });
+  }
+
+  for (const coupon of coupons) {
+    await prisma.coupon.upsert({
+      where: { code: coupon.code },
+      update: coupon,
+      create: coupon
     });
   }
 }

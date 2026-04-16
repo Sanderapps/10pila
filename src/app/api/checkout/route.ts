@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/session";
+import { computeCoupon } from "@/lib/commerce/coupons";
 import { prisma } from "@/lib/db/prisma";
 import { createPagBankCheckout } from "@/lib/payments/pagbank";
 import { freightCents } from "@/lib/utils/money";
@@ -64,6 +65,29 @@ export async function POST(request: Request) {
     return total + price * item.quantity;
   }, 0);
   const fixedFreight = freightCents();
+  const [couponApplication, orderCount] = await Promise.all([
+    prisma.cartCouponApplication.findUnique({
+      where: { userId: user.id },
+      include: { coupon: true }
+    }),
+    prisma.order.count({ where: { userId: user.id } })
+  ]);
+  const couponResult = couponApplication
+    ? computeCoupon({
+        coupon: couponApplication.coupon,
+        subtotalCents,
+        freightCents: fixedFreight,
+        hasPreviousOrders: orderCount > 0
+      })
+    : null;
+  const effectiveFreightCents =
+    couponApplication && couponResult?.valid ? couponResult.effectiveFreightCents : fixedFreight;
+  const discountCents =
+    couponApplication && couponResult?.valid ? couponResult.discountCents : 0;
+  const totalCents =
+    couponApplication && couponResult?.valid
+      ? couponResult.totalCents
+      : subtotalCents + fixedFreight;
   const addressInput = {
     recipient: parsed.data.recipient.trim(),
     phone: parsed.data.phone.trim(),
@@ -146,9 +170,12 @@ export async function POST(request: Request) {
           userId: user.id,
           addressId: address.id,
           status: "AWAITING_PAYMENT",
+          couponCode:
+            couponApplication && couponResult?.valid ? couponApplication.coupon.code : undefined,
           subtotalCents,
-          freightCents: fixedFreight,
-          totalCents: subtotalCents + fixedFreight,
+          discountCents,
+          freightCents: effectiveFreightCents,
+          totalCents,
           customerName: user.name ?? parsed.data.recipient,
           customerEmail: userEmail,
           shippingAddress: addressInput,
@@ -169,7 +196,7 @@ export async function POST(request: Request) {
             create: {
               provider: "pagbank",
               status: "PENDING",
-              amountCents: subtotalCents + fixedFreight
+              amountCents: totalCents
             }
           }
         },
@@ -177,6 +204,7 @@ export async function POST(request: Request) {
       });
 
       await tx.cartItem.deleteMany({ where: { userId: user.id } });
+      await tx.cartCouponApplication.deleteMany({ where: { userId: user.id } });
 
       return savedOrder;
     });

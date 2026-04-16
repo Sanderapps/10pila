@@ -62,8 +62,8 @@ export default async function HomePage() {
         </div>
         <div className="hero-card panel shine relative overflow-hidden p-5 md:p-6">
           <div className="absolute left-4 right-4 top-4 z-10 flex items-center justify-between gap-2">
-            <span className="chip bg-black/60 text-[var(--accent)]">drop do dia</span>
-            <span className="chip bg-black/60">10PILA checked</span>
+            <span className="chip brand-badge bg-black/60 text-[var(--accent)]">drop do dia</span>
+            <span className="chip brand-badge bg-black/60">drop validado</span>
           </div>
           {featured[0] ? (
             <Link href={`/produtos/${featured[0].slug}`}>
@@ -86,9 +86,9 @@ export default async function HomePage() {
               Produto com foto, estoque e preço vindo direto do banco. Sem vitrine fantasma.
             </p>
             <div className="flex flex-wrap gap-2 pt-2 text-xs text-[var(--muted)]">
-              <span className="chip">checkout externo</span>
-              <span className="chip">estoque sincronizado</span>
-              <span className="chip">chat no contexto</span>
+              <span className="chip brand-badge">checkout seguro</span>
+              <span className="chip brand-badge">estoque na mao</span>
+              <span className="chip brand-badge">chat no contexto</span>
             </div>
           </div>
         </div>

@@ -31,6 +31,8 @@ type CheckoutItem = {
 type CheckoutFormProps = {
   initialAddresses: CheckoutAddress[];
   items: CheckoutItem[];
+  couponCode?: string | null;
+  discount?: string | null;
   subtotal: string;
   freight: string;
   total: string;
@@ -123,6 +125,8 @@ function valuesFromAddress(address: CheckoutAddress): AddressFormValues {
 export function CheckoutForm({
   initialAddresses,
   items,
+  couponCode,
+  discount,
   subtotal,
   freight,
   total
@@ -548,6 +552,12 @@ export function CheckoutForm({
                   <span>Subtotal</span>
                   <strong>{subtotal}</strong>
                 </p>
+                {discount ? (
+                  <p className="flex justify-between text-[var(--accent)]">
+                    <span>Desconto{couponCode ? ` (${couponCode})` : ""}</span>
+                    <strong>- {discount}</strong>
+                  </p>
+                ) : null}
                 <p className="flex justify-between">
                   <span>Frete</span>
                   <strong>{freight}</strong>

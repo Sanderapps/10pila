@@ -2,6 +2,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { OrderSignalIllustration } from "@/components/brand-illustrations";
 import { CheckoutForm } from "@/components/checkout-form";
+import { resolveCartCoupon } from "@/lib/commerce/cart-pricing";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL, freightCents } from "@/lib/utils/money";
@@ -36,6 +37,9 @@ export default async function CheckoutPage({
     return total + price * item.quantity;
   }, 0);
   const freight = freightCents();
+  const coupon = await resolveCartCoupon(user.id, subtotal, freight);
+  const effectiveFreight = coupon?.effectiveFreightCents ?? freight;
+  const total = coupon?.totalCents ?? subtotal + freight;
   const paymentStatusLabel =
     recentOrder?.payment?.status === "APPROVED"
       ? "Pagamento aprovado"
@@ -75,6 +79,12 @@ export default async function CheckoutPage({
               <p>
                 Total do pedido: <strong className="text-[var(--foreground)]">{centsToBRL(recentOrder.totalCents)}</strong>
               </p>
+              {recentOrder.discountCents > 0 ? (
+                <p>
+                  Desconto aplicado: <strong className="text-[var(--accent)]">- {centsToBRL(recentOrder.discountCents)}</strong>
+                  {recentOrder.couponCode ? ` com ${recentOrder.couponCode}` : ""}
+                </p>
+              ) : null}
               <p>
                 A 10PILA te recebe de volta aqui para continuar o fluxo sem cara de saida seca do site. Pedido, pagamento e proximos passos ficam no mesmo trilho.
               </p>
@@ -147,9 +157,11 @@ export default async function CheckoutPage({
               unitPrice: centsToBRL(item.product.promotionalCents ?? item.product.priceCents),
               totalPrice: centsToBRL((item.product.promotionalCents ?? item.product.priceCents) * item.quantity)
             }))}
+            couponCode={coupon?.code ?? null}
+            discount={coupon ? centsToBRL(coupon.discountCents) : null}
             subtotal={centsToBRL(subtotal)}
-            freight={centsToBRL(freight)}
-            total={centsToBRL(subtotal + freight)}
+            freight={centsToBRL(effectiveFreight)}
+            total={centsToBRL(total)}
           />
           <aside className="panel grid h-fit gap-3 p-5">
             <p className="text-sm text-[var(--muted)]">Resumo</p>
@@ -158,13 +170,19 @@ export default async function CheckoutPage({
                 <span>Produtos</span>
                 <strong>{centsToBRL(subtotal)}</strong>
               </p>
+              {coupon ? (
+                <p className="flex justify-between text-[var(--accent)]">
+                  <span>Desconto ({coupon.code})</span>
+                  <strong>- {centsToBRL(coupon.discountCents)}</strong>
+                </p>
+              ) : null}
               <p className="flex justify-between">
                 <span>Frete fixo</span>
-                <strong>{centsToBRL(freight)}</strong>
+                <strong>{centsToBRL(effectiveFreight)}</strong>
               </p>
             </div>
             <p className="text-3xl font-black text-[var(--accent)]">
-              {centsToBRL(subtotal + freight)}
+              {centsToBRL(total)}
             </p>
           </aside>
         </div>
