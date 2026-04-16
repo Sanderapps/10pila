@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { catalogPlaceholderDataUrl } from "../src/lib/catalog/visuals";
 import { slugify } from "../src/lib/utils/slug";
 
 const prisma = new PrismaClient();
@@ -14,36 +15,6 @@ type SeedProduct = {
   specifications: Record<string, string>;
   featured: boolean;
 };
-
-function imagePlaceholder(name: string, category: string, accent: string) {
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#06080b"/>
-          <stop offset="100%" stop-color="#111823"/>
-        </linearGradient>
-        <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="${accent}"/>
-          <stop offset="100%" stop-color="#69b7ff"/>
-        </linearGradient>
-      </defs>
-      <rect width="1200" height="900" fill="url(#bg)"/>
-      <circle cx="215" cy="150" r="180" fill="${accent}" fill-opacity="0.18"/>
-      <circle cx="980" cy="120" r="220" fill="#69b7ff" fill-opacity="0.14"/>
-      <circle cx="990" cy="760" r="210" fill="${accent}" fill-opacity="0.12"/>
-      <rect x="120" y="180" width="960" height="540" rx="44" fill="rgba(255,255,255,0.04)" stroke="rgba(105,183,255,0.16)" />
-      <rect x="170" y="250" width="860" height="280" rx="30" fill="rgba(255,255,255,0.03)" stroke="rgba(61,245,165,0.18)" />
-      <rect x="170" y="570" width="280" height="28" rx="14" fill="url(#glow)" fill-opacity="0.88"/>
-      <rect x="170" y="620" width="520" height="18" rx="9" fill="rgba(255,255,255,0.14)"/>
-      <text x="170" y="360" fill="#f5f7fb" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700">${name}</text>
-      <text x="170" y="430" fill="#9fb1c7" font-family="Arial, Helvetica, sans-serif" font-size="28">${category}</text>
-      <text x="170" y="680" fill="#3df5a5" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">achado tech 10PILA</text>
-    </svg>
-  `;
-
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg.replace(/\s+/g, " ").trim())}`;
-}
 
 const rawProducts: SeedProduct[] = [
   {
@@ -658,29 +629,9 @@ const rawProducts: SeedProduct[] = [
   }
 ];
 
-const accentByCategory: Record<string, string> = {
-  "Cabos e Adaptadores": "#3df5a5",
-  "Organização de Mesa": "#69b7ff",
-  "Acessórios de Celular": "#55c8ff",
-  "Iluminação Pequena": "#3df5a5",
-  "Utilidades USB": "#7ef7cd",
-  "Limpeza Tech": "#69b7ff",
-  "Suporte e Fixação": "#55c8ff",
-  "Mini Ferramentas Tech": "#3df5a5",
-  "Itens Curiosos de Setup": "#7ef7cd",
-  "Acessórios de Notebook": "#69b7ff",
-  "Viagem e Escritório": "#55c8ff",
-  "Carro e Viagem": "#3df5a5",
-  Teste: "#ffd166"
-};
-
 const products = rawProducts.map((product) => ({
   ...product,
-  imageUrl: imagePlaceholder(
-    product.name,
-    product.category,
-    accentByCategory[product.category] ?? "#3df5a5"
-  )
+  imageUrl: catalogPlaceholderDataUrl(product.name, product.category)
 }));
 
 const coupons = [

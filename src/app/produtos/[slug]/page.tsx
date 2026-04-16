@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { CSSProperties } from "react";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { BoltIcon, ShieldIcon, SparkIcon, TruckIcon } from "@/components/icons";
+import { categoryVisual } from "@/lib/catalog/visuals";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
 
@@ -23,6 +25,7 @@ export default async function ProductPage({
 
   const price = product.promotionalCents ?? product.priceCents;
   const hasDiscount = product.promotionalCents !== null;
+  const visual = categoryVisual(product.category ?? undefined);
   const specifications =
     product.specifications && typeof product.specifications === "object"
       ? Object.entries(product.specifications as Record<string, string>)
@@ -30,7 +33,15 @@ export default async function ProductPage({
 
   return (
     <main className="container grid gap-8 py-10 md:grid-cols-[1fr_0.9fr]">
-      <div className="panel shine relative aspect-[4/3] overflow-hidden bg-black p-2">
+      <div
+        className="panel shine catalog-media-shell relative aspect-[4/3] overflow-hidden bg-black p-2"
+        style={
+          {
+            "--catalog-accent": visual.accent,
+            "--catalog-accent-soft": visual.accentSoft
+          } as CSSProperties
+        }
+      >
         <div className="absolute left-5 top-5 z-10 flex flex-wrap gap-2">
           {hasDiscount ? (
             <span className="chip brand-badge border-[var(--accent)] bg-black/70 text-[var(--accent)]">

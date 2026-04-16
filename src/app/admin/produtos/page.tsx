@@ -1,10 +1,12 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import {
   ProductDeleteButton,
   ProductForm,
   StockAdjustForm
 } from "@/components/admin-forms";
 import { requireAdmin } from "@/lib/auth/session";
+import { categoryVisual } from "@/lib/catalog/visuals";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
 
@@ -69,7 +71,15 @@ export default async function AdminProductsPage({
       <section className="grid gap-4">
         {products.map((product) => (
           <article className="panel grid gap-4 p-4 lg:grid-cols-[120px_1fr_360px]" key={product.id}>
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-black">
+            <div
+              className="catalog-media-shell relative aspect-square overflow-hidden rounded-lg bg-black"
+              style={
+                {
+                  "--catalog-accent": categoryVisual(product.category ?? undefined).accent,
+                  "--catalog-accent-soft": categoryVisual(product.category ?? undefined).accentSoft
+                } as CSSProperties
+              }
+            >
               <Image
                 src={product.imageUrl}
                 alt={product.name}

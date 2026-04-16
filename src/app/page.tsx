@@ -10,6 +10,7 @@ import {
   TruckIcon,
   WhatsAppIcon
 } from "@/components/icons";
+import { HeroMediaStage } from "@/components/hero-media-stage";
 import { ProductCard } from "@/components/product-card";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
@@ -135,16 +136,7 @@ export default async function HomePage() {
           </div>
           {spotlight ? (
             <Link href={`/produtos/${spotlight.slug}`}>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-black">
-                <Image
-                  alt={spotlight.name}
-                  className="object-cover transition duration-500 hover:scale-105"
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, 520px"
-                  src={spotlight.imageUrl}
-                />
-              </div>
+              <HeroMediaStage alt={spotlight.name} posterSrc={spotlight.imageUrl} priority />
             </Link>
           ) : null}
           <div className="mt-4 grid gap-2">
@@ -186,7 +178,7 @@ export default async function HomePage() {
           </p>
           <h2 className="text-2xl font-black">Achados ate R$ 19,90</h2>
           <p className="text-sm text-[var(--muted)]">
-            Itens pequenos, curiosos e vendaveis pra mesa, mochila, celular e setup leve.
+            Itens pequenos, curiosos e vendaveis pra mesa, mochila, celular e rotina sem tralha cara.
           </p>
           <Link className="btn secondary w-fit" href="/produtos">
             Ver vitrine honesta

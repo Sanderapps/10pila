@@ -110,7 +110,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Opa, eu sou o PilaBot. Se quiser, eu comparo produto, acho o link certo ou te ajudo a garimpar um achado útil sem gastar bobeira."
+      content: "Opa, eu sou o PilaBot. Posso tirar duvida, achar o link certo ou te ajudar a garimpar alguma utilidade barata sem pressa."
     }
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -232,7 +232,7 @@ export function ChatWidget() {
   }, []);
 
   useEffect(() => {
-    if (open) {
+    if (open || isPurchasePage) {
       return;
     }
 
@@ -251,7 +251,7 @@ export function ChatWidget() {
     }, 1800);
 
     return () => window.clearInterval(interval);
-  }, [context.hints, open]);
+  }, [context.hints, isPurchasePage, open]);
 
   function scrollToBottom(force = false) {
     const scroller = scrollerRef.current;
@@ -301,10 +301,10 @@ export function ChatWidget() {
     const data = await response.json();
     setMessages((current) => [
       ...current,
-      {
-        role: "assistant",
+        {
+          role: "assistant",
         content: response.ok
-          ? "Adicionei 1 no carrinho. Setup recebeu upgrade."
+          ? "Adicionei 1 no carrinho. Achado guardado sem drama."
           : data.error ?? "Nao consegui adicionar agora.",
         note: response.ok ? "acao executada" : "falha de carrinho",
         source: "fallback"
@@ -546,7 +546,7 @@ export function ChatWidget() {
                       assistente 10PILA
                     </p>
                     <p className="text-sm text-[var(--muted)]">
-                      Tamo on. Posso te ajudar a achar coisa útil, comparar sem drama, puxar link certo ou salvar teu carrinho do custo-beneficio duvidoso.
+                      Tamo on. Posso tirar duvida, achar o link certo, comparar sem drama ou te ajudar a garimpar alguma utilidade barata.
                     </p>
                   </div>
                 </div>
@@ -666,7 +666,7 @@ export function ChatWidget() {
         } ${isKeyboardOpen || composerFocused ? "opacity-0 pointer-events-none" : ""}`}
       >
         <AnimatePresence>
-          {hint ? (
+          {hint && !isPurchasePage ? (
             <motion.button
               animate={{ opacity: 1, y: 0, scale: 1 }}
               className="chat-hint absolute bottom-20 right-16 max-w-[220px] rounded-[8px] border border-[var(--line)] bg-[rgba(8,10,14,0.96)] px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] shadow-[0_16px_40px_rgba(0,0,0,0.38)]"

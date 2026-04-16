@@ -1,19 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@prisma/client";
+import type { CSSProperties } from "react";
 import { BoltIcon, CartIcon } from "@/components/icons";
+import { categoryVisual } from "@/lib/catalog/visuals";
 import { centsToBRL } from "@/lib/utils/money";
 
 export function ProductCard({ product }: { product: Product }) {
   const price = product.promotionalCents ?? product.priceCents;
   const hasDiscount = product.promotionalCents !== null;
   const stockTone = product.stock > 0 ? "chip" : "chip text-[var(--danger)]";
+  const visual = categoryVisual(product.category ?? undefined);
 
   return (
-    <article className="panel interactive-panel shine group grid overflow-hidden">
+    <article className="panel interactive-panel catalog-card shine group grid overflow-hidden">
       <Link href={`/produtos/${product.slug}`}>
-        <div className="relative aspect-[4/3] overflow-hidden bg-black">
-          <div className="absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/55 to-transparent" />
+        <div
+          className="catalog-media-shell relative aspect-[4/3] overflow-hidden bg-black"
+          style={
+            {
+              "--catalog-accent": visual.accent,
+              "--catalog-accent-soft": visual.accentSoft
+            } as CSSProperties
+          }
+        >
+          <div className="absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/68 to-transparent" />
           <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-2">
             {hasDiscount ? (
               <span className="chip border-[var(--accent)] bg-black/70 text-[var(--accent)]">
@@ -29,7 +40,7 @@ export function ProductCard({ product }: { product: Product }) {
             alt={product.name}
             fill
             sizes="(max-width: 768px) 100vw, 320px"
-            className="object-cover transition duration-500 group-hover:scale-105"
+            className="object-cover transition duration-500 group-hover:scale-[1.04]"
           />
         </div>
       </Link>

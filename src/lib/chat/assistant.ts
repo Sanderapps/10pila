@@ -164,8 +164,75 @@ function wantsAddToCart(message: string) {
   return /adiciona|adicionar|coloca no carrinho|leva 1|quero 1/.test(message.toLowerCase());
 }
 
-function quickActionsFor(message: string, hasProducts: boolean) {
+function wantsSpecificItem(message: string) {
+  return /quero|preciso|procuro|to buscando|t[oô] buscando|tem algum|me mostra/.test(
+    message.toLowerCase()
+  );
+}
+
+function isCasualConversation(message: string) {
+  return isGreeting(message) || isJustBrowsing(message) || wantsChat(message);
+}
+
+function wantsProductSuggestionsNow(message: string) {
+  return (
+    wantsLink(message) ||
+    wantsCompare(message) ||
+    wantsDetails(message) ||
+    wantsSimilar(message) ||
+    wantsAddToCart(message) ||
+    wantsCheaper(message) ||
+    wantsPromos(message)
+  );
+}
+
+function shouldShowCards(message: string, pathname?: string) {
+  if (isCasualConversation(message)) {
+    return false;
+  }
+
+  if (wantsOrders(message)) {
+    return false;
+  }
+
+  if (wantsRecommendation(message) && searchTerms(message).length <= 1) {
+    return false;
+  }
+
+  if (wantsProductSuggestionsNow(message)) {
+    return true;
+  }
+
+  if (wantsSpecificItem(message) && searchTerms(message).length > 0) {
+    return true;
+  }
+
+  if (pathname?.startsWith("/produtos/") && searchTerms(message).length > 0) {
+    return true;
+  }
+
+  return false;
+}
+
+function quickActionsFor(
+  message: string,
+  hasProducts: boolean,
+  pathname?: string
+) {
   const actions = new Set<string>();
+
+  if (isCasualConversation(message)) {
+    if (pathname?.startsWith("/produtos/")) {
+      actions.add("ver detalhes");
+      actions.add("comparar");
+    } else {
+      actions.add("achar algo util");
+      actions.add("mais barato");
+      actions.add("ver promocoes");
+    }
+
+    return Array.from(actions).slice(0, 4);
+  }
 
   if (hasProducts) {
     if (wantsDetails(message)) {
@@ -183,6 +250,7 @@ function quickActionsFor(message: string, hasProducts: boolean) {
   }
 
   if (wantsOrders(message)) {
+    actions.add("acompanhar pedido");
     actions.add("ir para o carrinho");
   } else {
     actions.add("mais barato");
@@ -194,15 +262,15 @@ function quickActionsFor(message: string, hasProducts: boolean) {
 
 function conversationalReply(message: string) {
   if (isGreeting(message)) {
-    return "Opa, PilaBot na area. Ta caçando achado, resolvendo alguma coisinha util ou so dando um role tech?";
+    return "Opa, PilaBot na area. Tudo certo por aqui. Tu ta so dando um role ou quer ajuda com algum achado especifico?";
   }
 
   if (isJustBrowsing(message)) {
-    return "Justo. Fase de namoro com o carrinho. Se quiser, eu posso te mostrar so os achados mais honestos da loja.";
+    return "Justo. Fase de namoro com o carrinho. Fica a vontade. Se pintar curiosidade por algo útil ou barato, eu entro sem forcar vitrine.";
   }
 
   if (wantsChat(message)) {
-    return "Fechou, da pra trocar uma ideia sem transformar isso em pitch. Se pintar vontade de garimpar alguma utilidade barata, eu entro no modo util na hora.";
+    return "Fechou. Da pra trocar ideia sem eu virar panfleto com LED. Se pintar vontade de garimpar alguma utilidade barata, eu entro no modo útil na hora.";
   }
 
   if (wantsRecommendation(message)) {
@@ -338,7 +406,8 @@ function fallbackReply(
   products: Product[],
   cards: ChatProductCard[],
   orderData: Awaited<ReturnType<typeof orderContext>> | null,
-  providerStatus: AIReplyStatus
+  providerStatus: AIReplyStatus,
+  pathname?: string
 ): ChatAnswer {
   const fallbackReason: ChatAnswer["fallbackReason"] =
     providerStatus === "provider_error"
@@ -353,7 +422,7 @@ function fallbackReply(
     return {
       reply: smallTalk,
       products: [],
-      quickActions: ["ver promocoes", "mais barato", "comparar"],
+      quickActions: quickActionsFor(message, false, pathname),
       source: "fallback",
       fallbackReason
     };
@@ -362,7 +431,7 @@ function fallbackReply(
   if (wantsOrders(message) && orderData) {
     return {
       reply: orderData.reply,
-      products: cards,
+      products: [],
       quickActions: ["acompanhar pedido", "ver promocoes", "ir para o carrinho"],
       source: "fallback",
       fallbackReason: orderData.context.includes("nao esta logado") ? "auth_required" : "deterministic"
@@ -386,8 +455,8 @@ function fallbackReply(
       reply: `Link certo: [${first.name}](${productUrl(first.slug)})\n${first.name} | ${centsToBRL(
         first.promotionalCents ?? first.priceCents
       )} | ${first.stock} em estoque.\nSe quiser, eu comparo com outro sem enrolacao.`,
-      products: cards,
-      quickActions: quickActionsFor(message, cards.length > 0),
+      products: cards.slice(0, 1),
+      quickActions: quickActionsFor(message, cards.length > 0, pathname),
       source: "fallback",
       fallbackReason
     };
@@ -397,8 +466,8 @@ function fallbackReply(
     return {
       reply:
         "Posso recomendar, mas antes eu calibro isso melhor contigo: tu quer algo mais util, mais curioso ou mais custo-beneficio?",
-      products: cards.slice(0, 2),
-      quickActions: ["mais barato", "comparar", "ver detalhes"],
+      products: [],
+      quickActions: ["mais barato", "achar algo util", "comparar"],
       source: "fallback",
       fallbackReason
     };
@@ -412,13 +481,13 @@ function fallbackReply(
   });
 
   return {
-      reply: `${wantsCheaper(message) ? "Puxei as opcoes mais em conta que achei no estoque real:" : "Achei isso aqui no estoque real da loja:"}\n${lines.join("\n")}`,
-      products: cards,
-      quickActions: quickActionsFor(message, cards.length > 0),
-      source: "fallback",
-      fallbackReason
-    };
-  }
+    reply: `${wantsCheaper(message) ? "Puxei as opcoes mais em conta que achei no estoque real:" : "Achei isso aqui no estoque real da loja:"}\n${lines.join("\n")}`,
+    products: shouldShowCards(message, pathname) ? cards : [],
+    quickActions: quickActionsFor(message, cards.length > 0, pathname),
+    source: "fallback",
+    fallbackReason
+  };
+}
 
 export async function answerFromStoreData({
   message,
@@ -433,6 +502,7 @@ export async function answerFromStoreData({
     getCurrentProduct(currentProductSlug)
   ]);
   const cards = products.map(cardFromProduct);
+  const cardsAllowed = shouldShowCards(message, pathname);
 
   if (wantsOrders(message) && !userId) {
     return {
@@ -483,11 +553,11 @@ export async function answerFromStoreData({
   if (ai.reply) {
     return {
       reply: ai.reply,
-      products: cards,
-      quickActions: quickActionsFor(message, cards.length > 0),
+      products: cardsAllowed ? cards : [],
+      quickActions: quickActionsFor(message, cards.length > 0, pathname),
       source: "ai"
     };
   }
 
-  return fallbackReply(message, products, cards, orderData, ai.status);
+  return fallbackReply(message, products, cards, orderData, ai.status, pathname);
 }
