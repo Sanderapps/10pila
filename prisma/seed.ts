@@ -89,12 +89,20 @@ async function main() {
   });
 
   for (const product of products) {
-    const saved = await prisma.product.upsert({
-      where: { slug: slugify(product.name) },
-      update: product,
-      create: {
+    const slug = slugify(product.name);
+    const existing = await prisma.product.findUnique({
+      where: { slug },
+      select: { id: true }
+    });
+
+    if (existing) {
+      continue;
+    }
+
+    const saved = await prisma.product.create({
+      data: {
         ...product,
-        slug: slugify(product.name)
+        slug
       }
     });
 
