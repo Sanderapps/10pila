@@ -32,7 +32,8 @@ export function AddToCartButton({
     });
 
     if (response.status === 401) {
-      router.push("/auth/login");
+      const currentPath = `${window.location.pathname}${window.location.search}`;
+      router.push(`/auth/login?callbackUrl=${encodeURIComponent(currentPath)}`);
       return;
     }
 

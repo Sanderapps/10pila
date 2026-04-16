@@ -39,6 +39,8 @@ Variaveis obrigatorias para operar localmente:
 
 Variaveis opcionais no MVP:
 
+- `GOOGLE_CLIENT_ID`: ativa login com Google quando preenchido.
+- `GOOGLE_CLIENT_SECRET`: segredo OAuth do Google.
 - `PAGBANK_ACCESS_TOKEN`: cria checkout real do PagBank quando preenchido.
 - `PAGBANK_WEBHOOK_SECRET`: segredo simples para validar webhook estrutural.
 - `PAGBANK_API_URL`: base da API PagBank, por padrao `https://sandbox.api.pagseguro.com`.
@@ -68,7 +70,25 @@ Nunca use a senha exemplo em producao.
 
 ## Auth
 
-O projeto usa NextAuth com Prisma Adapter configurado. Como o login do MVP e por email/senha via Credentials Provider, as sessoes permanecem em JWT, que e o modo suportado por esse provider no NextAuth v4. Os usuarios continuam persistidos no PostgreSQL via Prisma.
+O projeto usa NextAuth com Prisma Adapter configurado. O login por email/senha usa Credentials Provider, entao as sessoes permanecem em JWT, que e o modo suportado por esse provider no NextAuth v4. Os usuarios continuam persistidos no PostgreSQL via Prisma.
+
+Login com Google tambem esta estruturado. Para ativar, crie credenciais OAuth no Google Cloud e configure:
+
+```env
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+```
+
+Callback autorizado no Google:
+
+```text
+http://localhost:3000/api/auth/callback/google
+https://seu-dominio/api/auth/callback/google
+```
+
+Sem essas credenciais, o botao de Google aparece desativado e o login por email/senha segue funcionando.
+
+O MVP valida formato de email e senha, mas ainda nao envia verificacao real por email. A base tem `emailVerified` e `VerificationToken` no Prisma para evoluir essa etapa depois com um servico de email.
 
 ## Pagamentos
 

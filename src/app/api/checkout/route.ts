@@ -6,15 +6,15 @@ import { createPagBankCheckout } from "@/lib/payments/pagbank";
 import { freightCents } from "@/lib/utils/money";
 
 const addressSchema = z.object({
-  recipient: z.string().min(2),
-  phone: z.string().min(8),
-  zipCode: z.string().min(5),
-  street: z.string().min(2),
-  number: z.string().min(1),
+  recipient: z.string().trim().min(2, "Informe quem vai receber o pedido."),
+  phone: z.string().trim().min(8, "Informe um telefone com DDD."),
+  zipCode: z.string().trim().min(8, "Informe um CEP valido."),
+  street: z.string().trim().min(2, "Informe a rua."),
+  number: z.string().trim().min(1, "Informe o numero."),
   complement: z.string().optional(),
-  district: z.string().min(2),
-  city: z.string().min(2),
-  state: z.string().min(2).max(2)
+  district: z.string().trim().min(2, "Informe o bairro."),
+  city: z.string().trim().min(2, "Informe a cidade."),
+  state: z.string().trim().length(2, "Use a UF com 2 letras.")
 });
 
 export async function POST(request: Request) {
@@ -28,7 +28,14 @@ export async function POST(request: Request) {
   const parsed = addressSchema.safeParse(await request.json());
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Endereco invalido." }, { status: 400 });
+    const fieldErrors = Object.fromEntries(
+      parsed.error.issues.map((issue) => [issue.path.join("."), issue.message])
+    );
+
+    return NextResponse.json(
+      { error: "Revise os dados de entrega.", fieldErrors },
+      { status: 400 }
+    );
   }
 
   const cartItems = await prisma.cartItem.findMany({
