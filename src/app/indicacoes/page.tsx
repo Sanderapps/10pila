@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GiftIcon, SparkIcon } from "@/components/icons";
+import { ReferralSharePanel } from "@/components/referral-share-panel";
 import { prisma } from "@/lib/db/prisma";
 import { requireUser } from "@/lib/auth/session";
 import { buildReferralLink, ensureUserReferralCode, referralRules } from "@/lib/commerce/referrals";
@@ -61,19 +62,7 @@ export default async function ReferralsPage() {
 
       <section className="grid gap-4 md:grid-cols-[1fr_320px]">
         <article className="panel grid gap-4 p-5">
-          <div className="grid gap-2">
-            <p className="text-sm font-bold text-[var(--accent)]">seu codigo</p>
-            <div className="surface flex flex-wrap items-center justify-between gap-3 p-4">
-              <strong className="text-2xl tracking-[0.18em] text-[var(--foreground)]">{code}</strong>
-              <span className="text-xs text-[var(--muted)]">link pronto para cadastro</span>
-            </div>
-          </div>
-          <div className="surface grid gap-2 p-4">
-            <span className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
-              link de indicacao
-            </span>
-            <p className="break-all text-sm text-[#69B7FF]">{referralLink}</p>
-          </div>
+          <ReferralSharePanel code={code} referralLink={referralLink} />
           <p className="text-sm text-[var(--muted)]">
             MVP atual: a vinculacao da indicacao entra no cadastro com email e senha usando esse
             link ou o codigo manual no formulario.

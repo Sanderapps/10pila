@@ -96,8 +96,9 @@ export default async function CartPage() {
           </section>
           <CartSummary
             couponCode={coupon?.code ?? null}
-            discount={coupon ? centsToBRL(coupon.discountCents) : null}
-            freightLabel={coupon && coupon.effectiveFreightCents === 0 ? "gratis" : "calculado no checkout"}
+            productDiscount={coupon?.productDiscountCents ? centsToBRL(coupon.productDiscountCents) : null}
+            freightDiscount={coupon?.freightDiscountCents ? centsToBRL(coupon.freightDiscountCents) : null}
+            freight={centsToBRL(coupon?.effectiveFreightCents ?? freight)}
             subtotal={centsToBRL(subtotal)}
             total={centsToBRL(total)}
           />

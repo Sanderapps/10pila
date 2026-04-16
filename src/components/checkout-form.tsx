@@ -32,7 +32,8 @@ type CheckoutFormProps = {
   initialAddresses: CheckoutAddress[];
   items: CheckoutItem[];
   couponCode?: string | null;
-  discount?: string | null;
+  productDiscount?: string | null;
+  freightDiscount?: string | null;
   subtotal: string;
   freight: string;
   total: string;
@@ -126,7 +127,8 @@ export function CheckoutForm({
   initialAddresses,
   items,
   couponCode,
-  discount,
+  productDiscount,
+  freightDiscount,
   subtotal,
   freight,
   total
@@ -374,6 +376,7 @@ export function CheckoutForm({
             <label className="label">
               Nome para entrega
               <input
+                autoComplete="name"
                 className="input"
                 name="recipient"
                 onChange={(event) => updateValue("recipient", event.target.value)}
@@ -384,6 +387,7 @@ export function CheckoutForm({
             <label className="label">
               Telefone
               <input
+                autoComplete="tel"
                 className="input"
                 inputMode="tel"
                 name="phone"
@@ -397,6 +401,7 @@ export function CheckoutForm({
             <label className="label">
               CEP
               <input
+                autoComplete="postal-code"
                 className="input"
                 inputMode="numeric"
                 name="zipCode"
@@ -409,6 +414,7 @@ export function CheckoutForm({
             <label className="label md:col-span-2">
               Rua
               <input
+                autoComplete="address-line1"
                 className="input"
                 name="street"
                 onChange={(event) => updateValue("street", event.target.value)}
@@ -421,7 +427,9 @@ export function CheckoutForm({
             <label className="label">
               Numero
               <input
+                autoComplete="address-line2"
                 className="input"
+                inputMode="numeric"
                 name="number"
                 onChange={(event) => updateValue("number", event.target.value)}
                 placeholder="123"
@@ -431,6 +439,7 @@ export function CheckoutForm({
             <label className="label">
               Complemento
               <input
+                autoComplete="address-line2"
                 className="input"
                 name="complement"
                 onChange={(event) => updateValue("complement", event.target.value)}
@@ -441,6 +450,7 @@ export function CheckoutForm({
             <label className="label">
               Bairro
               <input
+                autoComplete="address-level2"
                 className="input"
                 name="district"
                 onChange={(event) => updateValue("district", event.target.value)}
@@ -451,6 +461,7 @@ export function CheckoutForm({
             <label className="label">
               UF
               <input
+                autoComplete="address-level1"
                 className="input"
                 maxLength={2}
                 name="state"
@@ -463,6 +474,7 @@ export function CheckoutForm({
           <label className="label">
             Cidade
             <input
+              autoComplete="address-level2"
               className="input"
               name="city"
               onChange={(event) => updateValue("city", event.target.value)}
@@ -565,10 +577,16 @@ export function CheckoutForm({
                   <span>Subtotal</span>
                   <strong>{subtotal}</strong>
                 </p>
-                {discount ? (
+                {productDiscount ? (
                   <p className="flex justify-between text-[var(--accent)]">
-                    <span>Desconto{couponCode ? ` (${couponCode})` : ""}</span>
-                    <strong>- {discount}</strong>
+                    <span>Desconto nos produtos{couponCode ? ` (${couponCode})` : ""}</span>
+                    <strong>- {productDiscount}</strong>
+                  </p>
+                ) : null}
+                {freightDiscount ? (
+                  <p className="flex justify-between text-[var(--accent-2)]">
+                    <span>Desconto no frete{couponCode ? ` (${couponCode})` : ""}</span>
+                    <strong>- {freightDiscount}</strong>
                   </p>
                 ) : null}
                 <p className="flex justify-between">

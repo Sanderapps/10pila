@@ -2,13 +2,19 @@
 
 import { ClientSafeProvider, getProviders, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { StatusMessage } from "@/components/status-message";
 
 type FieldErrors = Record<string, string>;
 
 type SocialProvider = ClientSafeProvider & {
   id: "google" | "facebook";
+};
+
+type PasswordChecks = {
+  minLength: boolean;
+  hasLetter: boolean;
+  hasNumber: boolean;
 };
 
 function callbackUrl() {
@@ -29,13 +35,27 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function getPasswordChecks(password: string): PasswordChecks {
+  return {
+    minLength: password.length >= 8,
+    hasLetter: /[A-Za-z]/.test(password),
+    hasNumber: /[0-9]/.test(password)
+  };
+}
+
 function validatePassword(password: string) {
-  if (password.length < 8) {
+  const checks = getPasswordChecks(password);
+
+  if (!checks.minLength) {
     return "Use pelo menos 8 caracteres.";
   }
 
-  if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
-    return "Use letras e numeros na senha.";
+  if (!checks.hasLetter) {
+    return "Use pelo menos 1 letra na senha.";
+  }
+
+  if (!checks.hasNumber) {
+    return "Use pelo menos 1 numero na senha.";
   }
 
   return "";
@@ -63,6 +83,111 @@ function providerDisabledText(id: string) {
   }
 
   return "";
+}
+
+function PasswordInput({
+  name,
+  value,
+  onChange,
+  placeholder,
+  autoComplete,
+  error,
+  label
+}: {
+  name: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  autoComplete: string;
+  error?: string;
+  label: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <label className="label">
+      {label}
+      <div className="relative">
+        <input
+          autoComplete={autoComplete}
+          className="input pr-24"
+          name={name}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          type={visible ? "text" : "password"}
+          value={value}
+        />
+        <button
+          aria-label={visible ? `Ocultar ${label.toLowerCase()}` : `Mostrar ${label.toLowerCase()}`}
+          className="absolute right-2 top-1/2 min-h-9 -translate-y-1/2 rounded-md border border-[var(--line)] px-3 text-xs font-bold text-[var(--muted)] transition hover:border-[var(--line-strong)] hover:text-[var(--foreground)]"
+          onClick={() => setVisible((current) => !current)}
+          type="button"
+        >
+          {visible ? "Ocultar" : "Mostrar"}
+        </button>
+      </div>
+      {error ? <span className="text-xs text-[var(--danger)]">{error}</span> : null}
+    </label>
+  );
+}
+
+function PasswordChecklist({
+  password,
+  touched,
+  confirmPassword,
+  confirmTouched
+}: {
+  password: string;
+  touched: boolean;
+  confirmPassword?: string;
+  confirmTouched?: boolean;
+}) {
+  const checks = useMemo(() => getPasswordChecks(password), [password]);
+  const shouldShow = touched || password.length > 0;
+  const confirmActive = typeof confirmPassword === "string" && (confirmTouched || confirmPassword.length > 0);
+
+  if (!shouldShow && !confirmActive) {
+    return null;
+  }
+
+  const rows = [
+    { ok: checks.minLength, label: "Minimo de 8 caracteres" },
+    { ok: checks.hasLetter, label: "Pelo menos 1 letra" },
+    { ok: checks.hasNumber, label: "Pelo menos 1 numero" }
+  ];
+
+  return (
+    <div className="grid gap-2 rounded-lg border border-[var(--line)] bg-black/20 p-3 text-sm">
+      <p className="text-xs font-bold uppercase text-[var(--muted)]">Senha em tempo real</p>
+      <div className="grid gap-1">
+        {rows.map((row) => (
+          <p className="flex items-center gap-2" key={row.label}>
+            <span aria-hidden="true" className={row.ok ? "text-[var(--accent)]" : "text-[var(--muted)]"}>
+              {row.ok ? "✓" : "○"}
+            </span>
+            <span className={row.ok ? "text-[var(--foreground)]" : "text-[var(--muted)]"}>{row.label}</span>
+          </p>
+        ))}
+        {typeof confirmPassword === "string" && confirmActive ? (
+          <p className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className={confirmPassword === password && confirmPassword.length > 0 ? "text-[var(--accent)]" : "text-[var(--muted)]"}
+            >
+              {confirmPassword === password && confirmPassword.length > 0 ? "✓" : "○"}
+            </span>
+            <span
+              className={
+                confirmPassword === password && confirmPassword.length > 0 ? "text-[var(--foreground)]" : "text-[var(--muted)]"
+              }
+            >
+              Senhas conferem
+            </span>
+          </p>
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 function SocialProviders({ mode }: { mode: "login" | "register" }) {
@@ -119,6 +244,8 @@ function SocialProviders({ mode }: { mode: "login" | "register" }) {
 
 export function LoginForm() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
@@ -131,12 +258,10 @@ export function LoginForm() {
     setFieldErrors({});
     setSuccess("");
 
-    const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") ?? "").trim().toLowerCase();
-    const password = String(form.get("password") ?? "");
+    const normalizedEmail = email.trim().toLowerCase();
     const nextFieldErrors: FieldErrors = {};
 
-    if (!isValidEmail(email)) {
+    if (!isValidEmail(normalizedEmail)) {
       nextFieldErrors.email = "Digite um email valido.";
     }
 
@@ -152,7 +277,7 @@ export function LoginForm() {
     }
 
     const result = await signIn("credentials", {
-      email,
+      email: normalizedEmail,
       password,
       redirect: false,
       callbackUrl: callbackUrl()
@@ -183,25 +308,24 @@ export function LoginForm() {
         <input
           autoComplete="email"
           className="input"
+          inputMode="email"
           name="email"
+          onChange={(event) => setEmail(event.target.value)}
           placeholder="voce@email.com"
           type="email"
+          value={email}
         />
         {fieldErrors.email ? <span className="text-xs text-[var(--danger)]">{fieldErrors.email}</span> : null}
       </label>
-      <label className="label">
-        Senha
-        <input
-          autoComplete="current-password"
-          className="input"
-          name="password"
-          placeholder="Sua senha"
-          type="password"
-        />
-        {fieldErrors.password ? (
-          <span className="text-xs text-[var(--danger)]">{fieldErrors.password}</span>
-        ) : null}
-      </label>
+      <PasswordInput
+        autoComplete="current-password"
+        error={fieldErrors.password}
+        label="Senha"
+        name="password"
+        onChange={setPassword}
+        placeholder="Sua senha"
+        value={password}
+      />
       <StatusMessage
         fieldErrors={fieldErrors}
         message={error}
@@ -218,6 +342,12 @@ export function LoginForm() {
 
 export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode?: string }) {
   const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [confirmTouched, setConfirmTouched] = useState(false);
   const [referralCode, setReferralCode] = useState(initialReferralCode);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -235,24 +365,28 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
     setFieldErrors({});
     setSuccess("");
 
-    const form = new FormData(event.currentTarget);
-    const name = String(form.get("name") ?? "").trim();
-    const email = String(form.get("email") ?? "").trim().toLowerCase();
-    const password = String(form.get("password") ?? "");
-    const referral = String(form.get("referralCode") ?? "").trim().toUpperCase();
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim().toLowerCase();
+    const referral = referralCode.trim().toUpperCase();
     const nextFieldErrors: FieldErrors = {};
     const passwordError = validatePassword(password);
 
-    if (name.length < 2) {
+    if (normalizedName.length < 2) {
       nextFieldErrors.name = "Informe seu nome com pelo menos 2 caracteres.";
     }
 
-    if (!isValidEmail(email)) {
+    if (!isValidEmail(normalizedEmail)) {
       nextFieldErrors.email = "Digite um email valido.";
     }
 
     if (passwordError) {
       nextFieldErrors.password = passwordError;
+    }
+
+    if (!confirmPassword) {
+      nextFieldErrors.confirmPassword = "Confirme sua senha.";
+    } else if (confirmPassword !== password) {
+      nextFieldErrors.confirmPassword = "As senhas precisam ser iguais.";
     }
 
     if (referral && referral.length < 4) {
@@ -269,7 +403,7 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, referralCode: referral || undefined })
+      body: JSON.stringify({ name: normalizedName, email: normalizedEmail, password, referralCode: referral || undefined })
     });
 
     const data = await response.json();
@@ -283,7 +417,7 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
 
     setSuccess("Conta criada. Entrando no 10PILA...");
     await signIn("credentials", {
-      email,
+      email: normalizedEmail,
       password,
       redirect: false,
       callbackUrl: callbackUrl()
@@ -304,7 +438,14 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
       </div>
       <label className="label">
         Nome
-        <input autoComplete="name" className="input" name="name" placeholder="Seu nome" />
+        <input
+          autoComplete="name"
+          className="input"
+          name="name"
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Seu nome"
+          value={name}
+        />
         {fieldErrors.name ? <span className="text-xs text-[var(--danger)]">{fieldErrors.name}</span> : null}
       </label>
       <label className="label">
@@ -312,28 +453,55 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
         <input
           autoComplete="email"
           className="input"
+          inputMode="email"
           name="email"
+          onChange={(event) => setEmail(event.target.value)}
           placeholder="voce@email.com"
           type="email"
+          value={email}
         />
         {fieldErrors.email ? <span className="text-xs text-[var(--danger)]">{fieldErrors.email}</span> : null}
       </label>
-      <label className="label">
-        Senha
-        <input
-          autoComplete="new-password"
-          className="input"
-          name="password"
-          placeholder="Minimo 8 caracteres, letras e numeros"
-          type="password"
-        />
-        {fieldErrors.password ? (
-          <span className="text-xs text-[var(--danger)]">{fieldErrors.password}</span>
-        ) : null}
-      </label>
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-2">
+          <PasswordInput
+            autoComplete="new-password"
+            error={fieldErrors.password}
+            label="Senha"
+            name="password"
+            onChange={(value) => {
+              setPassword(value);
+              setPasswordTouched(true);
+            }}
+            placeholder="Minimo 8 caracteres, letras e numeros"
+            value={password}
+          />
+        </div>
+        <div className="grid gap-2">
+          <PasswordInput
+            autoComplete="new-password"
+            error={fieldErrors.confirmPassword}
+            label="Confirmar senha"
+            name="confirmPassword"
+            onChange={(value) => {
+              setConfirmPassword(value);
+              setConfirmTouched(true);
+            }}
+            placeholder="Repita a senha"
+            value={confirmPassword}
+          />
+        </div>
+      </div>
+      <PasswordChecklist
+        confirmPassword={confirmPassword}
+        confirmTouched={confirmTouched}
+        password={password}
+        touched={passwordTouched}
+      />
       <label className="label">
         Codigo de indicacao
         <input
+          autoComplete="off"
           className="input"
           name="referralCode"
           onChange={(event) => setReferralCode(event.target.value.toUpperCase())}

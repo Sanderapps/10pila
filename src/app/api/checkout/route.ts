@@ -83,6 +83,10 @@ export async function POST(request: Request) {
     : null;
   const effectiveFreightCents =
     couponApplication && couponResult?.valid ? couponResult.effectiveFreightCents : fixedFreight;
+  const productDiscountCents =
+    couponApplication && couponResult?.valid ? couponResult.productDiscountCents : 0;
+  const freightDiscountCents =
+    couponApplication && couponResult?.valid ? couponResult.freightDiscountCents : 0;
   const discountCents =
     couponApplication && couponResult?.valid ? couponResult.discountCents : 0;
   const totalCents =
@@ -174,6 +178,8 @@ export async function POST(request: Request) {
           couponCode:
             couponApplication && couponResult?.valid ? couponApplication.coupon.code : undefined,
           subtotalCents,
+          productDiscountCents,
+          freightDiscountCents,
           discountCents,
           freightCents: effectiveFreightCents,
           totalCents,

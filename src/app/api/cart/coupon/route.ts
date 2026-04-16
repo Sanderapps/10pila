@@ -62,10 +62,15 @@ export async function POST(request: Request) {
   return NextResponse.json({
     ok: true,
     code: coupon.code,
+    productDiscountCents: result.productDiscountCents,
+    freightDiscountCents: result.freightDiscountCents,
     discountCents: result.discountCents,
     effectiveFreightCents: result.effectiveFreightCents,
     totalCents: result.totalCents,
-    message: "Cupom aplicado no carrinho."
+    message:
+      coupon.type === "FREE_SHIPPING"
+        ? "Cupom aplicado. O frete entrou no desconto sem mexer no valor dos produtos."
+        : "Cupom aplicado no carrinho."
   });
 }
 

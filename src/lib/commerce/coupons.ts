@@ -11,6 +11,8 @@ type CouponValidationInput = {
 export type CouponComputation = {
   valid: boolean;
   message?: string;
+  productDiscountCents: number;
+  freightDiscountCents: number;
   discountCents: number;
   effectiveFreightCents: number;
   totalCents: number;
@@ -49,7 +51,8 @@ export function computeCoupon({
     return invalid("Esse cupom vale so na primeira compra.", subtotalCents, freightCents);
   }
 
-  let discountCents = 0;
+  let productDiscountCents = 0;
+  let freightDiscountCents = 0;
   let effectiveFreightCents = freightCents;
 
   if (coupon.type === CouponType.PERCENT) {
@@ -57,7 +60,7 @@ export function computeCoupon({
       return invalid("Cupom percentual invalido.", subtotalCents, freightCents);
     }
 
-    discountCents = Math.floor((subtotalCents * coupon.value) / 100);
+    productDiscountCents = Math.floor((subtotalCents * coupon.value) / 100);
   }
 
   if (coupon.type === CouponType.FIXED) {
@@ -65,18 +68,21 @@ export function computeCoupon({
       return invalid("Cupom fixo invalido.", subtotalCents, freightCents);
     }
 
-    discountCents = Math.min(coupon.value, subtotalCents);
+    productDiscountCents = Math.min(coupon.value, subtotalCents);
   }
 
   if (coupon.type === CouponType.FREE_SHIPPING) {
-    effectiveFreightCents = 0;
-    discountCents = freightCents;
+    freightDiscountCents = Math.min(freightCents, Math.max(freightCents, 0));
+    effectiveFreightCents = Math.max(freightCents - freightDiscountCents, 0);
   }
 
-  const totalCents = Math.max(subtotalCents + effectiveFreightCents - discountCents, 0);
+  const discountCents = productDiscountCents + freightDiscountCents;
+  const totalCents = Math.max(subtotalCents - productDiscountCents + effectiveFreightCents, 0);
 
   return {
     valid: true,
+    productDiscountCents,
+    freightDiscountCents,
     discountCents,
     effectiveFreightCents,
     totalCents
@@ -87,6 +93,8 @@ function invalid(message: string, subtotalCents: number, freightCents: number): 
   return {
     valid: false,
     message,
+    productDiscountCents: 0,
+    freightDiscountCents: 0,
     discountCents: 0,
     effectiveFreightCents: freightCents,
     totalCents: subtotalCents + freightCents

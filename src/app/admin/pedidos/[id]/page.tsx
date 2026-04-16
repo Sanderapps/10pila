@@ -86,6 +86,26 @@ export default async function AdminOrderDetailPage({
                 <span>Produtos</span>
                 <strong>{centsToBRL(order.subtotalCents)}</strong>
               </p>
+              {order.productDiscountCents > 0 ? (
+                <p className="flex justify-between text-[var(--accent)]">
+                  <span>Desconto nos produtos {order.couponCode ? `(${order.couponCode})` : ""}</span>
+                  <strong>- {centsToBRL(order.productDiscountCents)}</strong>
+                </p>
+              ) : null}
+              {order.freightDiscountCents > 0 ? (
+                <p className="flex justify-between text-[var(--accent-2)]">
+                  <span>Desconto no frete {order.couponCode ? `(${order.couponCode})` : ""}</span>
+                  <strong>- {centsToBRL(order.freightDiscountCents)}</strong>
+                </p>
+              ) : null}
+              {order.discountCents > 0 &&
+              order.productDiscountCents === 0 &&
+              order.freightDiscountCents === 0 ? (
+                <p className="flex justify-between text-[var(--accent)]">
+                  <span>Economia {order.couponCode ? `(${order.couponCode})` : ""}</span>
+                  <strong>- {centsToBRL(order.discountCents)}</strong>
+                </p>
+              ) : null}
               <p className="flex justify-between">
                 <span>Frete</span>
                 <strong>{centsToBRL(order.freightCents)}</strong>

@@ -3,6 +3,8 @@ import { computeCoupon } from "./coupons";
 
 export type ResolvedCartCoupon = {
   code: string;
+  productDiscountCents: number;
+  freightDiscountCents: number;
   discountCents: number;
   effectiveFreightCents: number;
   totalCents: number;
@@ -39,6 +41,8 @@ export async function resolveCartCoupon(
 
   return {
     code: application.coupon.code,
+    productDiscountCents: result.productDiscountCents,
+    freightDiscountCents: result.freightDiscountCents,
     discountCents: result.discountCents,
     effectiveFreightCents: result.effectiveFreightCents,
     totalCents: result.totalCents

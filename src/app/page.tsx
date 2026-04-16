@@ -13,6 +13,7 @@ import {
 import { HeroMediaStage } from "@/components/hero-media-stage";
 import { ProductCard } from "@/components/product-card";
 import { getCurrentUser } from "@/lib/auth/session";
+import { resolveHomePosterPath, resolveHomeVideoPath } from "@/lib/catalog/media";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
 
@@ -62,6 +63,8 @@ export default async function HomePage() {
   ]);
 
   const spotlight = featured[0] ?? underTwenty[0] ?? deskFinds[0] ?? phoneFinds[0];
+  const heroPoster = resolveHomePosterPath("hero-achados-tech") ?? spotlight?.imageUrl ?? null;
+  const heroVideo = resolveHomeVideoPath("hero-achados-tech") ?? undefined;
   const secondaryCta =
     user?.role === "ADMIN"
       ? { href: "/admin", label: "Abrir admin" }
@@ -134,9 +137,9 @@ export default async function HomePage() {
             <span className="chip brand-badge bg-black/60 text-[var(--accent)]">achado do dia</span>
             <span className="chip brand-badge bg-black/60">ate R$ 19,90</span>
           </div>
-          {spotlight ? (
+          {spotlight && heroPoster ? (
             <Link href={`/produtos/${spotlight.slug}`}>
-              <HeroMediaStage alt={spotlight.name} posterSrc={spotlight.imageUrl} priority />
+              <HeroMediaStage alt={spotlight.name} posterSrc={heroPoster} priority videoSrc={heroVideo} />
             </Link>
           ) : null}
           <div className="mt-4 grid gap-2">

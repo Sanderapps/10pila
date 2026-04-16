@@ -90,12 +90,28 @@ export default async function CheckoutPage({
               <OrderSignalIllustration className="size-24" />
             </div>
             <div className="grid gap-2 text-sm text-[var(--muted)]">
+              {recentOrder.productDiscountCents > 0 ? (
+                <p>
+                  Desconto nos produtos:{" "}
+                  <strong className="text-[var(--accent)]">- {centsToBRL(recentOrder.productDiscountCents)}</strong>
+                  {recentOrder.couponCode ? ` com ${recentOrder.couponCode}` : ""}
+                </p>
+              ) : null}
+              {recentOrder.freightDiscountCents > 0 ? (
+                <p>
+                  Desconto no frete:{" "}
+                  <strong className="text-[var(--accent-2)]">- {centsToBRL(recentOrder.freightDiscountCents)}</strong>
+                  {recentOrder.couponCode ? ` com ${recentOrder.couponCode}` : ""}
+                </p>
+              ) : null}
               <p>
                 Total do pedido: <strong className="text-[var(--foreground)]">{centsToBRL(recentOrder.totalCents)}</strong>
               </p>
-              {recentOrder.discountCents > 0 ? (
+              {recentOrder.discountCents > 0 &&
+              recentOrder.productDiscountCents === 0 &&
+              recentOrder.freightDiscountCents === 0 ? (
                 <p>
-                  Desconto aplicado: <strong className="text-[var(--accent)]">- {centsToBRL(recentOrder.discountCents)}</strong>
+                  Economia aplicada: <strong className="text-[var(--accent)]">- {centsToBRL(recentOrder.discountCents)}</strong>
                   {recentOrder.couponCode ? ` com ${recentOrder.couponCode}` : ""}
                 </p>
               ) : null}
@@ -175,7 +191,8 @@ export default async function CheckoutPage({
               totalPrice: centsToBRL((item.product.promotionalCents ?? item.product.priceCents) * item.quantity)
             }))}
             couponCode={coupon?.code ?? null}
-            discount={coupon ? centsToBRL(coupon.discountCents) : null}
+            productDiscount={coupon?.productDiscountCents ? centsToBRL(coupon.productDiscountCents) : null}
+            freightDiscount={coupon?.freightDiscountCents ? centsToBRL(coupon.freightDiscountCents) : null}
             subtotal={centsToBRL(subtotal)}
             freight={centsToBRL(effectiveFreight)}
             total={centsToBRL(total)}
@@ -187,10 +204,16 @@ export default async function CheckoutPage({
                 <span>Produtos</span>
                 <strong>{centsToBRL(subtotal)}</strong>
               </p>
-              {coupon ? (
+              {coupon?.productDiscountCents ? (
                 <p className="flex justify-between text-[var(--accent)]">
-                  <span>Desconto ({coupon.code})</span>
-                  <strong>- {centsToBRL(coupon.discountCents)}</strong>
+                  <span>Desconto nos produtos ({coupon.code})</span>
+                  <strong>- {centsToBRL(coupon.productDiscountCents)}</strong>
+                </p>
+              ) : null}
+              {coupon?.freightDiscountCents ? (
+                <p className="flex justify-between text-[var(--accent-2)]">
+                  <span>Desconto no frete ({coupon.code})</span>
+                  <strong>- {centsToBRL(coupon.freightDiscountCents)}</strong>
                 </p>
               ) : null}
               <p className="flex justify-between">

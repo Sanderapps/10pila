@@ -7,17 +7,19 @@ import { StatusMessage } from "@/components/status-message";
 
 type CartSummaryProps = {
   subtotal: string;
-  freightLabel: string;
+  freight: string;
   total: string;
-  discount?: string | null;
+  productDiscount?: string | null;
+  freightDiscount?: string | null;
   couponCode?: string | null;
 };
 
 export function CartSummary({
   subtotal,
-  freightLabel,
+  freight,
   total,
-  discount,
+  productDiscount,
+  freightDiscount,
   couponCode
 }: CartSummaryProps) {
   const router = useRouter();
@@ -91,15 +93,21 @@ export function CartSummary({
             <span>Subtotal</span>
             <strong>{subtotal}</strong>
           </p>
-          {discount ? (
+          {productDiscount ? (
             <p className="flex justify-between text-[var(--accent)]">
-              <span>Desconto{couponCode ? ` (${couponCode})` : ""}</span>
-              <strong>- {discount}</strong>
+              <span>Desconto nos produtos{couponCode ? ` (${couponCode})` : ""}</span>
+              <strong>- {productDiscount}</strong>
+            </p>
+          ) : null}
+          {freightDiscount ? (
+            <p className="flex justify-between text-[var(--accent-2)]">
+              <span>Desconto no frete{couponCode ? ` (${couponCode})` : ""}</span>
+              <strong>- {freightDiscount}</strong>
             </p>
           ) : null}
           <p className="flex justify-between">
             <span>Frete</span>
-            <strong>{freightLabel}</strong>
+            <strong>{freight}</strong>
           </p>
         </div>
         <p className="text-3xl font-black text-[var(--accent)]">{total}</p>
@@ -158,7 +166,7 @@ export function CartSummary({
           <div className="grid gap-1">
             <p className="text-xs font-black uppercase text-[var(--accent-2)]">Total {total}</p>
             <p className="text-xs text-[var(--muted)]">
-              {discount ? `Cupom ${couponCode} aplicado • ` : ""}Frete calculado no checkout
+              {couponCode ? `Cupom ${couponCode} aplicado • ` : ""}Frete e descontos revisados no resumo
             </p>
           </div>
           <Link className="btn shine min-h-11 px-4 text-sm" href="/checkout">

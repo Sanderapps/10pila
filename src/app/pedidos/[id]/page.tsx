@@ -67,9 +67,21 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
           <p className="text-xl font-black">{paymentStatus}</p>
           <p className="text-sm text-[var(--muted)]">Total {centsToBRL(order.totalCents)}</p>
           <p className="text-sm text-[var(--muted)]">{paymentSummary}</p>
-          {order.discountCents > 0 ? (
+          {order.productDiscountCents > 0 ? (
             <p className="text-sm text-[var(--accent)]">
-              Desconto {order.couponCode ? `(${order.couponCode}) ` : ""}- {centsToBRL(order.discountCents)}
+              Desconto nos produtos {order.couponCode ? `(${order.couponCode}) ` : ""}- {centsToBRL(order.productDiscountCents)}
+            </p>
+          ) : null}
+          {order.freightDiscountCents > 0 ? (
+            <p className="text-sm text-[var(--accent-2)]">
+              Desconto no frete {order.couponCode ? `(${order.couponCode}) ` : ""}- {centsToBRL(order.freightDiscountCents)}
+            </p>
+          ) : null}
+          {order.discountCents > 0 &&
+          order.productDiscountCents === 0 &&
+          order.freightDiscountCents === 0 ? (
+            <p className="text-sm text-[var(--accent)]">
+              Economia {order.couponCode ? `(${order.couponCode}) ` : ""}- {centsToBRL(order.discountCents)}
             </p>
           ) : null}
           <div className="flex flex-wrap gap-2">

@@ -1,0 +1,3 @@
+ALTER TABLE "Order"
+ADD COLUMN "productDiscountCents" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN "freightDiscountCents" INTEGER NOT NULL DEFAULT 0;
