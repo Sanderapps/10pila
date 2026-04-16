@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   const webhookSecret = process.env.MERCADOPAGO_WEBHOOK_SECRET;
   const signature = request.headers.get("x-signature");
 
-  if (webhookSecret && signature && !signature.includes(webhookSecret)) {
+  if (webhookSecret && (!signature || !signature.includes(webhookSecret))) {
     return NextResponse.json({ error: "Webhook nao autorizado." }, { status: 401 });
   }
 
