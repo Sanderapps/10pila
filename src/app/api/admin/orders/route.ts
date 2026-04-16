@@ -23,13 +23,25 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Status invalido." }, { status: 400 });
   }
 
-  if (parsed.data.status === "PAID") {
-    await markOrderPaidAndReduceStock(parsed.data.orderId);
-  } else {
-    await prisma.order.update({
-      where: { id: parsed.data.orderId },
-      data: { status: parsed.data.status }
-    });
+  try {
+    if (parsed.data.status === "PAID") {
+      await markOrderPaidAndReduceStock(parsed.data.orderId);
+    } else {
+      await prisma.order.update({
+        where: { id: parsed.data.orderId },
+        data: { status: parsed.data.status }
+      });
+    }
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Nao foi possivel atualizar o status do pedido."
+      },
+      { status: 400 }
+    );
   }
 
   const order = await prisma.order.findUnique({

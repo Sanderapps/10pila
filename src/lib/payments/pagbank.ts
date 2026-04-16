@@ -15,6 +15,7 @@ type PagBankCheckoutResponse = {
   id?: string;
   reference_id?: string;
   links?: PagBankLink[];
+  error_messages?: Array<{ code?: string; description?: string }>;
 };
 
 export async function createPagBankCheckout({ order }: CheckoutInput) {
@@ -73,7 +74,10 @@ export async function createPagBankCheckout({ order }: CheckoutInput) {
       raw: {
         mode: "structural",
         provider: "pagbank",
-        message: "PagBank recusou a criacao do checkout. Pedido salvo sem redirecionamento real.",
+        message:
+          response.status === 401 || response.status === 403
+            ? "PagBank recusou autenticacao/autorizacao. Confira token sandbox e liberacao da API."
+            : "PagBank recusou a criacao do checkout. Pedido salvo sem redirecionamento real.",
         status: response.status,
         error: body
       }
@@ -89,6 +93,13 @@ export async function createPagBankCheckout({ order }: CheckoutInput) {
   return {
     checkoutId: data.id ?? `pagbank-${order.id}`,
     checkoutUrl,
-    raw: data
+    raw: checkoutUrl
+      ? data
+      : {
+          ...data,
+          mode: "structural",
+          provider: "pagbank",
+          message: "PagBank criou resposta sem link PAY. Pedido salvo sem redirecionamento real."
+        }
   };
 }

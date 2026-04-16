@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BoltIcon, CartIcon, ShieldIcon } from "@/components/icons";
 import { requireAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
@@ -8,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   await requireAdmin();
   const [products, orders, lowStock] = await Promise.all([
-    prisma.product.count(),
+    prisma.product.groupBy({ by: ["active"], _count: true }),
     prisma.order.count(),
     prisma.product.findMany({
       where: { stock: { lte: 5 } },
@@ -20,18 +21,22 @@ export default async function AdminPage() {
     where: { status: { in: ["PAID", "PROCESSING", "SHIPPED", "DELIVERED"] } },
     _sum: { totalCents: true }
   });
+  const activeProducts = products.find((item) => item.active)?._count ?? 0;
+  const inactiveProducts = products.find((item) => !item.active)?._count ?? 0;
+  const statusGroups = await prisma.order.groupBy({ by: ["status"], _count: true });
 
   return (
     <main className="container grid gap-8 py-10">
       <div>
-        <p className="font-bold text-[var(--accent)]">admin</p>
+        <p className="eyebrow">admin</p>
         <h1 className="text-4xl font-black">Operacao 10PILA</h1>
       </div>
 
       <section className="grid gap-4 md:grid-cols-3">
         <div className="panel p-5">
-          <p className="text-sm text-[var(--muted)]">Produtos</p>
-          <p className="text-4xl font-black">{products}</p>
+          <p className="text-sm text-[var(--muted)]">Produtos ativos</p>
+          <p className="text-4xl font-black">{activeProducts}</p>
+          <p className="text-xs text-[var(--muted)]">{inactiveProducts} inativo(s)</p>
         </div>
         <div className="panel p-5">
           <p className="text-sm text-[var(--muted)]">Pedidos</p>
@@ -44,16 +49,32 @@ export default async function AdminPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
-        <Link className="btn" href="/admin/produtos">
+        <Link className="btn shine gap-2" href="/admin/produtos">
+          <ShieldIcon />
           Gerenciar produtos
         </Link>
-        <Link className="btn secondary" href="/admin/pedidos">
+        <Link className="btn secondary gap-2" href="/admin/pedidos">
+          <CartIcon />
           Ver pedidos
         </Link>
       </section>
 
       <section className="panel grid gap-3 p-5">
-        <h2 className="text-2xl font-bold">Estoque baixo</h2>
+        <h2 className="text-2xl font-bold">Pedidos por status</h2>
+        <div className="flex flex-wrap gap-2">
+          {statusGroups.map((group) => (
+            <span className="chip" key={group.status}>
+              {group.status}: {group._count}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel grid gap-3 p-5">
+        <h2 className="flex items-center gap-2 text-2xl font-bold">
+          <BoltIcon className="size-5 text-[var(--warning)]" />
+          Estoque baixo
+        </h2>
         {lowStock.length > 0 ? (
           lowStock.map((product) => (
             <p className="text-sm text-[var(--muted)]" key={product.id}>

@@ -4,7 +4,9 @@ import type { Prisma } from "@prisma/client";
 import { markOrderPaidAndReduceStock } from "@/lib/inventory/stock";
 
 function isApprovedStatus(status: unknown) {
-  return ["PAID", "APPROVED", "AUTHORIZED"].includes(String(status ?? "").toUpperCase());
+  return ["PAID", "APPROVED", "AUTHORIZED", "PAYMENT_RECEIVED", "COMPLETED"].includes(
+    String(status ?? "").toUpperCase()
+  );
 }
 
 function orderIdFromPayload(payload: Record<string, unknown>, requestUrl: string) {
@@ -12,12 +14,25 @@ function orderIdFromPayload(payload: Record<string, unknown>, requestUrl: string
   const charge = Array.isArray(payload.charges) ? payload.charges[0] : undefined;
   const chargeObject =
     charge && typeof charge === "object" ? (charge as Record<string, unknown>) : undefined;
+  const dataObject =
+    payload.data && typeof payload.data === "object"
+      ? (payload.data as Record<string, unknown>)
+      : undefined;
+  const dataCharge = Array.isArray(dataObject?.charges) ? dataObject.charges[0] : undefined;
+  const dataChargeObject =
+    dataCharge && typeof dataCharge === "object"
+      ? (dataCharge as Record<string, unknown>)
+      : undefined;
 
   return (
     payload.reference_id ??
     payload.order_id ??
     payload.orderId ??
+    dataObject?.reference_id ??
+    dataObject?.order_id ??
+    dataObject?.orderId ??
     chargeObject?.reference_id ??
+    dataChargeObject?.reference_id ??
     url.searchParams.get("order_id") ??
     url.searchParams.get("reference_id")
   );
@@ -27,16 +42,38 @@ function providerPaymentIdFromPayload(payload: Record<string, unknown>) {
   const charge = Array.isArray(payload.charges) ? payload.charges[0] : undefined;
   const chargeObject =
     charge && typeof charge === "object" ? (charge as Record<string, unknown>) : undefined;
+  const dataObject =
+    payload.data && typeof payload.data === "object"
+      ? (payload.data as Record<string, unknown>)
+      : undefined;
 
-  return payload.id ?? payload.checkout_id ?? chargeObject?.id;
+  return payload.id ?? payload.checkout_id ?? dataObject?.id ?? dataObject?.checkout_id ?? chargeObject?.id;
 }
 
 function statusFromPayload(payload: Record<string, unknown>) {
   const charge = Array.isArray(payload.charges) ? payload.charges[0] : undefined;
   const chargeObject =
     charge && typeof charge === "object" ? (charge as Record<string, unknown>) : undefined;
+  const dataObject =
+    payload.data && typeof payload.data === "object"
+      ? (payload.data as Record<string, unknown>)
+      : undefined;
+  const dataCharge = Array.isArray(dataObject?.charges) ? dataObject.charges[0] : undefined;
+  const dataChargeObject =
+    dataCharge && typeof dataCharge === "object"
+      ? (dataCharge as Record<string, unknown>)
+      : undefined;
 
-  return payload.status ?? payload.event ?? payload.type ?? chargeObject?.status;
+  return (
+    payload.status ??
+    payload.event ??
+    payload.type ??
+    dataObject?.status ??
+    dataObject?.event ??
+    dataObject?.type ??
+    chargeObject?.status ??
+    dataChargeObject?.status
+  );
 }
 
 function hasValidSignature(rawBody: string, signature: string | null, secret: string) {
@@ -60,7 +97,13 @@ function hasValidSignature(rawBody: string, signature: string | null, secret: st
 
 export async function POST(request: Request) {
   const rawBody = await request.text();
-  const payload = JSON.parse(rawBody || "{}") as Record<string, unknown>;
+  let payload: Record<string, unknown>;
+
+  try {
+    payload = JSON.parse(rawBody || "{}") as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "Payload PagBank invalido." }, { status: 400 });
+  }
   const webhookSecret = process.env.PAGBANK_WEBHOOK_SECRET;
   const signature =
     request.headers.get("x-authenticity-token") ??
@@ -78,12 +121,24 @@ export async function POST(request: Request) {
   }
 
   if (isApprovedStatus(statusFromPayload(payload))) {
-    await markOrderPaidAndReduceStock(String(orderId), {
-      providerPaymentId: providerPaymentIdFromPayload(payload)
-        ? String(providerPaymentIdFromPayload(payload))
-        : undefined,
-      raw: payload as Prisma.InputJsonValue
-    });
+    try {
+      await markOrderPaidAndReduceStock(String(orderId), {
+        providerPaymentId: providerPaymentIdFromPayload(payload)
+          ? String(providerPaymentIdFromPayload(payload))
+          : undefined,
+        raw: payload as Prisma.InputJsonValue
+      });
+    } catch (error) {
+      return NextResponse.json(
+        {
+          error:
+            error instanceof Error
+              ? error.message
+              : "Nao foi possivel processar webhook PagBank."
+        },
+        { status: 400 }
+      );
+    }
   }
 
   return NextResponse.json({ ok: true });

@@ -14,6 +14,8 @@ const products = [
     priceCents: 29990,
     promotionalCents: 24990,
     stock: 12,
+    category: "Projetores",
+    specifications: { resolucao: "720p", conexao: "HDMI/USB", uso: "cinema compacto" },
     featured: true
   },
   {
@@ -25,6 +27,8 @@ const products = [
     priceCents: 18990,
     promotionalCents: null,
     stock: 18,
+    category: "Setup",
+    specifications: { layout: "compacto", iluminacao: "RGB", switch: "tatil" },
     featured: true
   },
   {
@@ -36,6 +40,8 @@ const products = [
     priceCents: 15990,
     promotionalCents: 12990,
     stock: 25,
+    category: "Audio",
+    specifications: { conexao: "Bluetooth", bateria: "longa duracao", isolamento: "passivo" },
     featured: true
   },
   {
@@ -47,6 +53,8 @@ const products = [
     priceCents: 11990,
     promotionalCents: null,
     stock: 20,
+    category: "Acessorios",
+    specifications: { portas: "USB-C/HDMI", uso: "notebook", extras: "leitor de cartao" },
     featured: false
   },
   {
@@ -58,6 +66,8 @@ const products = [
     priceCents: 14990,
     promotionalCents: 11990,
     stock: 16,
+    category: "Energia",
+    specifications: { capacidade: "20000 mAh", uso: "celular e acessorios", carregamento: "turbo" },
     featured: false
   },
   {
@@ -69,6 +79,8 @@ const products = [
     priceCents: 9990,
     promotionalCents: null,
     stock: 30,
+    category: "Setup",
+    specifications: { sensor: "preciso", botoes: "laterais", pegada: "leve" },
     featured: false
   }
 ];

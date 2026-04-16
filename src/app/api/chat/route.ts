@@ -6,7 +6,8 @@ import { prisma } from "@/lib/db/prisma";
 
 const chatSchema = z.object({
   sessionId: z.string().nullable().optional(),
-  message: z.string().min(1).max(1000)
+  message: z.string().min(1).max(1000),
+  currentProductSlug: z.string().optional()
 });
 
 export async function POST(request: Request) {
@@ -39,15 +40,19 @@ export async function POST(request: Request) {
     }
   });
 
-  const reply = await answerFromStoreData(parsed.data.message, user?.id);
+  const answer = await answerFromStoreData(
+    parsed.data.message,
+    user?.id,
+    parsed.data.currentProductSlug
+  );
 
   await prisma.chatMessage.create({
     data: {
       sessionId: session.id,
       role: "assistant",
-      content: reply
+      content: answer.reply
     }
   });
 
-  return NextResponse.json({ sessionId: session.id, reply });
+  return NextResponse.json({ sessionId: session.id, ...answer });
 }

@@ -20,6 +20,7 @@ export function ProductCard({ product }: { product: Product }) {
               </span>
             ) : null}
             {product.featured ? <span className="chip bg-black/70">destaque</span> : null}
+            {product.category ? <span className="chip bg-black/70">{product.category}</span> : null}
           </div>
           <Image
             src={product.imageUrl}

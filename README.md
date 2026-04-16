@@ -1,6 +1,6 @@
 # 10PILA
 
-E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind, Prisma, PostgreSQL, Auth.js/NextAuth, PagBank Checkout estrutural e chat IA preparado para consultar dados da loja.
+E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind, Prisma, PostgreSQL, Auth.js/NextAuth, PagBank Checkout sandbox e chat IA com Gemini usando dados reais da loja.
 
 ## Stack
 
@@ -9,6 +9,7 @@ E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind,
 - Prisma + PostgreSQL
 - NextAuth com email e senha, Prisma Adapter e sessoes JWT
 - PagBank Checkout hospedado
+- Gemini no backend para o chat, com fallback deterministico
 - Railway para deploy
 
 ## Setup local
@@ -44,7 +45,8 @@ Variaveis opcionais no MVP:
 - `PAGBANK_ACCESS_TOKEN`: cria checkout real do PagBank quando preenchido.
 - `PAGBANK_WEBHOOK_SECRET`: segredo simples para validar webhook estrutural.
 - `PAGBANK_API_URL`: base da API PagBank, por padrao `https://sandbox.api.pagseguro.com`.
-- `OPENAI_API_KEY`: reservado para evoluir o chat para OpenAI Responses API.
+- `GEMINI_API_KEY`: ativa resposta generativa do chat no backend.
+- `GEMINI_MODEL`: modelo Gemini usado pelo chat, por padrao `gemini-3.1-flash-lite-preview`.
 
 4. Rode migration e seed:
 
@@ -83,7 +85,7 @@ Callback autorizado no Google:
 
 ```text
 http://localhost:3000/api/auth/callback/google
-https://seu-dominio/api/auth/callback/google
+https://10pila-app-production.up.railway.app/api/auth/callback/google
 ```
 
 Sem essas credenciais, o botao de Google aparece desativado e o login por email/senha segue funcionando.
@@ -111,16 +113,25 @@ Quando receber evento aprovado com `reference_id` do pedido, marca pagamento com
 
 ## Chat IA
 
-O componente de chat chama `/api/chat`, persiste mensagens e responde com base no banco:
+O componente de chat chama `/api/chat`, persiste mensagens e usa Gemini no servidor quando `GEMINI_API_KEY` esta configurada. A key nunca deve ir para o frontend. A rota monta contexto real do banco e mantem fallback deterministico quando a API falha ou a credencial falta.
 
 - produtos
 - promocoes
 - pedidos do usuario logado
 - fallback honesto quando faltar dado
 
-Quando cita produto, a resposta inclui nome, preco, estoque e link clicavel para a pagina do item. A busca usa termos da mensagem para evitar resposta vaga e nunca inventa preco, estoque ou status.
+Quando cita produto, a resposta inclui nome, preco, estoque e link clicavel para a pagina do item. A UI tambem renderiza cards com botoes "Ver produto" e "Adicionar 1". A busca usa termos da mensagem e o produto da pagina atual para evitar resposta vaga, sem inventar preco, estoque, prazo ou status.
 
-`OPENAI_API_KEY` esta reservado para evoluir a rota para OpenAI Responses API. O MVP atual evita inventar informacao porque usa respostas deterministicas do backend.
+Variaveis:
+
+```env
+GEMINI_API_KEY=...
+GEMINI_MODEL=gemini-3.1-flash-lite-preview
+```
+
+## Paginas publicas para OAuth
+
+As paginas `/privacy` e `/terms` existem em PT-BR para uso inicial com Google OAuth e explicam conta, pedidos, pagamento e chat do MVP.
 
 ## Deploy Railway
 

@@ -23,6 +23,10 @@ export default async function ProductPage({
 
   const price = product.promotionalCents ?? product.priceCents;
   const hasDiscount = product.promotionalCents !== null;
+  const specifications =
+    product.specifications && typeof product.specifications === "object"
+      ? Object.entries(product.specifications as Record<string, string>)
+      : [];
 
   return (
     <main className="container grid gap-8 py-10 md:grid-cols-[1fr_0.9fr]">
@@ -48,7 +52,7 @@ export default async function ProductPage({
       <section className="grid content-start gap-5">
         <p className="eyebrow">
           <SparkIcon />
-          produto
+          {product.category ?? "produto"}
         </p>
         <h1 className="text-4xl font-black">{product.name}</h1>
         <p className="text-lg text-[var(--muted)]">{product.description}</p>
@@ -84,6 +88,16 @@ export default async function ProductPage({
           <p className="font-bold text-[var(--foreground)]">Ficha rapida</p>
           <p>Sem variacoes no MVP. Quantidade limitada ao estoque real.</p>
           <p>Chat IA consulta esse produto pelo banco e manda o link certo.</p>
+          {specifications.length > 0 ? (
+            <dl className="mt-2 grid gap-2 border-t border-[var(--line)] pt-3">
+              {specifications.map(([key, value]) => (
+                <div className="flex justify-between gap-3" key={key}>
+                  <dt className="text-[var(--muted)]">{key}</dt>
+                  <dd className="font-bold text-[var(--foreground)]">{String(value)}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : null}
         </div>
       </section>
     </main>

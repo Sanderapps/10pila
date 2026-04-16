@@ -91,6 +91,19 @@ select {
   backdrop-filter: blur(18px);
 }
 
+.interactive-panel {
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.interactive-panel:hover {
+  border-color: var(--line-strong);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+  transform: translateY(-2px);
+}
+
 .eyebrow {
   display: inline-flex;
   width: fit-content;
