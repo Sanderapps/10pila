@@ -67,7 +67,17 @@ export async function createPagBankCheckout({ order }: CheckoutInput) {
 
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`PagBank recusou o checkout: ${body}`);
+    return {
+      checkoutId: `pagbank-error-${order.id}`,
+      checkoutUrl: null,
+      raw: {
+        mode: "structural",
+        provider: "pagbank",
+        message: "PagBank recusou a criacao do checkout. Pedido salvo sem redirecionamento real.",
+        status: response.status,
+        error: body
+      }
+    };
   }
 
   const data = (await response.json()) as PagBankCheckoutResponse;
