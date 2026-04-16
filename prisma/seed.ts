@@ -62,7 +62,7 @@ const products = [
     description:
       "Bateria portátil de 20000 mAh para manter celular, fone e caos sob controle.",
     imageUrl:
-      "https://images.unsplash.com/photo-1609592806596-b43bada2f69f?auto=format&fit=crop&w=1200&q=80",
+      "https://images.pexels.com/photos/4526415/pexels-photo-4526415.jpeg?auto=compress&cs=tinysrgb&w=1200",
     priceCents: 14990,
     promotionalCents: 11990,
     stock: 16,
@@ -108,6 +108,19 @@ async function main() {
     });
 
     if (existing) {
+      await prisma.product.update({
+        where: { id: existing.id },
+        data: {
+          name: product.name,
+          description: product.description,
+          imageUrl: product.imageUrl,
+          category: product.category,
+          specifications: product.specifications,
+          priceCents: product.priceCents,
+          promotionalCents: product.promotionalCents,
+          featured: product.featured
+        }
+      });
       continue;
     }
 

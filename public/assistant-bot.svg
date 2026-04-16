@@ -1,0 +1,30 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shell" x1="20" y1="24" x2="120" y2="122" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#20262D"/>
+      <stop offset="1" stop-color="#0D1014"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="48" y1="42" x2="112" y2="90" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#04161A"/>
+      <stop offset="1" stop-color="#081118"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="60" y1="56" x2="100" y2="76" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3DF5A5"/>
+      <stop offset="1" stop-color="#55C8FF"/>
+    </linearGradient>
+  </defs>
+  <path d="M70 125C70 133 75 137 80 137C85 137 90 133 90 125" stroke="url(#glow)" stroke-width="6" stroke-linecap="round"/>
+  <rect x="53" y="89" width="54" height="32" rx="14" fill="url(#shell)" stroke="#2D353F" stroke-width="2"/>
+  <rect x="71" y="100" width="18" height="10" rx="5" fill="#0D1618" stroke="#55C8FF" stroke-opacity="0.45" stroke-width="1.5"/>
+  <rect x="34" y="20" width="92" height="84" rx="30" fill="url(#shell)" stroke="#39424D" stroke-width="2.5"/>
+  <rect x="48" y="38" width="64" height="46" rx="18" fill="url(#screen)" stroke="#55C8FF" stroke-opacity="0.18" stroke-width="2"/>
+  <path d="M80 16V26" stroke="#4A5563" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="80" cy="12" r="4.5" fill="#3DF5A5"/>
+  <path d="M47 88C42 92 38 95 34 100" stroke="#46505D" stroke-width="4" stroke-linecap="round"/>
+  <path d="M113 88C118 92 122 95 126 100" stroke="#46505D" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="31" cy="103" r="6" fill="#1D242D" stroke="#46505D" stroke-width="2"/>
+  <circle cx="129" cy="103" r="6" fill="#1D242D" stroke="#46505D" stroke-width="2"/>
+  <rect x="60" y="52" width="15" height="14" rx="6" fill="#55F0C0"/>
+  <rect x="85" y="52" width="15" height="14" rx="6" fill="#55C8FF"/>
+  <path d="M66 75C74 81 86 81 94 75" stroke="url(#glow)" stroke-width="3.2" stroke-linecap="round"/>
+</svg>
