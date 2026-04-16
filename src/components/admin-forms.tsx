@@ -107,7 +107,13 @@ export function ProductForm({ product }: { product?: AdminProduct }) {
         </label>
         <label className="label">
           URL da imagem
-          <input className="input" defaultValue={product?.imageUrl} name="imageUrl" type="url" required />
+          <input
+            className="input"
+            defaultValue={product?.imageUrl}
+            name="imageUrl"
+            placeholder="/catalog/products/seu-slug.webp"
+            required
+          />
         </label>
       </div>
       <label className="label">

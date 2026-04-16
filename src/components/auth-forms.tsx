@@ -342,6 +342,7 @@ export function LoginForm() {
 
 export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode?: string }) {
   const router = useRouter();
+  const initialReferralFromLink = initialReferralCode.trim().length > 0;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -498,23 +499,55 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
         password={password}
         touched={passwordTouched}
       />
-      <label className="label">
-        Codigo de indicacao
-        <input
-          autoComplete="off"
-          className="input"
-          name="referralCode"
-          onChange={(event) => setReferralCode(event.target.value.toUpperCase())}
-          placeholder="Opcional"
-          value={referralCode}
-        />
-        <span className="text-xs text-[var(--muted)]">
-          Se voce chegou por um amigo, cola o codigo aqui e segue o fluxo normal.
-        </span>
-        {fieldErrors.referralCode ? (
-          <span className="text-xs text-[var(--danger)]">{fieldErrors.referralCode}</span>
-        ) : null}
-      </label>
+      <div className="grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="grid gap-1">
+            <p className="text-sm font-bold text-[var(--foreground)]">Tem codigo de indicacao? Use aqui.</p>
+            <p className="text-xs text-[var(--muted)]">Opcional. Se voce veio por um amigo, pode colar ou editar o codigo.</p>
+          </div>
+          {initialReferralFromLink && referralCode ? (
+            <span className="rounded-full border border-[rgba(61,245,165,0.28)] bg-[rgba(61,245,165,0.12)] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--accent)]">
+              veio pelo link
+            </span>
+          ) : null}
+        </div>
+        <label className="label">
+          Codigo de indicacao
+          <div className="relative">
+            <input
+              autoCapitalize="characters"
+              autoComplete="off"
+              className="input pr-24"
+              maxLength={24}
+              name="referralCode"
+              onChange={(event) => setReferralCode(event.target.value.toUpperCase())}
+              placeholder="Ex.: ABC123"
+              value={referralCode}
+            />
+            {referralCode ? (
+              <button
+                aria-label="Limpar codigo de indicacao"
+                className="absolute right-2 top-1/2 min-h-9 -translate-y-1/2 rounded-md border border-[var(--line)] px-3 text-xs font-bold text-[var(--muted)] transition hover:border-[var(--line-strong)] hover:text-[var(--foreground)]"
+                onClick={() => {
+                  setReferralCode("");
+                  setFieldErrors((current) => ({ ...current, referralCode: "" }));
+                }}
+                type="button"
+              >
+                Limpar
+              </button>
+            ) : null}
+          </div>
+          {initialReferralFromLink && referralCode ? (
+            <span className="text-xs text-[var(--accent)]">Codigo preenchido automaticamente pelo link. Pode editar ou remover.</span>
+          ) : (
+            <span className="text-xs text-[var(--muted)]">Nao veio por link? Sem problema, voce pode digitar o codigo manualmente.</span>
+          )}
+          {fieldErrors.referralCode ? (
+            <span className="text-xs text-[var(--danger)]">{fieldErrors.referralCode}</span>
+          ) : null}
+        </label>
+      </div>
       <p className="text-xs text-[var(--muted)]">
         Ainda nao fazemos verificacao real por email. A base esta pronta para essa etapa depois.
       </p>

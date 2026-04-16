@@ -3,11 +3,27 @@ import { z } from "zod";
 import { decimalStringToCents } from "@/lib/utils/money";
 import { slugify } from "@/lib/utils/slug";
 
+function isValidImagePath(value: string) {
+  if (value.startsWith("/")) {
+    return /^\/[A-Za-z0-9/_\-\.]+$/.test(value);
+  }
+
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export const productInputSchema = z.object({
   name: z.string().trim().min(2, "Informe o nome."),
   slug: z.string().trim().optional(),
   description: z.string().trim().min(10, "Descreva melhor o produto."),
-  imageUrl: z.string().trim().url("Informe uma URL de imagem valida."),
+  imageUrl: z
+    .string()
+    .trim()
+    .refine(isValidImagePath, "Informe uma URL valida ou um caminho local como /catalog/products/item.webp."),
   category: z.string().trim().optional(),
   specifications: z.string().optional(),
   price: z.string().trim().min(1, "Informe o preco."),
