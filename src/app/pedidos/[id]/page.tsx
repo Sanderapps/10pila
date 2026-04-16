@@ -19,6 +19,16 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
     notFound();
   }
 
+  const paymentStatus = order.payment?.status ?? "PENDING";
+  const paymentSummary =
+    paymentStatus === "APPROVED"
+      ? "Pagamento confirmado. Agora o pedido segue para separacao."
+      : paymentStatus === "REJECTED"
+        ? "Pagamento recusado. Revise e tente concluir novamente."
+        : paymentStatus === "CANCELED"
+          ? "Pagamento cancelado. O pedido segue salvo no seu historico."
+          : "Pagamento pendente ou em analise no gateway.";
+
   return (
     <main className="container grid gap-8 py-10">
       <div className="grid gap-2">
@@ -54,8 +64,9 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
 
         <aside className="order-sidebar grid h-fit gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
           <p className="text-sm text-[var(--muted)]">Pagamento</p>
-          <p className="text-xl font-black">{order.payment?.status ?? "PENDING"}</p>
+          <p className="text-xl font-black">{paymentStatus}</p>
           <p className="text-sm text-[var(--muted)]">Total {centsToBRL(order.totalCents)}</p>
+          <p className="text-sm text-[var(--muted)]">{paymentSummary}</p>
           {order.discountCents > 0 ? (
             <p className="text-sm text-[var(--accent)]">
               Desconto {order.couponCode ? `(${order.couponCode}) ` : ""}- {centsToBRL(order.discountCents)}

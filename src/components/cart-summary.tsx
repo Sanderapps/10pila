@@ -26,9 +26,7 @@ export function CartSummary({
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  async function applyCoupon(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
+  async function applyCouponCode() {
     if (!code.trim()) {
       setError("Digite um cupom.");
       setMessage("");
@@ -56,6 +54,11 @@ export function CartSummary({
     setCode("");
     setMessage(data.message ?? "Cupom aplicado.");
     router.refresh();
+  }
+
+  function handleCouponSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void applyCouponCode();
   }
 
   async function removeCoupon() {
@@ -106,7 +109,7 @@ export function CartSummary({
           <span className="chip">pagamento seguro via PagBank</span>
           <span className="chip">pedido revisavel antes do pagamento</span>
         </div>
-        <form className="grid gap-2" onSubmit={applyCoupon}>
+        <form className="grid gap-2" onSubmit={handleCouponSubmit}>
           <label className="label">
             Tem cupom?
             <div className="flex gap-2">
@@ -117,7 +120,12 @@ export function CartSummary({
                 placeholder="BEMVINDO10"
                 value={code}
               />
-              <button className="btn secondary shrink-0 px-3" disabled={loading} type="submit">
+              <button
+                className="btn secondary shrink-0 px-3"
+                disabled={loading}
+                onClick={() => void applyCouponCode()}
+                type="button"
+              >
                 Aplicar
               </button>
             </div>
@@ -127,7 +135,12 @@ export function CartSummary({
               <span>
                 Cupom ativo: <strong>{couponCode}</strong>
               </span>
-              <button className="btn secondary min-h-9 px-3" onClick={removeCoupon} type="button">
+              <button
+                className="btn secondary min-h-9 px-3"
+                disabled={loading}
+                onClick={removeCoupon}
+                type="button"
+              >
                 Remover
               </button>
             </div>
@@ -143,7 +156,7 @@ export function CartSummary({
       <div className="cart-sticky-bar surface fixed inset-x-3 bottom-3 z-40 grid gap-2 border border-[var(--line)] p-3 lg:hidden">
         <div className="flex items-start justify-between gap-3">
           <div className="grid gap-1">
-            <p className="text-xs font-black uppercase text-[var(--accent-2)]">Subtotal {total}</p>
+            <p className="text-xs font-black uppercase text-[var(--accent-2)]">Total {total}</p>
             <p className="text-xs text-[var(--muted)]">
               {discount ? `Cupom ${couponCode} aplicado • ` : ""}Frete calculado no checkout
             </p>
@@ -152,7 +165,7 @@ export function CartSummary({
             Fechar pedido com seguranca
           </Link>
         </div>
-        <form className="flex gap-2" onSubmit={applyCoupon}>
+        <form className="flex gap-2" onSubmit={handleCouponSubmit}>
           <input
             className="input"
             disabled={loading}
@@ -161,15 +174,27 @@ export function CartSummary({
             value={code}
           />
           {couponCode ? (
-            <button className="btn secondary shrink-0 px-3" onClick={removeCoupon} type="button">
+            <button
+              className="btn secondary shrink-0 px-3"
+              disabled={loading}
+              onClick={removeCoupon}
+              type="button"
+            >
               Remover
             </button>
           ) : (
-            <button className="btn secondary shrink-0 px-3" disabled={loading} type="submit">
+            <button
+              className="btn secondary shrink-0 px-3"
+              disabled={loading}
+              onClick={() => void applyCouponCode()}
+              type="button"
+            >
               Aplicar
             </button>
           )}
         </form>
+        {error ? <StatusMessage message={error} variant="error" /> : null}
+        {message ? <StatusMessage message={message} variant="success" /> : null}
       </div>
     </>
   );

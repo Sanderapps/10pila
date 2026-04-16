@@ -40,16 +40,25 @@ export default async function CheckoutPage({
   const coupon = await resolveCartCoupon(user.id, subtotal, freight);
   const effectiveFreight = coupon?.effectiveFreightCents ?? freight;
   const total = coupon?.totalCents ?? subtotal + freight;
+  const paymentStatus = recentOrder?.payment?.status ?? "PENDING";
   const paymentStatusLabel =
-    recentOrder?.payment?.status === "APPROVED"
+    paymentStatus === "APPROVED"
       ? "Pagamento aprovado"
-      : recentOrder?.payment?.status === "REJECTED"
+      : paymentStatus === "REJECTED"
         ? "Pagamento falhou"
-        : recentOrder?.payment?.status === "CANCELED"
+        : paymentStatus === "CANCELED"
           ? "Pagamento cancelado"
-          : recentOrder?.payment?.status === "PENDING"
+          : paymentStatus === "PENDING"
             ? "Pagamento aguardando confirmacao"
             : "Pedido em processamento";
+  const paymentNextStep =
+    paymentStatus === "APPROVED"
+      ? "Pedido confirmado. Agora o trilho e separacao, embalagem e envio."
+      : paymentStatus === "REJECTED"
+        ? "O pagamento nao fechou. Voce pode revisar o pedido e tentar novamente."
+        : paymentStatus === "CANCELED"
+          ? "Fluxo cancelado. O pedido segue salvo para voce decidir o proximo passo."
+          : "O pagamento ainda esta em analise ou aguardando acao no gateway.";
 
   return (
     <main className="container grid gap-8 py-10">
@@ -71,6 +80,11 @@ export default async function CheckoutPage({
             </div>
             <span className="chip text-[var(--accent)]">{recentOrder.status}</span>
           </div>
+          <div className="flex flex-wrap gap-2 text-sm">
+            <span className="chip bg-black/40">pedido {recentOrder.id.slice(0, 8)}</span>
+            <span className="chip bg-black/40">status {paymentStatusLabel.toLowerCase()}</span>
+            <span className="chip bg-black/40">retorno 10PILA</span>
+          </div>
           <div className="grid gap-4 lg:grid-cols-[120px_1fr] lg:items-center">
             <div className="grid place-items-center">
               <OrderSignalIllustration className="size-24" />
@@ -85,6 +99,9 @@ export default async function CheckoutPage({
                   {recentOrder.couponCode ? ` com ${recentOrder.couponCode}` : ""}
                 </p>
               ) : null}
+              <p>
+                Proximo passo: <strong className="text-[var(--foreground)]">{paymentNextStep}</strong>
+              </p>
               <p>
                 A 10PILA te recebe de volta aqui para continuar o fluxo sem cara de saida seca do site. Pedido, pagamento e proximos passos ficam no mesmo trilho.
               </p>

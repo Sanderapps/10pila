@@ -509,13 +509,22 @@ export function CheckoutForm({
       ) : null}
 
       {reviewing ? (
-        <section className="grid gap-4 rounded-lg border border-[var(--line)] bg-[rgba(9,12,16,0.72)] p-4">
+        <section className="checkout-review-shell grid gap-4 rounded-lg border border-[var(--line)] bg-[rgba(9,12,16,0.72)] p-4">
+          <div className="checkout-review-backdrop" />
           <div className="grid gap-1">
             <p className="text-sm font-bold text-[var(--accent)]">Revisao final</p>
             <h3 className="text-xl font-black">Tudo certo antes do PagBank</h3>
             <p className="text-sm text-[var(--muted)]">
               Voce sera redirecionado para o ambiente seguro do PagBank para concluir o pagamento.
             </p>
+          </div>
+
+          <div className="grid gap-2 md:grid-cols-3">
+            <div className="checkout-step chip bg-black/40 text-[var(--accent)]">1. carrinho fechado</div>
+            <div className="checkout-step chip border-[var(--accent-2)] bg-black/40 text-[var(--accent-2)]">
+              2. endereco revisado
+            </div>
+            <div className="checkout-step chip bg-black/40">3. pagamento seguro no PagBank</div>
           </div>
 
           <div className="grid gap-3 md:grid-cols-[1fr_280px]">
@@ -548,6 +557,10 @@ export function CheckoutForm({
             <aside className="rounded-lg border border-[var(--line)] bg-black/25 p-4">
               <p className="text-sm font-bold">Resumo visual</p>
               <div className="mt-3 grid gap-2 text-sm">
+                <p className="flex justify-between text-[var(--muted)]">
+                  <span>Itens</span>
+                  <strong className="text-[var(--foreground)]">{items.length}</strong>
+                </p>
                 <p className="flex justify-between">
                   <span>Subtotal</span>
                   <strong>{subtotal}</strong>
@@ -566,6 +579,13 @@ export function CheckoutForm({
                   <span>Total</span>
                   <span>{total}</span>
                 </p>
+              </div>
+              <div className="mt-4 grid gap-2">
+                <span className="chip w-fit border-[var(--accent)] bg-black/50 text-[var(--accent)]">
+                  pagamento seguro
+                </span>
+                <span className="chip w-fit bg-black/50">checkout hospedado</span>
+                <span className="chip w-fit bg-black/50">pedido volta para sua conta</span>
               </div>
               <div className="mt-4 rounded-lg border border-[var(--line)] bg-[rgba(10,15,20,0.85)] p-3 text-sm text-[var(--muted)]">
                 Pagamento seguro via PagBank hospedado. O fechamento acontece fora da 10PILA, mas o pedido segue ligado a esta conta.
