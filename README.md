@@ -176,7 +176,21 @@ O backend do chat combina:
 
 O admin escolhe no painel qual provider sera o principal e quais serao os fallbacks. Hoje o backend suporta Groq, Gemini e OpenRouter free. Se todos falharem, a rota cai em fallback deterministico. Nesse modo o chat continua respondendo com dados reais do banco, sem inventar preco, estoque, promocao, prazo ou status.
 
-Quando cita produto, a resposta traz nome, preco, estoque e link clicavel. A UI tambem renderiza cards com botoes "Ver produto" e "Adicionar 1". O chat tenta manter respostas curtas, mais comerciais e menos genericas, com quick actions ligadas a conversao.
+No painel admin, o PilaBot tambem aceita modos de comportamento:
+
+- `vendas`: recomenda mais quando houver contexto.
+- `suporte`: prioriza clareza e ajuda pratica.
+- `equilibrado`: mistura ajuda e sugestao com menos pressao.
+- `amigavel`: conversa mais leve, nerd e natural, sem virar personagem.
+
+Quando cita produto, a resposta traz nome, preco, estoque e link clicavel. A UI tambem renderiza cards com botoes "Ver produto" e "Adicionar 1". O chat tenta manter respostas curtas, humanas e contextuais, com quick actions ligadas a conversao sem parecer catalogo.
+
+Identidade do bot na interface:
+
+- nome: `PilaBot`
+- subtitulo: `vendedor tech`
+- status visivel: `assistente 10PILA`
+- loading: `Consultando a loja...`
 
 Variaveis:
 

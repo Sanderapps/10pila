@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         sessionId: session.id,
-        reply: "O chat tropeçou aqui. Tenta de novo que eu volto pro balcão.",
+        reply: "Deu uma escorregada aqui do meu lado. Tenta de novo em instantes que eu volto pro balcão.",
         products: [],
         quickActions: ["ver promocoes", "mais barato"],
         source: "fallback",

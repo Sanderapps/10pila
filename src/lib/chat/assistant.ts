@@ -112,6 +112,30 @@ function wantsOrders(message: string) {
   return /pedido|entrega|status|rastrei|compra/.test(message.toLowerCase());
 }
 
+function isGreeting(message: string) {
+  return /^(oi+|opa+|ola+|e ai|iae|fala+|salve|bom dia|boa tarde|boa noite)[!. ]*$/i.test(
+    message.trim()
+  );
+}
+
+function isJustBrowsing(message: string) {
+  return /to so olhando|t[oô] s[oó] olhando|so olhando|s[oó] dando uma olhada|s[oó] de boa/i.test(
+    message.toLowerCase()
+  );
+}
+
+function wantsRecommendation(message: string) {
+  return /me recomenda|recomenda algo|o que voce indica|me indica|sugere algo/.test(
+    message.toLowerCase()
+  );
+}
+
+function wantsChat(message: string) {
+  return /kkk|haha|hehe|so pra trocar ideia|so conversar|trocar ideia|brincando/.test(
+    message.toLowerCase()
+  );
+}
+
 function wantsPromos(message: string) {
   return /promo|promoc|desconto|oferta/.test(message.toLowerCase());
 }
@@ -166,6 +190,26 @@ function quickActionsFor(message: string, hasProducts: boolean) {
   }
 
   return Array.from(actions).slice(0, 4);
+}
+
+function conversationalReply(message: string) {
+  if (isGreeting(message)) {
+    return "Opa, PilaBot na area. Ta caçando achado, montando setup ou so dando um role tech?";
+  }
+
+  if (isJustBrowsing(message)) {
+    return "Justo. Fase de namoro com o carrinho. Se quiser, eu posso te mostrar so os achados mais honestos da loja.";
+  }
+
+  if (wantsChat(message)) {
+    return "Fechou, da pra trocar uma ideia sem transformar isso em pitch. Se pintar vontade de garimpar algo pro setup, eu entro no modo util na hora.";
+  }
+
+  if (wantsRecommendation(message)) {
+    return "Posso sim, mas me da teu estilo: tu quer custo-beneficio honesto, visual de setup ou utilidade bruta?";
+  }
+
+  return null;
 }
 
 async function getCurrentProduct(currentProductSlug?: string) {
@@ -303,11 +347,23 @@ function fallbackReply(
         ? "missing_provider"
         : "deterministic";
 
+  const smallTalk = conversationalReply(message);
+
+  if (smallTalk) {
+    return {
+      reply: smallTalk,
+      products: [],
+      quickActions: ["ver promocoes", "mais barato", "comparar"],
+      source: "fallback",
+      fallbackReason
+    };
+  }
+
   if (wantsOrders(message) && orderData) {
     return {
       reply: orderData.reply,
       products: cards,
-      quickActions: ["ver promocoes", "ir para o carrinho"],
+      quickActions: ["acompanhar pedido", "ver promocoes", "ir para o carrinho"],
       source: "fallback",
       fallbackReason: orderData.context.includes("nao esta logado") ? "auth_required" : "deterministic"
     };
@@ -316,7 +372,7 @@ function fallbackReply(
   if (products.length === 0) {
     return {
       reply:
-        "Nao achei produto ativo batendo com isso agora. Me manda categoria, marca ou o nome do item que eu refino.",
+        "Nao achei um item batendo certinho com isso agora. Me manda o nome, a categoria ou o tipo de produto que eu refino sem chutar.",
       products: [],
       quickActions: ["ver promocoes", "mais barato"],
       source: "fallback",
@@ -329,9 +385,20 @@ function fallbackReply(
     return {
       reply: `Link certo: [${first.name}](${productUrl(first.slug)})\n${first.name} | ${centsToBRL(
         first.promotionalCents ?? first.priceCents
-      )} | ${first.stock} em estoque.`,
+      )} | ${first.stock} em estoque.\nSe quiser, eu comparo com outro sem enrolacao.`,
       products: cards,
       quickActions: quickActionsFor(message, cards.length > 0),
+      source: "fallback",
+      fallbackReason
+    };
+  }
+
+  if (wantsRecommendation(message) && products.length > 0 && searchTerms(message).length <= 1) {
+    return {
+      reply:
+        "Posso recomendar, mas antes eu calibro isso melhor contigo: tu quer algo mais clean, mais setup nervoso ou mais custo-beneficio?",
+      products: cards.slice(0, 2),
+      quickActions: ["mais barato", "comparar", "ver detalhes"],
       source: "fallback",
       fallbackReason
     };
@@ -345,7 +412,7 @@ function fallbackReply(
   });
 
   return {
-      reply: `${wantsCheaper(message) ? "Opcoes mais em conta que achei:" : "Achei isso no estoque real:"}\n${lines.join("\n")}`,
+      reply: `${wantsCheaper(message) ? "Puxei as opcoes mais em conta que achei no estoque real:" : "Achei isso aqui no estoque real da loja:"}\n${lines.join("\n")}`,
       products: cards,
       quickActions: quickActionsFor(message, cards.length > 0),
       source: "fallback",
@@ -371,8 +438,8 @@ export async function answerFromStoreData({
     return {
       reply:
         orderData?.reply ??
-        "Pra falar de pedido eu preciso que voce esteja logado. Sem furar a fila da seguranca.",
-      products: cards,
+        "Pra falar de pedido eu preciso que voce esteja logado. Seguranca primeiro, sem furar fila.",
+      products: [],
       quickActions: ["ver promocoes", "mais barato", "ir para o carrinho"],
       source: "fallback",
       fallbackReason: "auth_required"

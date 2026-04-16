@@ -7,12 +7,14 @@ type AssistantMascotProps = {
   compact?: boolean;
   onClick?: () => void;
   thinking?: boolean;
+  open?: boolean;
 };
 
 export function AssistantMascot({
   compact = false,
   onClick,
-  thinking = false
+  thinking = false,
+  open = false
 }: AssistantMascotProps) {
   const id = useId();
   const shellId = `${id}-shell`;
@@ -34,7 +36,7 @@ export function AssistantMascot({
               rotate: [0, -1.6, 0, 1.2, 0]
             }
       }
-      aria-label={onClick ? "Abrir chat da IA 10PILA" : undefined}
+      aria-label={onClick ? (open ? "Fechar chat da IA 10PILA" : "Abrir chat da IA 10PILA") : undefined}
       className={
         onClick
           ? "group relative block h-24 w-24 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-2)]"

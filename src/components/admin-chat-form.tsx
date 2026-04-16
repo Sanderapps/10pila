@@ -25,7 +25,8 @@ const PROVIDERS = [
 const MODES = [
   { value: "SALES", label: "vendas" },
   { value: "SUPPORT", label: "suporte" },
-  { value: "BALANCED", label: "equilibrado" }
+  { value: "BALANCED", label: "equilibrado" },
+  { value: "AMIGAVEL", label: "amigavel" }
 ] as const;
 
 export function AssistantConfigForm({ initialConfig }: { initialConfig: ConfigValues }) {
@@ -100,7 +101,7 @@ export function AssistantConfigForm({ initialConfig }: { initialConfig: ConfigVa
         <p className="eyebrow">PilaBot</p>
         <h2 className="text-2xl font-bold">Configuracao do assistente</h2>
         <p className="text-sm text-[var(--muted)]">
-          Escolha o provedor principal, a fila de fallback e o jeito de responder do vendedor tech.
+          Escolha o provedor principal, a fila de fallback e o jeito de responder do PilaBot sem expor tecnologia ao cliente final.
         </p>
       </div>
 

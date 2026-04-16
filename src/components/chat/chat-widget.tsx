@@ -103,13 +103,14 @@ function MessageContent({ content }: { content: string }) {
 export function ChatWidget() {
   const router = useRouter();
   const pathname = usePathname() ?? "/";
+  const isPurchasePage = pathname.startsWith("/carrinho") || pathname.startsWith("/checkout");
   const [open, setOpen] = useState(false);
   const [hint, setHint] = useState("");
   const [nudgeTick, setNudgeTick] = useState(0);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Sou o PilaBot. Me chama pra comparar produto, achar oferta ou puxar seu pedido."
+      content: "Opa, eu sou o PilaBot. Se quiser, eu comparo produto, acho um link certo ou te ajudo a garimpar um upgrade honesto."
     }
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -120,9 +121,13 @@ export function ChatWidget() {
   const [loading, setLoading] = useState(false);
   const [cartLoadingId, setCartLoadingId] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [composerFocused, setComposerFocused] = useState(false);
+  const [isLandscapeMobile, setIsLandscapeMobile] = useState(false);
   const nextHintAtRef = useRef(0);
   const lastScrollAtRef = useRef(0);
   const endRef = useRef<HTMLDivElement | null>(null);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const shouldStickToBottomRef = useRef(true);
 
   const context = useMemo(() => {
@@ -192,6 +197,41 @@ export function ChatWidget() {
   }, []);
 
   useEffect(() => {
+    const updateViewportState = () => {
+      if (typeof window === "undefined") {
+        return;
+      }
+
+      const viewport = window.visualViewport;
+      const width = viewport?.width ?? window.innerWidth;
+      const height = viewport?.height ?? window.innerHeight;
+      const keyboardLikelyOpen = Boolean(viewport && window.innerHeight - viewport.height > 140);
+      setIsKeyboardOpen(keyboardLikelyOpen);
+      setIsLandscapeMobile(width <= 940 && width > height);
+    };
+
+    updateViewportState();
+    window.addEventListener("resize", updateViewportState);
+    window.visualViewport?.addEventListener("resize", updateViewportState);
+
+    return () => {
+      window.removeEventListener("resize", updateViewportState);
+      window.visualViewport?.removeEventListener("resize", updateViewportState);
+    };
+  }, []);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  useEffect(() => {
     if (open) {
       return;
     }
@@ -214,12 +254,17 @@ export function ChatWidget() {
   }, [context.hints, open]);
 
   function scrollToBottom(force = false) {
-    if (!endRef.current) {
+    const scroller = scrollerRef.current;
+
+    if (!scroller) {
       return;
     }
 
     if (force || shouldStickToBottomRef.current) {
-      endRef.current.scrollIntoView({ block: "end", behavior: force ? "auto" : "smooth" });
+      scroller.scrollTo({
+        top: scroller.scrollHeight,
+        behavior: force ? "auto" : "smooth"
+      });
     }
   }
 
@@ -321,18 +366,18 @@ export function ChatWidget() {
     const source = data.source === "ai" ? "ai" : "fallback";
     const note =
       !response.ok
-        ? "erro do chat"
+        ? "chat com instabilidade"
         : source === "ai"
           ? "assistente 10PILA"
           : fallbackReason === "missing_provider"
-            ? "modo seguro sem IA ativa"
+            ? "base da loja"
             : fallbackReason === "provider_error"
-              ? "modo seguro por falha da IA"
+              ? "resposta segura da loja"
               : fallbackReason === "auth_required"
                 ? "login necessario"
                 : fallbackReason === "no_product_match"
                   ? "produto nao encontrado"
-                  : "modo seguro";
+                  : "resposta da loja";
 
     setMessages((current) => [
       ...current,
@@ -378,6 +423,15 @@ export function ChatWidget() {
     setNextHintCooldown(POST_CLOSE_COOLDOWN_MS);
   }
 
+  function toggleChat() {
+    if (open) {
+      closeChat();
+      return;
+    }
+
+    openChat();
+  }
+
   function onQuickAction(action: string) {
     const lastAssistantWithProducts = [...messages]
       .reverse()
@@ -411,13 +465,35 @@ export function ChatWidget() {
   return (
     <div
       className="pointer-events-none fixed right-0 z-50 grid justify-items-end gap-3"
-      style={{ bottom: "max(16px, calc(env(safe-area-inset-bottom) + 12px))" }}
+      style={{
+        bottom:
+          isKeyboardOpen || composerFocused
+            ? "max(8px, calc(env(safe-area-inset-bottom) + 4px))"
+            : isPurchasePage
+              ? "max(74px, calc(env(safe-area-inset-bottom) + 58px))"
+              : "max(16px, calc(env(safe-area-inset-bottom) + 12px))"
+      }}
     >
       <AnimatePresence>
         {open ? (
+          <>
+          <motion.button
+            animate={{ opacity: 1 }}
+            aria-label="Fechar chat clicando fora"
+            className="fixed inset-0 pointer-events-auto bg-transparent"
+            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            onClick={closeChat}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            type="button"
+          />
           <motion.section
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="chat-shell pointer-events-auto mr-4 grid h-[min(560px,calc(100vh-110px))] w-[min(410px,calc(100vw-24px))] grid-rows-[auto_1fr_auto] overflow-hidden rounded-[8px] border border-[var(--line)] bg-[rgba(10,12,15,0.95)] shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl max-sm:mr-2 max-sm:h-[min(72vh,calc(100vh-92px))] max-sm:w-[min(390px,calc(100vw-12px))]"
+            className={`chat-shell pointer-events-auto mr-4 grid grid-rows-[auto_1fr_auto] overflow-hidden rounded-[8px] border border-[var(--line)] bg-[rgba(10,12,15,0.95)] shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl ${
+              isPurchasePage
+                ? "h-[min(480px,calc(100vh-190px))] w-[min(390px,calc(100vw-18px))]"
+                : "h-[min(560px,calc(100vh-110px))] w-[min(410px,calc(100vw-24px))]"
+            } ${isLandscapeMobile ? "max-h-[calc(100vh-18px)] w-[min(420px,calc(100vw-12px))] mr-1" : "max-sm:mr-2 max-sm:h-[min(72vh,calc(100vh-92px))] max-sm:w-[min(390px,calc(100vw-12px))]"}`}
             exit={{ opacity: 0, y: 14, scale: 0.98 }}
             initial={{ opacity: 0, y: 14, scale: 0.98 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
@@ -438,7 +514,7 @@ export function ChatWidget() {
                   <div className="mt-1 flex flex-wrap items-center gap-2">
                     <span className="chip bg-black/40 text-[var(--accent)]">
                       <BoltIcon className="size-3.5" />
-                      assistente oficial
+                      assistente 10PILA
                     </span>
                   </div>
                 </div>
@@ -449,6 +525,7 @@ export function ChatWidget() {
             </div>
 
             <div
+              ref={scrollerRef}
               className="grid content-start gap-3 overflow-y-auto p-4 text-sm"
               onScroll={(event) => {
                 const element = event.currentTarget;
@@ -469,7 +546,7 @@ export function ChatWidget() {
                       assistente 10PILA
                     </p>
                     <p className="text-sm text-[var(--muted)]">
-                      Me chama para comparar produto, achar o mais barato, puxar link certo ou fechar o carrinho sem enrolacao.
+                      Tamo on. Posso te ajudar a escolher melhor, comparar sem drama, achar link certo ou salvar teu setup do custo-beneficio duvidoso.
                     </p>
                   </div>
                 </div>
@@ -568,8 +645,10 @@ export function ChatWidget() {
               <form className="flex gap-2" onSubmit={onSubmit}>
                 <input
                   className="input"
+                  onBlur={() => setComposerFocused(false)}
+                  onFocus={() => setComposerFocused(true)}
                   name="message"
-                  placeholder="Fala com o PilaBot"
+                  placeholder="Manda a boa"
                 />
                 <button className="btn shrink-0" disabled={loading} type="submit">
                   Enviar
@@ -577,10 +656,15 @@ export function ChatWidget() {
               </form>
             </div>
           </motion.section>
+          </>
         ) : null}
       </AnimatePresence>
 
-      <div className="pointer-events-auto relative mr-1 h-28 w-[118px] overflow-hidden max-sm:mr-0 max-sm:w-[108px]">
+      <div
+        className={`pointer-events-auto relative overflow-hidden ${
+          isPurchasePage && !open ? "mr-0 h-20 w-[82px]" : "mr-1 h-28 w-[118px] max-sm:mr-0 max-sm:w-[108px]"
+        } ${isKeyboardOpen || composerFocused ? "opacity-0 pointer-events-none" : ""}`}
+      >
         <AnimatePresence>
           {hint ? (
             <motion.button
@@ -594,7 +678,7 @@ export function ChatWidget() {
             >
               <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-normal text-[var(--accent)]">
                 <BoltIcon className="size-3" />
-                PilaBot online
+                assistente 10PILA
               </span>
               {hint}
             </motion.button>
@@ -613,8 +697,8 @@ export function ChatWidget() {
         >
           <div className="relative">
             <div className="absolute inset-x-10 bottom-3 h-8 rounded-full bg-[rgba(61,245,165,0.12)] blur-2xl" />
-            <div className="translate-x-1 translate-y-1">
-              <AssistantMascot onClick={openChat} />
+            <div className={`${isPurchasePage && !open ? "translate-x-5 translate-y-6 scale-[0.72]" : "translate-x-1 translate-y-1"}`}>
+              <AssistantMascot onClick={toggleChat} open={open} />
             </div>
           </div>
         </motion.div>

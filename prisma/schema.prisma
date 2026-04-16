@@ -47,6 +47,7 @@ enum AIAssistantMode {
   SALES
   SUPPORT
   BALANCED
+  AMIGAVEL
 }
 
 enum CouponType {

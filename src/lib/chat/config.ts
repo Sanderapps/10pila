@@ -72,6 +72,10 @@ export function modelForProvider(provider: AIProvider, config: StoredChatConfig)
 }
 
 export function assistantModeLabel(mode: AIAssistantMode) {
+  if (mode === AIAssistantMode.AMIGAVEL) {
+    return "amigavel";
+  }
+
   if (mode === AIAssistantMode.SUPPORT) {
     return "suporte";
   }
