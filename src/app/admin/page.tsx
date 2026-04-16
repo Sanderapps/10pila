@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { AssistantConfigForm } from "@/components/admin-chat-form";
 import { AdminConsoleIllustration } from "@/components/brand-illustrations";
 import { BrandLogo } from "@/components/brand-logo";
 import { BoltIcon, CartIcon, ShieldIcon } from "@/components/icons";
+import { getChatAssistantConfig } from "@/lib/chat/config";
 import { requireAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
@@ -10,14 +12,15 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   await requireAdmin();
-  const [products, orders, lowStock] = await Promise.all([
+  const [products, orders, lowStock, assistantConfig] = await Promise.all([
     prisma.product.groupBy({ by: ["active"], _count: true }),
     prisma.order.count(),
     prisma.product.findMany({
       where: { stock: { lte: 5 } },
       orderBy: { stock: "asc" },
       take: 5
-    })
+    }),
+    getChatAssistantConfig()
   ]);
   const revenue = await prisma.order.aggregate({
     where: { status: { in: ["PAID", "PROCESSING", "SHIPPED", "DELIVERED"] } },
@@ -91,6 +94,20 @@ export default async function AdminPage() {
           </div>
         )}
       </section>
+
+      <AssistantConfigForm
+        initialConfig={{
+          primaryProvider: assistantConfig.primaryProvider,
+          fallbackProvider1: assistantConfig.fallbackProvider1,
+          fallbackProvider2: assistantConfig.fallbackProvider2,
+          groqModel: assistantConfig.groqModel,
+          geminiModel: assistantConfig.geminiModel,
+          openRouterModel: assistantConfig.openRouterModel,
+          temperature: assistantConfig.temperature,
+          maxOutputTokens: assistantConfig.maxOutputTokens,
+          assistantMode: assistantConfig.assistantMode
+        }}
+      />
     </main>
   );
 }

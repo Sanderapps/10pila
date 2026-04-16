@@ -37,6 +37,18 @@ enum InventoryMovementType {
   CANCELATION
 }
 
+enum AIProvider {
+  GROQ
+  GEMINI
+  OPENROUTER
+}
+
+enum AIAssistantMode {
+  SALES
+  SUPPORT
+  BALANCED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -226,4 +238,20 @@ model ChatMessage {
   createdAt DateTime @default(now())
 
   session ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model ChatAssistantConfig {
+  id               String           @id @default(cuid())
+  singletonKey     String           @unique @default("default")
+  primaryProvider  AIProvider       @default(GEMINI)
+  fallbackProvider1 AIProvider?
+  fallbackProvider2 AIProvider?
+  groqModel        String?
+  geminiModel      String?
+  openRouterModel  String?
+  temperature      Float            @default(0.35)
+  maxOutputTokens  Int              @default(360)
+  assistantMode    AIAssistantMode  @default(SALES)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 }

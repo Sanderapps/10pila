@@ -1,7 +1,8 @@
 import type { Product } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
-import { generateGeminiReply, type GeminiReplyStatus } from "./gemini";
+import { getChatAssistantConfig } from "./config";
+import { generateAssistantReply, type AIReplyStatus } from "./providers";
 
 export type ChatProductCard = {
   id: string;
@@ -22,9 +23,9 @@ export type ChatAnswer = {
   reply: string;
   products: ChatProductCard[];
   quickActions: string[];
-  source: "gemini" | "fallback";
+  source: "ai" | "fallback";
   fallbackReason?:
-    | "missing_api_key"
+    | "missing_provider"
     | "provider_error"
     | "auth_required"
     | "no_product_match"
@@ -293,13 +294,13 @@ function fallbackReply(
   products: Product[],
   cards: ChatProductCard[],
   orderData: Awaited<ReturnType<typeof orderContext>> | null,
-  geminiStatus: GeminiReplyStatus
+  providerStatus: AIReplyStatus
 ): ChatAnswer {
   const fallbackReason: ChatAnswer["fallbackReason"] =
-    geminiStatus === "provider_error"
+    providerStatus === "provider_error"
       ? "provider_error"
-      : geminiStatus === "missing_api_key"
-        ? "missing_api_key"
+      : providerStatus === "missing_provider"
+        ? "missing_provider"
         : "deterministic";
 
   if (wantsOrders(message) && orderData) {
@@ -386,22 +387,40 @@ export async function answerFromStoreData({
     `Historico recente:\n${buildHistory(history)}`
   ].join("\n\n");
 
-  const gemini = await generateGeminiReply({
+  const config = await getChatAssistantConfig();
+  const ai = await generateAssistantReply({
+    config: {
+      primaryProvider: config.primaryProvider,
+      fallbackProvider1: config.fallbackProvider1,
+      fallbackProvider2: config.fallbackProvider2,
+      groqModel: config.groqModel,
+      geminiModel: config.geminiModel,
+      openRouterModel: config.openRouterModel,
+      temperature: config.temperature,
+      maxOutputTokens: config.maxOutputTokens,
+      assistantMode: config.assistantMode
+    },
     message,
     context,
-    products: cards,
     pathname,
-    currentProduct: currentProduct ? cardFromProduct(currentProduct) : null
+    productFocus: currentProduct ? productSummary(currentProduct) : undefined,
+    cardsSummary:
+      cards.length > 0
+        ? cards
+            .slice(0, 4)
+            .map((product) => `${product.name} | ${product.price} | estoque ${product.stock} | ${product.url}`)
+            .join("\n")
+        : "- nenhum produto relevante encontrado"
   });
 
-  if (gemini.reply) {
+  if (ai.reply) {
     return {
-      reply: gemini.reply,
+      reply: ai.reply,
       products: cards,
       quickActions: quickActionsFor(message, cards.length > 0),
-      source: "gemini"
+      source: "ai"
     };
   }
 
-  return fallbackReply(message, products, cards, orderData, gemini.status);
+  return fallbackReply(message, products, cards, orderData, ai.status);
 }

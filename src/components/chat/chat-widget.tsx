@@ -21,7 +21,7 @@ type Message = {
   role: "user" | "assistant";
   content: string;
   products?: ChatProductCard[];
-  source?: "gemini" | "fallback";
+  source?: "ai" | "fallback";
   fallbackReason?: string;
   note?: string;
 };
@@ -38,7 +38,9 @@ function currentProductSlug(pathname: string) {
 }
 
 function renderInlineContent(line: string) {
-  const parts = line.split(/(\[[^\]]+\]\((https?:\/\/[^)]+)\)|https?:\/\/[^\s]+)/g).filter(Boolean);
+  const parts = line
+    .split(/(\[[^\]]+\]\((?:https?:\/\/[^)]+)\)|https?:\/\/[^\s]+)/g)
+    .filter(Boolean);
 
   return parts.map((part, partIndex) => {
     const markdown = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
@@ -106,8 +108,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content:
-        "Fala, humano do setup. Pergunta produto, promo ou pedido que eu consulto na fonte."
+      content: "Sou o PilaBot. Me chama pra comparar produto, achar oferta ou puxar seu pedido."
     }
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -316,14 +317,14 @@ export function ChatWidget() {
     }
 
     const fallbackReason = typeof data.fallbackReason === "string" ? data.fallbackReason : undefined;
-    const source = data.source === "gemini" ? "gemini" : "fallback";
+    const source = data.source === "ai" ? "ai" : "fallback";
     const note =
       !response.ok
         ? "erro do chat"
-        : source === "gemini"
-          ? "Gemini ativo"
-          : fallbackReason === "missing_api_key"
-            ? "modo seguro sem Gemini"
+        : source === "ai"
+          ? "assistente 10PILA"
+          : fallbackReason === "missing_provider"
+            ? "modo seguro sem IA ativa"
             : fallbackReason === "provider_error"
               ? "modo seguro por falha da IA"
               : fallbackReason === "auth_required"
@@ -426,13 +427,18 @@ export function ChatWidget() {
                   <AssistantMascot compact thinking={loading} />
                 </div>
                 <div>
-                  <BrandLogo variant="compact" className="scale-[0.88] origin-left" />
+                  <div className="flex items-center gap-2">
+                    <BrandLogo variant="symbol" className="w-8" />
+                    <div>
+                      <p className="text-sm font-black">PilaBot</p>
+                      <p className="text-xs text-[var(--muted)]">vendedor tech</p>
+                    </div>
+                  </div>
                   <div className="mt-1 flex flex-wrap items-center gap-2">
                     <span className="chip bg-black/40 text-[var(--accent)]">
                       <BoltIcon className="size-3.5" />
-                      vendedor tech
+                      assistente 10PILA
                     </span>
-                    <span className="text-xs text-[var(--muted)]">banco na mao</span>
                   </div>
                 </div>
               </div>
@@ -511,7 +517,7 @@ export function ChatWidget() {
               {loading ? (
                 <div className="chat-loading-row">
                   <span className="chat-loading-dot" />
-                  <span>Consultando Gemini + banco...</span>
+                  <span>Consultando a loja...</span>
                 </div>
               ) : null}
               <div ref={endRef} />
@@ -547,7 +553,7 @@ export function ChatWidget() {
                 <input
                   className="input"
                   name="message"
-                  placeholder="Produto, promo ou pedido"
+                  placeholder="Fala com o PilaBot"
                 />
                 <button className="btn shrink-0" disabled={loading} type="submit">
                   Enviar
@@ -558,7 +564,7 @@ export function ChatWidget() {
         ) : null}
       </AnimatePresence>
 
-      <div className="pointer-events-auto relative mr-0 h-28 w-[112px] overflow-hidden max-sm:w-[102px]">
+      <div className="pointer-events-auto relative mr-1 h-28 w-[118px] overflow-hidden max-sm:mr-0 max-sm:w-[108px]">
         <AnimatePresence>
           {hint ? (
             <motion.button
@@ -585,7 +591,7 @@ export function ChatWidget() {
             y: [0, -1, 0],
             rotate: [0, 0.8, 0, -0.8, 0]
           }}
-          className="absolute bottom-[-4px] right-[-10px] max-sm:right-[-12px]"
+          className="absolute bottom-[-2px] right-[-2px] max-sm:right-[-4px]"
           key={nudgeTick}
           transition={{ duration: 0.72, ease: "easeInOut" }}
         >

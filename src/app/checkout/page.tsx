@@ -34,6 +34,16 @@ export default async function CheckoutPage({
     return total + price * item.quantity;
   }, 0);
   const freight = freightCents();
+  const paymentStatusLabel =
+    recentOrder?.payment?.status === "APPROVED"
+      ? "Pagamento aprovado"
+      : recentOrder?.payment?.status === "REJECTED"
+        ? "Pagamento falhou"
+        : recentOrder?.payment?.status === "CANCELED"
+          ? "Pagamento cancelado"
+          : recentOrder?.payment?.status === "PENDING"
+            ? "Pagamento aguardando confirmacao"
+            : "Pedido em processamento";
 
   return (
     <main className="container grid gap-8 py-10">
@@ -44,20 +54,50 @@ export default async function CheckoutPage({
 
       {recentOrder ? (
         <section className="panel grid gap-3 p-5">
-          <h2 className="text-2xl font-bold">Pedido criado</h2>
-          <p className="text-[var(--muted)]">
-            Pedido {recentOrder.id.slice(0, 8)} esta com status {recentOrder.status}.
-            {status ? ` Retorno do pagamento: ${status}.` : ""}
-          </p>
-          {recentOrder.payment?.checkoutUrl ? (
-            <Link className="btn w-fit" href={recentOrder.payment.checkoutUrl}>
-              Voltar ao PagBank
-            </Link>
-          ) : (
-            <p className="text-sm text-[var(--muted)]">
-              Checkout PagBank estrutural salvo. O redirecionamento fica disponivel quando o PagBank
-              retornar uma URL de pagamento.
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-bold">Retorno do pagamento</h2>
+              <p className="text-[var(--muted)]">
+                Pedido {recentOrder.id.slice(0, 8)} | {paymentStatusLabel}.
+                {status ? ` Evento de retorno: ${status}.` : ""}
+              </p>
+            </div>
+            <span className="chip text-[var(--accent)]">{recentOrder.status}</span>
+          </div>
+          <div className="grid gap-2 text-sm text-[var(--muted)]">
+            <p>
+              Total do pedido: <strong className="text-[var(--foreground)]">{centsToBRL(recentOrder.totalCents)}</strong>
             </p>
+            <p>
+              A 10PILA recebe voce de volta aqui para acompanhar o que aconteceu e retomar o fluxo sem parecer saida seca do site.
+            </p>
+          </div>
+          {recentOrder.payment?.checkoutUrl ? (
+            <div className="flex flex-wrap gap-3">
+              <Link className="btn w-fit" href={recentOrder.payment.checkoutUrl}>
+                Voltar ao PagBank
+              </Link>
+              <Link className="btn secondary w-fit" href={`/pedidos/${recentOrder.id}`}>
+                Acompanhar pedido
+              </Link>
+              <Link className="btn secondary w-fit" href="/produtos">
+                Continuar comprando
+              </Link>
+            </div>
+          ) : (
+            <div className="grid gap-3">
+              <p className="text-sm text-[var(--muted)]">
+                Checkout PagBank estrutural salvo. O link real de pagamento aparece aqui quando o PagBank devolver a URL do checkout.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link className="btn secondary w-fit" href={`/pedidos/${recentOrder.id}`}>
+                  Acompanhar pedido
+                </Link>
+                <Link className="btn secondary w-fit" href="/produtos">
+                  Continuar comprando
+                </Link>
+              </div>
+            </div>
           )}
         </section>
       ) : null}
@@ -87,6 +127,16 @@ export default async function CheckoutPage({
               city: address.city,
               state: address.state
             }))}
+            items={items.map((item) => ({
+              id: item.id,
+              name: item.product.name,
+              quantity: item.quantity,
+              unitPrice: centsToBRL(item.product.promotionalCents ?? item.product.priceCents),
+              totalPrice: centsToBRL((item.product.promotionalCents ?? item.product.priceCents) * item.quantity)
+            }))}
+            subtotal={centsToBRL(subtotal)}
+            freight={centsToBRL(freight)}
+            total={centsToBRL(subtotal + freight)}
           />
           <aside className="panel grid h-fit gap-3 p-5">
             <p className="text-sm text-[var(--muted)]">Resumo</p>

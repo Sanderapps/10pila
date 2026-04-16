@@ -203,6 +203,10 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     orderId: order.id,
-    checkoutUrl: checkout.checkoutUrl
+    checkoutUrl: checkout.checkoutUrl,
+    checkoutMessage:
+      checkout.raw && typeof checkout.raw === "object" && "message" in checkout.raw
+        ? String(checkout.raw.message)
+        : undefined
   });
 }

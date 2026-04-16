@@ -1,6 +1,6 @@
 # 10PILA
 
-E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind, Prisma, PostgreSQL, Auth.js/NextAuth, PagBank Checkout sandbox e chat IA com Gemini usando dados reais da loja.
+E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind, Prisma, PostgreSQL, Auth.js/NextAuth, PagBank Checkout sandbox e chat IA multi-provider usando dados reais da loja.
 
 ## Stack
 
@@ -9,7 +9,7 @@ E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind,
 - Prisma + PostgreSQL
 - NextAuth com email e senha, Prisma Adapter e sessoes JWT
 - PagBank Checkout hospedado
-- Gemini no backend para o chat, com fallback deterministico
+- Groq, Gemini ou OpenRouter no backend do chat, com fallback deterministico
 - Railway para deploy
 
 ## Setup local
@@ -45,8 +45,12 @@ Variaveis opcionais no MVP:
 - `PAGBANK_ACCESS_TOKEN`: cria checkout real do PagBank quando preenchido.
 - `PAGBANK_WEBHOOK_SECRET`: segredo simples para validar webhook estrutural.
 - `PAGBANK_API_URL`: base da API PagBank, por padrao `https://sandbox.api.pagseguro.com`.
-- `GEMINI_API_KEY`: ativa resposta generativa do chat no backend.
+- `GROQ_API_KEY`: ativa Groq no backend do chat.
+- `GROQ_MODEL`: modelo Groq padrao do assistente.
+- `GEMINI_API_KEY`: ativa Gemini no backend do chat.
 - `GEMINI_MODEL`: modelo Gemini usado pelo chat, por padrao `gemini-3.1-flash-lite-preview`.
+- `OPENROUTER_API_KEY`: ativa OpenRouter no backend do chat.
+- `OPENROUTER_MODEL`: modelo OpenRouter usado pelo chat.
 
 ## Variaveis de ambiente usadas hoje
 
@@ -66,10 +70,14 @@ Obrigatoria quando voce quiser validar assinatura do webhook PagBank:
 
 - `PAGBANK_WEBHOOK_SECRET`: segredo para validar o webhook recebido em `/api/payments/pagbank/webhook`.
 
-Obrigatorias quando voce ativar Gemini:
+Obrigatorias quando voce ativar um ou mais provedores de IA:
 
+- `GROQ_API_KEY`: chave do Groq usada no backend.
+- `GROQ_MODEL`: modelo Groq.
 - `GEMINI_API_KEY`: chave do Gemini usada no backend.
 - `GEMINI_MODEL`: modelo Gemini; se faltar, o codigo cai no default `gemini-3.1-flash-lite-preview`.
+- `OPENROUTER_API_KEY`: chave do OpenRouter usada no backend.
+- `OPENROUTER_MODEL`: modelo OpenRouter.
 
 Obrigatorias quando voce ativar Google login:
 
@@ -143,7 +151,7 @@ PAGBANK_API_URL=https://sandbox.api.pagseguro.com
 PAGBANK_ACCESS_TOKEN=seu-token-sandbox
 ```
 
-Se `PAGBANK_ACCESS_TOKEN` estiver configurado com um token sandbox liberado, a API cria um Checkout hospedado no PagBank e retorna a URL de redirecionamento. Sem token, ou se o PagBank recusar a criacao do checkout, o fluxo fica em modo estrutural: pedido salvo, pagamento pendente e aviso claro na tela.
+Se `PAGBANK_ACCESS_TOKEN` estiver configurado com um token sandbox liberado, a API cria um Checkout hospedado no PagBank e retorna a URL de redirecionamento. Antes do redirect, a 10PILA mostra uma revisao final do pedido com endereco, itens, total e aviso de pagamento seguro. Sem token, ou se o PagBank recusar a criacao do checkout, o fluxo fica em modo estrutural: pedido salvo, pagamento pendente e aviso claro na tela.
 
 Webhook preparado:
 
@@ -155,7 +163,7 @@ Quando receber evento aprovado com `reference_id` do pedido, marca pagamento com
 
 ## Chat IA
 
-O componente de chat chama `/api/chat`, persiste mensagens e usa Gemini no servidor quando `GEMINI_API_KEY` esta configurada. A key nunca vai para o frontend.
+O componente de chat chama `/api/chat`, persiste mensagens e usa um roteador de providers no servidor. A chave nunca vai para o frontend.
 
 O backend do chat combina:
 
@@ -166,15 +174,19 @@ O backend do chat combina:
 - promocoes reais
 - pedidos do usuario logado, quando a pergunta pede isso
 
-Se `GEMINI_API_KEY` faltar, se a API do Gemini falhar ou se a resposta vier vazia, a rota cai em fallback deterministico. Nesse modo o chat continua respondendo com dados reais do banco, sem inventar preco, estoque, promocao, prazo ou status.
+O admin escolhe no painel qual provider sera o principal e quais serao os fallbacks. Hoje o backend suporta Groq, Gemini e OpenRouter free. Se todos falharem, a rota cai em fallback deterministico. Nesse modo o chat continua respondendo com dados reais do banco, sem inventar preco, estoque, promocao, prazo ou status.
 
 Quando cita produto, a resposta traz nome, preco, estoque e link clicavel. A UI tambem renderiza cards com botoes "Ver produto" e "Adicionar 1". O chat tenta manter respostas curtas, mais comerciais e menos genericas, com quick actions ligadas a conversao.
 
 Variaveis:
 
 ```env
+GROQ_API_KEY=...
+GROQ_MODEL=llama-3.1-8b-instant
 GEMINI_API_KEY=...
 GEMINI_MODEL=gemini-3.1-flash-lite-preview
+OPENROUTER_API_KEY=...
+OPENROUTER_MODEL=google/gemma-3-12b-it:free
 ```
 
 ## Paginas publicas para OAuth

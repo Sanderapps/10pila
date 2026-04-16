@@ -5,6 +5,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { StatusMessage } from "@/components/status-message";
 
 type FieldErrors = Record<string, string>;
+
 type CheckoutAddress = {
   id: string;
   isDefault: boolean;
@@ -18,9 +19,23 @@ type CheckoutAddress = {
   city: string;
   state: string;
 };
+
+type CheckoutItem = {
+  id: string;
+  name: string;
+  quantity: number;
+  unitPrice: string;
+  totalPrice: string;
+};
+
 type CheckoutFormProps = {
   initialAddresses: CheckoutAddress[];
+  items: CheckoutItem[];
+  subtotal: string;
+  freight: string;
+  total: string;
 };
+
 type AddressFormValues = Omit<CheckoutAddress, "id" | "isDefault">;
 
 const emptyAddress: AddressFormValues = {
@@ -105,7 +120,13 @@ function valuesFromAddress(address: CheckoutAddress): AddressFormValues {
   };
 }
 
-export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
+export function CheckoutForm({
+  initialAddresses,
+  items,
+  subtotal,
+  freight,
+  total
+}: CheckoutFormProps) {
   const router = useRouter();
   const defaultAddress = useMemo(
     () => initialAddresses.find((address) => address.isDefault) ?? initialAddresses[0] ?? null,
@@ -114,6 +135,7 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
   const [savedAddresses] = useState(initialAddresses);
   const [selectedAddressId, setSelectedAddressId] = useState(defaultAddress?.id ?? "");
   const [editing, setEditing] = useState(initialAddresses.length === 0);
+  const [reviewing, setReviewing] = useState(false);
   const [saveAsDefault, setSaveAsDefault] = useState(defaultAddress?.isDefault ?? true);
   const [values, setValues] = useState<AddressFormValues>(
     defaultAddress ? valuesFromAddress(defaultAddress) : emptyAddress
@@ -138,6 +160,23 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
       delete next[field];
       return next;
     });
+  }
+
+  function openReview() {
+    const payloadValues = normaliseValues(values);
+    const clientErrors = validateCheckout(payloadValues);
+
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors);
+      setError("Revise os dados de entrega.");
+      return;
+    }
+
+    setValues(payloadValues);
+    setError("");
+    setFieldErrors({});
+    setStatus("Endereco confirmado. Revise o pedido antes do redirect.");
+    setReviewing(true);
   }
 
   async function fillAddressFromCep(zipCode: string) {
@@ -174,6 +213,12 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!reviewing) {
+      openReview();
+      return;
+    }
+
     setLoading(true);
     setError("");
     setFieldErrors({});
@@ -186,10 +231,11 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
       setFieldErrors(clientErrors);
       setError("Revise os dados de entrega.");
       setLoading(false);
+      setReviewing(false);
       return;
     }
 
-    setStatus("Criando pedido e chamando o PagBank...");
+    setStatus("Separando seu pedido e preparando o pagamento seguro...");
 
     const response = await fetch("/api/checkout", {
       method: "POST",
@@ -212,12 +258,12 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
     }
 
     if (data.checkoutUrl) {
-      setStatus("Pedido criado. Redirecionando para o PagBank...");
+      setStatus("Pedido pronto. Indo para o pagamento seguro...");
       window.location.href = data.checkoutUrl;
       return;
     }
 
-    setStatus("Pedido criado em modo estrutural.");
+    setStatus(data.checkoutMessage ?? "Pedido criado em modo estrutural.");
     router.push(`/checkout?pedido=${data.orderId}`);
     router.refresh();
   }
@@ -255,6 +301,7 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
                     setSaveAsDefault(nextAddress.isDefault);
                   }
                   setEditing(false);
+                  setReviewing(false);
                 }}
                 value={selectedAddressId}
               >
@@ -274,8 +321,13 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
               <p className="text-sm text-[var(--muted)]">{selectedAddress.phone}</p>
               <p className="text-sm text-[var(--muted)]">{summariseAddress(selectedAddress)}</p>
               <div className="flex flex-wrap gap-2 pt-2">
-                <button className="btn min-h-9 px-3" disabled={loading} type="submit">
-                  {loading ? "Fechando..." : "Usar este endereco"}
+                <button
+                  className="btn min-h-9 px-3"
+                  disabled={loading}
+                  onClick={openReview}
+                  type="button"
+                >
+                  Revisar pedido
                 </button>
                 <button
                   className="btn secondary min-h-9 px-3"
@@ -286,6 +338,7 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
                       setSaveAsDefault(selectedAddress.isDefault);
                     }
                     setEditing(true);
+                    setReviewing(false);
                   }}
                   type="button"
                 >
@@ -299,6 +352,7 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
                     setValues(emptyAddress);
                     setSaveAsDefault(savedAddresses.length === 0);
                     setEditing(true);
+                    setReviewing(false);
                   }}
                   type="button"
                 >
@@ -423,18 +477,23 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
           </label>
           {zipStatus ? <p className="text-sm text-[var(--accent-2)]">{zipStatus}</p> : null}
           <div className="flex flex-wrap gap-2">
-            <button className="btn" disabled={loading} type="submit">
-              {loading ? "Fechando pedido..." : "Salvar e fechar pedido"}
+            <button className="btn" disabled={loading} onClick={openReview} type="button">
+              Continuar para revisao
             </button>
             {savedAddresses.length > 0 ? (
               <button
                 className="btn secondary"
                 disabled={loading}
                 onClick={() => {
+                  if (selectedAddress) {
+                    setValues(valuesFromAddress(selectedAddress));
+                    setSaveAsDefault(selectedAddress.isDefault);
+                  }
                   setEditing(false);
                   setError("");
                   setFieldErrors({});
                   setStatus("");
+                  setReviewing(false);
                 }}
                 type="button"
               >
@@ -443,6 +502,81 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
             ) : null}
           </div>
         </>
+      ) : null}
+
+      {reviewing ? (
+        <section className="grid gap-4 rounded-lg border border-[var(--line)] bg-[rgba(9,12,16,0.72)] p-4">
+          <div className="grid gap-1">
+            <p className="text-sm font-bold text-[var(--accent)]">Revisao final</p>
+            <h3 className="text-xl font-black">Tudo certo antes do PagBank</h3>
+            <p className="text-sm text-[var(--muted)]">
+              Voce sera redirecionado para o ambiente seguro do PagBank para concluir o pagamento.
+            </p>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-[1fr_280px]">
+            <div className="grid gap-3">
+              <div className="rounded-lg border border-[var(--line)] bg-black/20 p-4">
+                <p className="mb-2 text-sm font-bold">Entrega</p>
+                <p className="font-bold">{values.recipient}</p>
+                <p className="text-sm text-[var(--muted)]">{values.phone}</p>
+                <p className="mt-2 text-sm text-[var(--muted)]">{summariseAddress(values)}</p>
+              </div>
+
+              <div className="rounded-lg border border-[var(--line)] bg-black/20 p-4">
+                <p className="mb-2 text-sm font-bold">Itens do pedido</p>
+                <div className="grid gap-2 text-sm">
+                  {items.map((item) => (
+                    <div className="flex items-start justify-between gap-3" key={item.id}>
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-[var(--muted)]">
+                          {item.quantity}x {item.unitPrice}
+                        </p>
+                      </div>
+                      <strong>{item.totalPrice}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <aside className="rounded-lg border border-[var(--line)] bg-black/25 p-4">
+              <p className="text-sm font-bold">Resumo visual</p>
+              <div className="mt-3 grid gap-2 text-sm">
+                <p className="flex justify-between">
+                  <span>Subtotal</span>
+                  <strong>{subtotal}</strong>
+                </p>
+                <p className="flex justify-between">
+                  <span>Frete</span>
+                  <strong>{freight}</strong>
+                </p>
+                <p className="flex justify-between text-base font-black text-[var(--accent)]">
+                  <span>Total</span>
+                  <span>{total}</span>
+                </p>
+              </div>
+              <div className="mt-4 rounded-lg border border-[var(--line)] bg-[rgba(10,15,20,0.85)] p-3 text-sm text-[var(--muted)]">
+                Pagamento seguro via PagBank hospedado. O fechamento acontece fora da 10PILA, mas o pedido segue ligado a esta conta.
+              </div>
+            </aside>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              className="btn secondary"
+              disabled={loading}
+              onClick={() => setReviewing(false)}
+              type="button"
+            >
+              Voltar e revisar
+            </button>
+            <button className="btn shine" disabled={loading} type="submit">
+              {loading ? "Preparando..." : "Ir para pagamento seguro"}
+            </button>
+          </div>
+        </section>
       ) : null}
 
       <StatusMessage

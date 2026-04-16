@@ -235,16 +235,16 @@ export function AssistantMascot({
           <motion.path
             animate={
               thinking
-                ? { d: ["M75 84h30", "M72 85q18 10 36 0", "M75 84h30"] }
-                : undefined
+                ? { d: ["M75 84h30", "M71 85q19 12 38 0", "M75 84h30"] }
+                : { d: ["M71 84q19 12 38 0", "M72 85q18 10 36 0", "M71 84q19 12 38 0"] }
             }
-            d="M72 84q18 10 36 0"
+            d="M71 84q19 12 38 0"
             fill="none"
             filter={`url(#${neonId})`}
             stroke={`url(#${glowId})`}
             strokeLinecap="round"
             strokeWidth="3.2"
-            transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: thinking ? 1.1 : 4.6, repeat: Infinity, ease: "easeInOut" }}
           />
 
           <motion.path
