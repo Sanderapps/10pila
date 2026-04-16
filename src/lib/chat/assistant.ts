@@ -295,6 +295,13 @@ function fallbackReply(
   orderData: Awaited<ReturnType<typeof orderContext>> | null,
   geminiStatus: GeminiReplyStatus
 ): ChatAnswer {
+  const fallbackReason: ChatAnswer["fallbackReason"] =
+    geminiStatus === "provider_error"
+      ? "provider_error"
+      : geminiStatus === "missing_api_key"
+        ? "missing_api_key"
+        : "deterministic";
+
   if (wantsOrders(message) && orderData) {
     return {
       reply: orderData.reply,
@@ -325,7 +332,7 @@ function fallbackReply(
       products: cards,
       quickActions: quickActionsFor(message, cards.length > 0),
       source: "fallback",
-      fallbackReason: geminiStatus === "provider_error" ? "provider_error" : "deterministic"
+      fallbackReason
     };
   }
 
@@ -337,13 +344,13 @@ function fallbackReply(
   });
 
   return {
-    reply: `${wantsCheaper(message) ? "Opcoes mais em conta que achei:" : "Achei isso no estoque real:"}\n${lines.join("\n")}`,
-    products: cards,
-    quickActions: quickActionsFor(message, cards.length > 0),
-    source: "fallback",
-    fallbackReason: geminiStatus === "missing_api_key" ? "missing_api_key" : "deterministic"
-  };
-}
+      reply: `${wantsCheaper(message) ? "Opcoes mais em conta que achei:" : "Achei isso no estoque real:"}\n${lines.join("\n")}`,
+      products: cards,
+      quickActions: quickActionsFor(message, cards.length > 0),
+      source: "fallback",
+      fallbackReason
+    };
+  }
 
 export async function answerFromStoreData({
   message,
