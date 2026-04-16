@@ -51,7 +51,8 @@ export default async function CheckoutPage({
             </Link>
           ) : (
             <p className="text-sm text-[var(--muted)]">
-              Checkout PagBank estrutural salvo. Configure PAGBANK_ACCESS_TOKEN para redirecionar.
+              Checkout PagBank estrutural salvo. O redirecionamento fica disponivel quando o PagBank
+              retornar uma URL de pagamento.
             </p>
           )}
         </section>
