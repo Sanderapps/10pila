@@ -202,11 +202,11 @@ function conversationalReply(message: string) {
   }
 
   if (wantsChat(message)) {
-    return "Fechou, da pra trocar uma ideia sem transformar isso em pitch. Se pintar vontade de garimpar algo pro setup, eu entro no modo util na hora.";
+    return "Fechou, da pra trocar uma ideia sem transformar isso em pitch. Se pintar vontade de garimpar alguma utilidade barata, eu entro no modo util na hora.";
   }
 
   if (wantsRecommendation(message)) {
-    return "Posso sim, mas me da teu estilo: tu quer custo-beneficio honesto, visual de setup ou utilidade bruta?";
+    return "Posso sim, mas me da teu estilo: tu quer praticidade, organizacao, coisa curiosa de mesa ou custo-beneficio honesto?";
   }
 
   return null;
@@ -396,7 +396,7 @@ function fallbackReply(
   if (wantsRecommendation(message) && products.length > 0 && searchTerms(message).length <= 1) {
     return {
       reply:
-        "Posso recomendar, mas antes eu calibro isso melhor contigo: tu quer algo mais clean, mais setup nervoso ou mais custo-beneficio?",
+        "Posso recomendar, mas antes eu calibro isso melhor contigo: tu quer algo mais util, mais curioso ou mais custo-beneficio?",
       products: cards.slice(0, 2),
       quickActions: ["mais barato", "comparar", "ver detalhes"],
       source: "fallback",

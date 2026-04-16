@@ -31,11 +31,11 @@ export default async function HomePage() {
             curadoria 10PILA com estoque proprio
           </p>
           <h1 className="max-w-3xl text-5xl font-black leading-tight md:text-7xl">
-            Gadget bom, preço direto, papo reto.
+            Achadinho tech bom, preço baixo, papo reto.
           </h1>
           <p className="max-w-xl text-lg text-[var(--muted)]">
-            O 10PILA junta achadinhos tech, setup e utilidades importadas sem
-            prometer milagre. O que aparece aqui vem do estoque da loja.
+            O 10PILA junta bugiganga tech útil, curiosa e comprável sem drama.
+            O que aparece aqui vem do estoque real da loja, com preço de impulso e sem vitrine fantasma.
           </p>
           <div className="hero-cta-row flex flex-wrap gap-3">
             <Link className="btn shine" href="/produtos">
@@ -62,8 +62,8 @@ export default async function HomePage() {
         </div>
         <div className="hero-card panel shine relative overflow-hidden p-5 md:p-6">
           <div className="absolute left-4 right-4 top-4 z-10 flex items-center justify-between gap-2">
-            <span className="chip brand-badge bg-black/60 text-[var(--accent)]">drop do dia</span>
-            <span className="chip brand-badge bg-black/60">drop validado</span>
+            <span className="chip brand-badge bg-black/60 text-[var(--accent)]">achado do dia</span>
+            <span className="chip brand-badge bg-black/60">preco redondo</span>
           </div>
           {featured[0] ? (
             <Link href={`/produtos/${featured[0].slug}`}>
@@ -81,9 +81,9 @@ export default async function HomePage() {
           ) : null}
           <div className="mt-4 grid gap-2">
             <p className="text-sm font-bold text-[var(--accent-2)]">curadoria rapida</p>
-            <p className="text-2xl font-black">{featured[0]?.name ?? "Setup pronto para entrar"}</p>
+            <p className="text-2xl font-black">{featured[0]?.name ?? "Achadinho pronto pra entrar"}</p>
             <p className="text-sm text-[var(--muted)]">
-              Produto com foto, estoque e preço vindo direto do banco. Sem vitrine fantasma.
+              Produto com foto, estoque e preço vindo direto do banco. Coisa útil, curiosa e fácil de levar.
             </p>
             <div className="flex flex-wrap gap-2 pt-2 text-xs text-[var(--muted)]">
               <span className="chip brand-badge">checkout seguro</span>
@@ -98,7 +98,7 @@ export default async function HomePage() {
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="eyebrow">vitrine</p>
-            <h2 className="text-3xl font-black">Produtos em destaque</h2>
+            <h2 className="text-3xl font-black">Achados em destaque</h2>
           </div>
           <Link className="btn secondary" href="/produtos">
             Todos

@@ -46,7 +46,7 @@ export function AddToCartButton({
       return;
     }
 
-    setMessage(`${quantity} item(ns) no carrinho. Setup evoluindo.`);
+    setMessage(`${quantity} item(ns) no carrinho. Achadinho guardado com sucesso.`);
     setShowFeedback(true);
     router.refresh();
   }
@@ -81,7 +81,7 @@ export function AddToCartButton({
         </button>
       </div>
       <button className="btn min-h-11" disabled={loading} onClick={addToCart}>
-        {loading ? "Adicionando ao setup..." : "Adicionar ao carrinho"}
+        {loading ? "Guardando no carrinho..." : "Adicionar ao carrinho"}
       </button>
       {message && !showFeedback ? (
         <StatusMessage message={message} title="Nao deu para adicionar" variant="error" />
@@ -89,7 +89,7 @@ export function AddToCartButton({
       {showFeedback ? (
         <div className="surface fixed bottom-4 right-4 z-50 grid w-[min(420px,calc(100vw-32px))] gap-3 border border-[var(--line-strong)] p-4 shadow-2xl">
           <p className="text-xs font-black uppercase tracking-normal text-[var(--accent)]">add to cart</p>
-          <p className="font-bold">Produto adicionado. Carrinho ganhou buff.</p>
+          <p className="font-bold">Produto adicionado. Carrinho ganhou mais um achado.</p>
           <p className="text-sm text-[var(--muted)]">{message}</p>
           <div className="flex flex-wrap gap-2">
             <a className="btn" href="/carrinho">

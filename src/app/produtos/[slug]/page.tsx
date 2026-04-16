@@ -74,7 +74,7 @@ export default async function ProductPage({
           </span>
           <span className="chip">
             <BoltIcon />
-            drop validado
+            achado validado
           </span>
         </div>
         {product.stock > 0 ? (

@@ -110,7 +110,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Opa, eu sou o PilaBot. Se quiser, eu comparo produto, acho um link certo ou te ajudo a garimpar um upgrade honesto."
+      content: "Opa, eu sou o PilaBot. Se quiser, eu comparo produto, acho o link certo ou te ajudo a garimpar um achado útil sem gastar bobeira."
     }
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -165,7 +165,7 @@ export function ChatWidget() {
       hints: [
         "Posso te ajudar a escolher",
         "Tem promo hoje no radar",
-        "Quer montar um setup mais esperto?"
+        "Quer achar algo util e baratinho?"
       ]
     };
   }, [pathname]);
@@ -546,7 +546,7 @@ export function ChatWidget() {
                       assistente 10PILA
                     </p>
                     <p className="text-sm text-[var(--muted)]">
-                      Tamo on. Posso te ajudar a escolher melhor, comparar sem drama, achar link certo ou salvar teu setup do custo-beneficio duvidoso.
+                      Tamo on. Posso te ajudar a achar coisa útil, comparar sem drama, puxar link certo ou salvar teu carrinho do custo-beneficio duvidoso.
                     </p>
                   </div>
                 </div>

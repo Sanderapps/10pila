@@ -47,8 +47,8 @@ export default async function CartPage() {
               carrinho
             </>
           }
-          title="Seu setup ainda esta sem pecas"
-          description="Nada caiu no carrinho ainda. Puxa um drop pro radar e a 10PILA monta o fechamento daqui."
+          title="Seu carrinho ainda esta no modo vitrine"
+          description="Nada caiu no carrinho ainda. Puxa um achado pro radar e a 10PILA fecha o resto daqui."
           actions={
             <>
               <Link className="btn" href="/produtos">

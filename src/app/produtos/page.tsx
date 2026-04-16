@@ -48,7 +48,7 @@ export default async function ProductsPage({
           <div>
             <h1 className="text-4xl font-black">Garimpo tech do 10PILA</h1>
             <p className="mt-2 max-w-xl text-[var(--muted)]">
-              Busca direta no estoque: achou, tem pagina, preço e status sem enrolacao.
+              Busca direta no estoque: achou, tem pagina, preço baixo e status sem enrolacao.
             </p>
           </div>
           <span className="chip">{products.length} item(ns)</span>
@@ -60,7 +60,7 @@ export default async function ProductsPage({
               className="input pl-10"
               defaultValue={query}
               name="q"
-              placeholder="Buscar por teclado, fone, hub..."
+              placeholder="Buscar por cabo, suporte, luz, adaptador..."
             />
           </label>
           <select className="input" defaultValue={sort ?? ""} name="sort">
@@ -91,7 +91,7 @@ export default async function ProductsPage({
             </>
           }
           title="Radar sem sinal"
-          description="Esse termo nao puxou nenhum drop do estoque. Tenta um nome mais curto, categoria ou outro tipo de gadget."
+          description="Esse termo nao puxou nenhum achado do estoque. Tenta um nome mais curto, categoria ou outro tipo de bugiganga tech."
           actions={
             <>
               <Link className="btn secondary" href="/produtos">

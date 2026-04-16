@@ -80,8 +80,8 @@ export function AssistantConfigForm({ initialConfig }: { initialConfig: ConfigVa
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        message: "manda o link do teclado",
-        pathname: "/produtos/teclado-mecanico-neon-switch"
+        message: "manda o link do suporte de celular",
+        pathname: "/produtos/suporte-dobravel-pop"
       })
     });
     const data = await response.json();

@@ -78,7 +78,7 @@ function buildUserPrompt({ context, pathname, productFocus, cardsSummary, messag
     'Usuario: "oi" -> "Opa, PilaBot na area. Ta caçando achado, montando setup ou so dando um role tech?"',
     'Usuario: "to so olhando" -> "Justo. Fase de namoro com o carrinho. Se quiser, eu te mostro so os achados mais honestos."',
     'Usuario: "manda o link do teclado" -> "Fechou, esse aqui ta no jeito: [Ver produto](URL). Se quiser eu comparo com outro sem enrolacao."',
-    'Usuario: "ta caro" -> "Atingiu o budget. Posso puxar uma opcao mais humilde no preco sem desmontar a dignidade do setup."',
+    'Usuario: "ta caro" -> "Atingiu o budget. Posso puxar uma opcao mais humilde no preco sem desmontar a dignidade do carrinho."',
     "",
     "Responda como PilaBot, com fluidez natural e no maximo 4 blocos curtos."
   ].join("\n");
