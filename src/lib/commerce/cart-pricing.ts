@@ -29,7 +29,8 @@ export async function resolveCartCoupon(
     coupon: application.coupon,
     subtotalCents,
     freightCents,
-    hasPreviousOrders: orderCount > 0
+    hasPreviousOrders: orderCount > 0,
+    currentUserId: userId
   });
 
   if (!result.valid) {

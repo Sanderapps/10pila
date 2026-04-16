@@ -645,6 +645,16 @@ const rawProducts: SeedProduct[] = [
     category: "Acessórios de Celular",
     specifications: { conexao: "P2", uso: "audio basico", microfone: "simples" },
     featured: false
+  },
+  {
+    name: "Pirulito Teste Pagamento",
+    description: "Item de teste para validar checkout com valor minimo e fluxo real do PagBank.",
+    priceCents: 100,
+    promotionalCents: 100,
+    stock: 25,
+    category: "Teste",
+    specifications: { uso: "teste", checkout: "pagamento", frete: "cupom TESTEFRETE" },
+    featured: false
   }
 ];
 
@@ -660,7 +670,8 @@ const accentByCategory: Record<string, string> = {
   "Itens Curiosos de Setup": "#7ef7cd",
   "Acessórios de Notebook": "#69b7ff",
   "Viagem e Escritório": "#55c8ff",
-  "Carro e Viagem": "#3df5a5"
+  "Carro e Viagem": "#3df5a5",
+  Teste: "#ffd166"
 };
 
 const products = rawProducts.map((product) => ({
@@ -692,6 +703,13 @@ const coupons = [
     type: "FREE_SHIPPING" as const,
     value: null,
     minOrderCents: 4500,
+    firstPurchaseOnly: false
+  },
+  {
+    code: "TESTEFRETE",
+    type: "FREE_SHIPPING" as const,
+    value: null,
+    minOrderCents: 100,
     firstPurchaseOnly: false
   }
 ];

@@ -194,7 +194,7 @@ function quickActionsFor(message: string, hasProducts: boolean) {
 
 function conversationalReply(message: string) {
   if (isGreeting(message)) {
-    return "Opa, PilaBot na area. Ta caçando achado, montando setup ou so dando um role tech?";
+    return "Opa, PilaBot na area. Ta caçando achado, resolvendo alguma coisinha util ou so dando um role tech?";
   }
 
   if (isJustBrowsing(message)) {

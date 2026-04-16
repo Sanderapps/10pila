@@ -25,7 +25,8 @@ export default function PrivacyPage() {
           <h2 className="text-2xl font-bold">Dados de conta</h2>
           <p className="text-[var(--muted)]">
             Usamos nome, email e senha criptografada para criar e acessar sua conta. Se voce
-            entrar com Google, recebemos os dados basicos autorizados pelo Google para login.
+            entrar com Google ou Facebook, recebemos os dados basicos autorizados pelo provedor
+            para login.
           </p>
         </article>
 
@@ -63,9 +64,14 @@ export default function PrivacyPage() {
           Como MVP, solicitacoes de correcao ou remocao de dados devem ser tratadas diretamente com
           a administracao da loja. Esta pagina pode evoluir conforme novos servicos forem ativados.
         </p>
-        <Link className="btn w-fit" href="/terms">
-          Ver termos
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link className="btn secondary w-fit" href="/data-deletion">
+            Excluir dados
+          </Link>
+          <Link className="btn w-fit" href="/terms">
+            Ver termos
+          </Link>
+        </div>
       </section>
     </main>
   );

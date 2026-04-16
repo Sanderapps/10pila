@@ -35,7 +35,7 @@ export default async function CartPage() {
           <CartIcon />
           carrinho
         </p>
-        <h1 className="text-4xl font-black">Setup quase comprado</h1>
+        <h1 className="text-4xl font-black">Achado quase fechado</h1>
       </div>
 
       {items.length === 0 ? (

@@ -42,6 +42,8 @@ Variaveis opcionais no MVP:
 
 - `GOOGLE_CLIENT_ID`: ativa login com Google quando preenchido.
 - `GOOGLE_CLIENT_SECRET`: segredo OAuth do Google.
+- `AUTH_FACEBOOK_ID`: ativa login com Facebook quando preenchido.
+- `AUTH_FACEBOOK_SECRET`: segredo OAuth do Facebook.
 - `PAGBANK_ACCESS_TOKEN`: cria checkout real do PagBank quando preenchido.
 - `PAGBANK_WEBHOOK_SECRET`: segredo simples para validar webhook estrutural.
 - `PAGBANK_API_URL`: base da API PagBank, por padrao `https://sandbox.api.pagseguro.com`.
@@ -51,6 +53,9 @@ Variaveis opcionais no MVP:
 - `GEMINI_MODEL`: modelo Gemini usado pelo chat, por padrao `gemini-3.1-flash-lite-preview`.
 - `OPENROUTER_API_KEY`: ativa OpenRouter no backend do chat.
 - `OPENROUTER_MODEL`: modelo OpenRouter usado pelo chat.
+- `NEXT_PUBLIC_INSTAGRAM_URL`: link publico do Instagram da loja.
+- `NEXT_PUBLIC_TIKTOK_URL`: link publico do TikTok da loja.
+- `NEXT_PUBLIC_WHATSAPP_URL`: link publico do WhatsApp da loja.
 
 ## Variaveis de ambiente usadas hoje
 
@@ -83,6 +88,11 @@ Obrigatorias quando voce ativar Google login:
 
 - `GOOGLE_CLIENT_ID`: client ID OAuth.
 - `GOOGLE_CLIENT_SECRET`: client secret OAuth.
+
+Obrigatorias quando voce ativar Facebook login:
+
+- `AUTH_FACEBOOK_ID`: App ID do Meta.
+- `AUTH_FACEBOOK_SECRET`: App Secret do Meta.
 
 Variaveis de plataforma que o Railway injeta automaticamente, mas o projeto nao depende diretamente como configuracao manual:
 
@@ -124,11 +134,13 @@ Nunca use a senha exemplo em producao.
 
 O projeto usa NextAuth com Prisma Adapter configurado. O login por email/senha usa Credentials Provider, entao as sessoes permanecem em JWT, que e o modo suportado por esse provider no NextAuth v4. Os usuarios continuam persistidos no PostgreSQL via Prisma.
 
-Login com Google tambem esta estruturado. Para ativar, crie credenciais OAuth no Google Cloud e configure:
+Login com Google e Facebook tambem estao estruturados. Para ativar, configure os provedores no ambiente:
 
 ```env
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
+AUTH_FACEBOOK_ID=...
+AUTH_FACEBOOK_SECRET=...
 ```
 
 Callback autorizado no Google:
@@ -138,7 +150,14 @@ http://localhost:3000/api/auth/callback/google
 https://10pila-app-production.up.railway.app/api/auth/callback/google
 ```
 
-Sem essas credenciais, o botao de Google aparece desativado e o login por email/senha segue funcionando.
+Callback autorizado no Meta:
+
+```text
+http://localhost:3000/api/auth/callback/facebook
+https://10pila-app-production.up.railway.app/api/auth/callback/facebook
+```
+
+Sem essas credenciais, os botoes sociais aparecem desativados e o login por email/senha segue funcionando.
 
 O MVP valida formato de email e senha, mas ainda nao envia verificacao real por email. A base tem `emailVerified` e `VerificationToken` no Prisma para evoluir essa etapa depois com um servico de email.
 
@@ -205,7 +224,36 @@ OPENROUTER_MODEL=google/gemma-3-12b-it:free
 
 ## Paginas publicas para OAuth
 
-As paginas `/privacy` e `/terms` existem em PT-BR para uso inicial com Google OAuth e explicam conta, pedidos, pagamento e chat do MVP.
+As paginas publicas abaixo existem em PT-BR para uso inicial com Google/Facebook OAuth:
+
+- `/privacy`
+- `/terms`
+- `/data-deletion`
+
+Para Facebook Login no Meta App Dashboard, preencha:
+
+- `App Domains`: dominio publico do Railway
+- `Valid OAuth Redirect URIs`:
+  - `https://10pila-app-production.up.railway.app/api/auth/callback/facebook`
+  - `http://localhost:3000/api/auth/callback/facebook`
+- `Privacy Policy URL`: `https://10pila-app-production.up.railway.app/privacy`
+- `Terms of Service URL`: `https://10pila-app-production.up.railway.app/terms`
+- `User Data Deletion URL`: `https://10pila-app-production.up.railway.app/data-deletion`
+
+O codigo fica pronto para o provider, mas publicacao, revisao e liberacao final do app no Meta ainda dependem da configuracao externa no dashboard deles.
+
+## Campanha de indicacao
+
+O MVP agora tem uma base simples de indicacao:
+
+- cada usuario pode ter um codigo proprio
+- o link publico aponta para `/auth/register?ref=CODIGO`
+- a vinculacao da indicacao entra no cadastro por email e senha
+- quando o amigo faz a primeira compra paga acima de `R$ 50`, o indicador recebe um cupom unico de `R$ 10`
+- o cupom de indicacao vale por `30 dias`
+- o sistema hoje trabalha com `1 cupom por pedido`, entao os bonus nao acumulam no mesmo checkout
+
+A area protegida do usuario para acompanhar isso fica em `/indicacoes`.
 
 ## Deploy Railway
 

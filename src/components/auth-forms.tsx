@@ -1,11 +1,15 @@
 "use client";
 
-import { getProviders, signIn } from "next-auth/react";
+import { ClientSafeProvider, getProviders, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { StatusMessage } from "@/components/status-message";
 
 type FieldErrors = Record<string, string>;
+
+type SocialProvider = ClientSafeProvider & {
+  id: "google" | "facebook";
+};
 
 function callbackUrl() {
   if (typeof window === "undefined") {
@@ -37,36 +41,78 @@ function validatePassword(password: string) {
   return "";
 }
 
-function GoogleButton({ disabledText }: { disabledText: string }) {
-  const [googleReady, setGoogleReady] = useState(false);
-  const [loading, setLoading] = useState(false);
+function providerLabel(id: string) {
+  if (id === "google") {
+    return "Google";
+  }
+
+  if (id === "facebook") {
+    return "Facebook";
+  }
+
+  return id;
+}
+
+function providerDisabledText(id: string) {
+  if (id === "google") {
+    return "Google fica ativo quando GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET forem configurados.";
+  }
+
+  if (id === "facebook") {
+    return "Facebook fica ativo quando AUTH_FACEBOOK_ID e AUTH_FACEBOOK_SECRET forem configurados.";
+  }
+
+  return "";
+}
+
+function SocialProviders({ mode }: { mode: "login" | "register" }) {
+  const [providers, setProviders] = useState<SocialProvider[]>([]);
+  const [loadingProvider, setLoadingProvider] = useState<string>("");
 
   useEffect(() => {
-    getProviders().then((providers) => {
-      setGoogleReady(Boolean(providers?.google));
+    getProviders().then((available) => {
+      const socialProviders = Object.values(available ?? {}).filter(
+        (provider): provider is SocialProvider =>
+          provider.id === "google" || provider.id === "facebook"
+      );
+      setProviders(socialProviders);
     });
   }, []);
 
-  async function onGoogleLogin() {
-    if (!googleReady) {
-      return;
-    }
-
-    setLoading(true);
-    await signIn("google", { callbackUrl: callbackUrl() });
+  async function onProviderLogin(providerId: SocialProvider["id"]) {
+    setLoadingProvider(providerId);
+    await signIn(providerId, { callbackUrl: callbackUrl() });
   }
+
+  const ready = new Set(providers.map((provider) => provider.id));
+  const expected: Array<SocialProvider["id"]> = ["google", "facebook"];
 
   return (
     <div className="grid gap-2">
-      <button
-        className="btn secondary min-h-11"
-        disabled={!googleReady || loading}
-        onClick={onGoogleLogin}
-        type="button"
-      >
-        {loading ? "Abrindo Google..." : "Entrar com Google"}
-      </button>
-      {!googleReady ? <p className="text-xs text-[var(--muted)]">{disabledText}</p> : null}
+      {expected.map((providerId) => {
+        const active = ready.has(providerId);
+        const label = providerLabel(providerId);
+        const action = mode === "login" ? "Entrar" : "Continuar";
+
+        return (
+          <button
+            key={providerId}
+            className="btn secondary min-h-11"
+            disabled={!active || loadingProvider.length > 0}
+            onClick={() => onProviderLogin(providerId)}
+            type="button"
+          >
+            {loadingProvider === providerId ? `Abrindo ${label}...` : `${action} com ${label}`}
+          </button>
+        );
+      })}
+      {expected
+        .filter((providerId) => !ready.has(providerId))
+        .map((providerId) => (
+          <p className="text-xs text-[var(--muted)]" key={`${providerId}-hint`}>
+            {providerDisabledText(providerId)}
+          </p>
+        ))}
     </div>
   );
 }
@@ -126,7 +172,7 @@ export function LoginForm() {
 
   return (
     <form className="panel grid gap-4 p-5" noValidate onSubmit={onSubmit}>
-      <GoogleButton disabledText="Google fica ativo quando GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET forem configurados." />
+      <SocialProviders mode="login" />
       <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
         <span className="h-px flex-1 bg-[var(--line)]" />
         ou entra com email
@@ -170,12 +216,17 @@ export function LoginForm() {
   );
 }
 
-export function RegisterForm() {
+export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode?: string }) {
   const router = useRouter();
+  const [referralCode, setReferralCode] = useState(initialReferralCode);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    setReferralCode(initialReferralCode);
+  }, [initialReferralCode]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -188,6 +239,7 @@ export function RegisterForm() {
     const name = String(form.get("name") ?? "").trim();
     const email = String(form.get("email") ?? "").trim().toLowerCase();
     const password = String(form.get("password") ?? "");
+    const referral = String(form.get("referralCode") ?? "").trim().toUpperCase();
     const nextFieldErrors: FieldErrors = {};
     const passwordError = validatePassword(password);
 
@@ -203,6 +255,10 @@ export function RegisterForm() {
       nextFieldErrors.password = passwordError;
     }
 
+    if (referral && referral.length < 4) {
+      nextFieldErrors.referralCode = "Use um codigo valido de indicacao.";
+    }
+
     if (Object.keys(nextFieldErrors).length > 0) {
       setFieldErrors(nextFieldErrors);
       setError("Revise o cadastro antes de criar a conta.");
@@ -213,7 +269,7 @@ export function RegisterForm() {
     const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password })
+      body: JSON.stringify({ name, email, password, referralCode: referral || undefined })
     });
 
     const data = await response.json();
@@ -240,7 +296,7 @@ export function RegisterForm() {
 
   return (
     <form className="panel grid gap-4 p-5" noValidate onSubmit={onSubmit}>
-      <GoogleButton disabledText="Cadastro pelo Google fica ativo quando as credenciais Google forem configuradas." />
+      <SocialProviders mode="register" />
       <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
         <span className="h-px flex-1 bg-[var(--line)]" />
         ou cria com email
@@ -273,6 +329,22 @@ export function RegisterForm() {
         />
         {fieldErrors.password ? (
           <span className="text-xs text-[var(--danger)]">{fieldErrors.password}</span>
+        ) : null}
+      </label>
+      <label className="label">
+        Codigo de indicacao
+        <input
+          className="input"
+          name="referralCode"
+          onChange={(event) => setReferralCode(event.target.value.toUpperCase())}
+          placeholder="Opcional"
+          value={referralCode}
+        />
+        <span className="text-xs text-[var(--muted)]">
+          Se voce chegou por um amigo, cola o codigo aqui e segue o fluxo normal.
+        </span>
+        {fieldErrors.referralCode ? (
+          <span className="text-xs text-[var(--danger)]">{fieldErrors.referralCode}</span>
         ) : null}
       </label>
       <p className="text-xs text-[var(--muted)]">

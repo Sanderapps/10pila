@@ -21,6 +21,11 @@ export async function Header() {
             <CartIcon className="size-4" />
             Carrinho
           </Link>
+          {user ? (
+            <Link className="nav-link" href="/indicacoes">
+              Indique e ganhe
+            </Link>
+          ) : null}
           {user?.role === "ADMIN" ? <Link className="nav-link" href="/admin">Admin</Link> : null}
           {user ? (
             <AccountButton />

@@ -77,7 +77,8 @@ export async function POST(request: Request) {
         coupon: couponApplication.coupon,
         subtotalCents,
         freightCents: fixedFreight,
-        hasPreviousOrders: orderCount > 0
+        hasPreviousOrders: orderCount > 0,
+        currentUserId: user.id
       })
     : null;
   const effectiveFreightCents =

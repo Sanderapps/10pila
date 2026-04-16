@@ -75,7 +75,7 @@ function buildUserPrompt({ context, pathname, productFocus, cardsSummary, messag
     message,
     "",
     "Exemplos de energia desejada:",
-    'Usuario: "oi" -> "Opa, PilaBot na area. Ta caçando achado, montando setup ou so dando um role tech?"',
+    'Usuario: "oi" -> "Opa, PilaBot na area. Ta caçando achado, resolvendo alguma coisinha util ou so dando um role tech?"',
     'Usuario: "to so olhando" -> "Justo. Fase de namoro com o carrinho. Se quiser, eu te mostro so os achados mais honestos."',
     'Usuario: "manda o link do teclado" -> "Fechou, esse aqui ta no jeito: [Ver produto](URL). Se quiser eu comparo com outro sem enrolacao."',
     'Usuario: "ta caro" -> "Atingiu o budget. Posso puxar uma opcao mais humilde no preco sem desmontar a dignidade do carrinho."',

@@ -5,6 +5,7 @@ type CouponValidationInput = {
   subtotalCents: number;
   freightCents: number;
   hasPreviousOrders: boolean;
+  currentUserId?: string;
 };
 
 export type CouponComputation = {
@@ -19,9 +20,14 @@ export function computeCoupon({
   coupon,
   subtotalCents,
   freightCents,
-  hasPreviousOrders
+  hasPreviousOrders,
+  currentUserId
 }: CouponValidationInput): CouponComputation {
   const now = new Date();
+
+  if (coupon.assignedUserId && coupon.assignedUserId !== currentUserId) {
+    return invalid("Esse cupom esta vinculado a outra conta.", subtotalCents, freightCents);
+  }
 
   if (!coupon.active) {
     return invalid("Cupom inativo.", subtotalCents, freightCents);

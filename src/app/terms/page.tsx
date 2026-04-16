@@ -22,8 +22,8 @@ export default function TermsPage() {
           <BoltIcon className="size-5 text-[var(--accent)]" />
           <h2 className="text-2xl font-bold">Conta e acesso</h2>
           <p className="text-[var(--muted)]">
-            Para comprar, voce precisa estar logado. O acesso pode ser por email e senha ou Google
-            quando as credenciais OAuth estiverem configuradas.
+            Para comprar, voce precisa estar logado. O acesso pode ser por email e senha, Google ou
+            Facebook quando as credenciais OAuth estiverem configuradas.
           </p>
         </article>
 
@@ -57,9 +57,14 @@ export default function TermsPage() {
 
       <section className="panel flex flex-wrap items-center justify-between gap-3 p-5">
         <p className="text-[var(--muted)]">Leia tambem a politica de privacidade.</p>
-        <Link className="btn" href="/privacy">
-          Ver privacidade
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link className="btn secondary" href="/data-deletion">
+            Excluir dados
+          </Link>
+          <Link className="btn" href="/privacy">
+            Ver privacidade
+          </Link>
+        </div>
       </section>
     </main>
   );

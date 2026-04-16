@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { rewardReferralForPaidOrder } from "@/lib/commerce/referrals";
 import { prisma } from "@/lib/db/prisma";
 
 export async function markOrderPaidAndReduceStock(
@@ -54,6 +55,12 @@ export async function markOrderPaidAndReduceStock(
         providerPaymentId: paymentData?.providerPaymentId,
         raw: paymentData?.raw
       }
+    });
+
+    await rewardReferralForPaidOrder(tx, {
+      id: order.id,
+      userId: order.userId,
+      totalCents: order.totalCents
     });
 
     return { changed: true };

@@ -45,7 +45,8 @@ export async function POST(request: Request) {
     coupon,
     subtotalCents,
     freightCents: freightCents(),
-    hasPreviousOrders: orderCount > 0
+    hasPreviousOrders: orderCount > 0,
+    currentUserId: user.id
   });
 
   if (!result.valid) {

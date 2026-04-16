@@ -56,6 +56,13 @@ enum CouponType {
   FREE_SHIPPING
 }
 
+enum ReferralStatus {
+  PENDING
+  QUALIFIED
+  REWARDED
+  CANCELED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -64,16 +71,20 @@ model User {
   image         String?
   passwordHash  String?
   role          Role      @default(USER)
+  referralCode  String?   @unique
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts     Account[]
-  sessions     Session[]
-  addresses    Address[]
-  cartItems    CartItem[]
-  cartCoupons  CartCouponApplication[]
-  orders       Order[]
-  chatSessions ChatSession[]
+  accounts           Account[]
+  sessions           Session[]
+  addresses          Address[]
+  cartItems          CartItem[]
+  cartCoupons        CartCouponApplication[]
+  orders             Order[]
+  chatSessions       ChatSession[]
+  assignedCoupons    Coupon[]
+  referralsSent      Referral[] @relation("ReferrerReferrals")
+  referralReceived   Referral?  @relation("ReferredUserReferral")
 }
 
 model Account {
@@ -186,12 +197,15 @@ model Coupon {
   minOrderCents     Int?
   firstPurchaseOnly Boolean  @default(false)
   active            Boolean  @default(true)
+  assignedUserId    String?
   startsAt          DateTime?
   endsAt            DateTime?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   cartApplications CartCouponApplication[]
+  assignedUser     User?      @relation(fields: [assignedUserId], references: [id], onDelete: SetNull)
+  rewardedReferral Referral?
 }
 
 model CartCouponApplication {
@@ -225,6 +239,7 @@ model Order {
   address Address?    @relation(fields: [addressId], references: [id], onDelete: SetNull)
   items   OrderItem[]
   payment Payment?
+  referralQualification Referral?
 }
 
 model OrderItem {
@@ -255,6 +270,25 @@ model Payment {
   updatedAt             DateTime      @updatedAt
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Referral {
+  id                String         @id @default(cuid())
+  referrerId        String
+  referredUserId    String         @unique
+  referralCodeUsed  String
+  status            ReferralStatus @default(PENDING)
+  qualifyingOrderId String?        @unique
+  rewardCouponId    String?        @unique
+  qualifiedAt       DateTime?
+  rewardedAt        DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  referrer        User    @relation("ReferrerReferrals", fields: [referrerId], references: [id], onDelete: Cascade)
+  referredUser    User    @relation("ReferredUserReferral", fields: [referredUserId], references: [id], onDelete: Cascade)
+  qualifyingOrder Order?  @relation(fields: [qualifyingOrderId], references: [id], onDelete: SetNull)
+  rewardCoupon    Coupon? @relation(fields: [rewardCouponId], references: [id], onDelete: SetNull)
 }
 
 model ChatSession {

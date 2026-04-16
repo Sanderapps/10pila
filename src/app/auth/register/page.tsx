@@ -2,7 +2,14 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/brand-logo";
 import { RegisterForm } from "@/components/auth-forms";
 
-export default function RegisterPage() {
+export default async function RegisterPage({
+  searchParams
+}: {
+  searchParams: Promise<{ ref?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const initialReferralCode = resolvedSearchParams.ref?.trim().toUpperCase() ?? "";
+
   return (
     <main className="container grid max-w-lg gap-5 py-12">
       <div>
@@ -10,7 +17,7 @@ export default function RegisterPage() {
         <p className="font-bold text-[var(--accent)]">cadastro</p>
         <h1 className="text-4xl font-black">Cria tua conta</h1>
       </div>
-      <RegisterForm />
+      <RegisterForm initialReferralCode={initialReferralCode} />
       <p className="text-sm text-[var(--muted)]">
         Ja tem login?{" "}
         <Link className="text-[var(--accent)]" href="/auth/login">
