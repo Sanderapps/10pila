@@ -7,7 +7,8 @@ import { prisma } from "@/lib/db/prisma";
 const chatSchema = z.object({
   sessionId: z.string().nullable().optional(),
   message: z.string().min(1).max(1000),
-  currentProductSlug: z.string().optional()
+  currentProductSlug: z.string().optional(),
+  pathname: z.string().optional()
 });
 
 export async function POST(request: Request) {
@@ -32,27 +33,56 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Sessao de chat invalida." }, { status: 404 });
   }
 
-  await prisma.chatMessage.create({
-    data: {
-      sessionId: session.id,
-      role: "user",
-      content: parsed.data.message
-    }
-  });
+  try {
+    await prisma.chatMessage.create({
+      data: {
+        sessionId: session.id,
+        role: "user",
+        content: parsed.data.message
+      }
+    });
 
-  const answer = await answerFromStoreData(
-    parsed.data.message,
-    user?.id,
-    parsed.data.currentProductSlug
-  );
+    const history = await prisma.chatMessage.findMany({
+      where: { sessionId: session.id },
+      orderBy: { createdAt: "desc" },
+      take: 8
+    });
 
-  await prisma.chatMessage.create({
-    data: {
-      sessionId: session.id,
-      role: "assistant",
-      content: answer.reply
-    }
-  });
+    const answer = await answerFromStoreData({
+      message: parsed.data.message,
+      userId: user?.id,
+      currentProductSlug: parsed.data.currentProductSlug,
+      pathname: parsed.data.pathname,
+      history: history.reverse().map((entry) => ({
+        role: entry.role === "assistant" ? "assistant" : "user",
+        content: entry.content
+      }))
+    });
 
-  return NextResponse.json({ sessionId: session.id, ...answer });
+    await prisma.chatMessage.create({
+      data: {
+        sessionId: session.id,
+        role: "assistant",
+        content: answer.reply
+      }
+    });
+
+    return NextResponse.json({ sessionId: session.id, ...answer });
+  } catch (error) {
+    console.error("[chat] route failed", {
+      message: error instanceof Error ? error.message : "unknown"
+    });
+
+    return NextResponse.json(
+      {
+        sessionId: session.id,
+        reply: "O chat tropeçou aqui. Tenta de novo que eu volto pro balcão.",
+        products: [],
+        quickActions: ["ver promocoes", "mais barato"],
+        source: "fallback",
+        fallbackReason: "provider_error"
+      },
+      { status: 500 }
+    );
+  }
 }

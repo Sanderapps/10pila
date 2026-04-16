@@ -1,7 +1,7 @@
 import type { Product } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL } from "@/lib/utils/money";
-import { generateGeminiReply } from "./gemini";
+import { generateGeminiReply, type GeminiReplyStatus } from "./gemini";
 
 export type ChatProductCard = {
   id: string;
@@ -11,6 +11,32 @@ export type ChatProductCard = {
   stock: number;
   imageUrl: string;
   url: string;
+};
+
+export type ChatHistoryMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export type ChatAnswer = {
+  reply: string;
+  products: ChatProductCard[];
+  quickActions: string[];
+  source: "gemini" | "fallback";
+  fallbackReason?:
+    | "missing_api_key"
+    | "provider_error"
+    | "auth_required"
+    | "no_product_match"
+    | "deterministic";
+};
+
+type AnswerInput = {
+  message: string;
+  userId?: string;
+  currentProductSlug?: string;
+  pathname?: string;
+  history?: ChatHistoryMessage[];
 };
 
 const STOPWORDS = new Set([
@@ -28,16 +54,18 @@ const STOPWORDS = new Set([
   "me",
   "mostra",
   "mostrar",
+  "na",
+  "no",
   "o",
   "os",
-  "pra",
   "para",
+  "pra",
   "produto",
   "quero",
   "sobre",
   "tem",
-  "um",
   "uma",
+  "um",
   "voce"
 ]);
 
@@ -61,10 +89,11 @@ function cardFromProduct(product: Product): ChatProductCard {
   };
 }
 
-function productLine(product: Product) {
+function productSummary(product: Product) {
   const price = centsToBRL(product.promotionalCents ?? product.priceCents);
   const stock = product.stock > 0 ? `${product.stock} em estoque` : "sem estoque";
-  return `${product.name}: ${price}, ${stock}, link ${productUrl(product.slug)}`;
+  const promo = product.promotionalCents ? `promo ativa sobre ${centsToBRL(product.priceCents)}` : "sem promo";
+  return `${product.name} | preco ${price} | ${stock} | ${promo} | link ${productUrl(product.slug)}`;
 }
 
 function searchTerms(message: string) {
@@ -83,18 +112,76 @@ function wantsOrders(message: string) {
 }
 
 function wantsPromos(message: string) {
-  return /promo|promoc|desconto|oferta|barato|menor preco/.test(message.toLowerCase());
+  return /promo|promoc|desconto|oferta/.test(message.toLowerCase());
+}
+
+function wantsCheaper(message: string) {
+  return /mais barato|barato|menor preco|economizar|custo beneficio/.test(message.toLowerCase());
 }
 
 function wantsLink(message: string) {
-  return /link|url|pagina|produto/.test(message.toLowerCase());
+  return /link|url|pagina/.test(message.toLowerCase());
+}
+
+function wantsCompare(message: string) {
+  return /compar|vs|melhor que|diferen/.test(message.toLowerCase());
+}
+
+function wantsDetails(message: string) {
+  return /detalhe|ficha|spec|especific|como e|o que tem/.test(message.toLowerCase());
+}
+
+function wantsSimilar(message: string) {
+  return /parecido|semelhante|outra opcao|alternativa/.test(message.toLowerCase());
+}
+
+function wantsAddToCart(message: string) {
+  return /adiciona|adicionar|coloca no carrinho|leva 1|quero 1/.test(message.toLowerCase());
+}
+
+function quickActionsFor(message: string, hasProducts: boolean) {
+  const actions = new Set<string>();
+
+  if (hasProducts) {
+    if (wantsDetails(message)) {
+      actions.add("ver detalhes");
+    }
+    if (wantsCompare(message) || wantsSimilar(message)) {
+      actions.add("comparar");
+    }
+    if (wantsAddToCart(message)) {
+      actions.add("adicionar 1 ao carrinho");
+    }
+    actions.add("ver detalhes");
+    actions.add("comparar");
+    actions.add("adicionar 1 ao carrinho");
+  }
+
+  if (wantsOrders(message)) {
+    actions.add("ir para o carrinho");
+  } else {
+    actions.add("mais barato");
+    actions.add("ver promocoes");
+  }
+
+  return Array.from(actions).slice(0, 4);
+}
+
+async function getCurrentProduct(currentProductSlug?: string) {
+  if (!currentProductSlug) {
+    return null;
+  }
+
+  return prisma.product.findFirst({
+    where: { slug: currentProductSlug, active: true }
+  });
 }
 
 async function relevantProducts(message: string, currentProductSlug?: string) {
   const terms = searchTerms(message);
-  const currentProduct = currentProductSlug
-    ? await prisma.product.findFirst({ where: { slug: currentProductSlug, active: true } })
-    : null;
+  const currentProduct = await getCurrentProduct(currentProductSlug);
+  const prefersPromo = wantsPromos(message);
+  const prefersCheaper = wantsCheaper(message);
 
   const products = await prisma.product.findMany({
     where: {
@@ -108,11 +195,13 @@ async function relevantProducts(message: string, currentProductSlug?: string) {
               { category: { contains: term, mode: "insensitive" as const } }
             ])
           : undefined,
-      promotionalCents: wantsPromos(message) ? { not: null } : undefined
+      promotionalCents: prefersPromo ? { not: null } : undefined
     },
-    orderBy: wantsPromos(message)
-      ? [{ promotionalCents: "asc" }, { updatedAt: "desc" }]
-      : [{ featured: "desc" }, { updatedAt: "desc" }],
+    orderBy: prefersCheaper
+      ? [{ promotionalCents: "asc" }, { priceCents: "asc" }, { stock: "desc" }]
+      : prefersPromo
+        ? [{ promotionalCents: "asc" }, { updatedAt: "desc" }]
+        : [{ featured: "desc" }, { updatedAt: "desc" }],
     take: 8
   });
 
@@ -127,21 +216,25 @@ async function relevantProducts(message: string, currentProductSlug?: string) {
       const haystack = `${product.name} ${product.description} ${product.slug} ${
         product.category ?? ""
       }`.toLowerCase();
-      const score = terms.reduce((total, term) => total + (haystack.includes(term) ? 1 : 0), 0);
-      return { product, score };
+      const score = terms.reduce((total, term) => total + (haystack.includes(term) ? 2 : 0), 0);
+      const currentBoost = currentProduct && currentProduct.id === product.id ? 4 : 0;
+      return { product, score: score + currentBoost + Number(product.featured) };
     })
-    .sort((a, b) => b.score - a.score || Number(b.product.featured) - Number(a.product.featured))
+    .sort((a, b) => b.score - a.score)
     .forEach(({ product }) => unique.set(product.id, product));
+
+  if (unique.size === 0 && currentProduct) {
+    unique.set(currentProduct.id, currentProduct);
+  }
 
   if (unique.size === 0) {
     const fallback = await prisma.product.findMany({
       where: { active: true },
-      orderBy: wantsPromos(message)
-        ? [{ promotionalCents: "asc" }, { updatedAt: "desc" }]
+      orderBy: prefersCheaper
+        ? [{ promotionalCents: "asc" }, { priceCents: "asc" }, { stock: "desc" }]
         : [{ featured: "desc" }, { updatedAt: "desc" }],
       take: 4
     });
-
     fallback.forEach((product) => unique.set(product.id, product));
   }
 
@@ -151,9 +244,9 @@ async function relevantProducts(message: string, currentProductSlug?: string) {
 async function orderContext(userId?: string) {
   if (!userId) {
     return {
-      context: "Cliente nao esta logado. Nao consulte pedido sem login.",
+      context: "Cliente nao esta logado. Nao revele pedidos sem login.",
       reply:
-        "Pra consultar pedido eu preciso que voce esteja logado. Segurança primeiro, fofoca de pedido dos outros nao rola."
+        "Pra consultar pedido eu preciso do login. Seguranca primeiro, pedido alheio nao entra no radar."
     };
   }
 
@@ -167,15 +260,15 @@ async function orderContext(userId?: string) {
   if (orders.length === 0) {
     return {
       context: "Cliente logado sem pedidos encontrados.",
-      reply: "Nao achei pedido na sua conta ainda. Carrinho vazio nao farma status, infelizmente."
+      reply: "Nao achei pedido na sua conta ainda. Se quiser, eu te ajudo a montar o primeiro."
     };
   }
 
   const lines = orders.map(
     (order) =>
-      `Pedido ${order.id.slice(0, 8)}: ${order.status}, total ${centsToBRL(
+      `Pedido ${order.id.slice(0, 8)} | status ${order.status} | total ${centsToBRL(
         order.totalCents
-      )}, itens ${order.items.map((item) => `${item.quantity}x ${item.name}`).join(", ")}`
+      )} | itens ${order.items.map((item) => `${item.quantity}x ${item.name}`).join(", ")}`
   );
 
   return {
@@ -184,75 +277,124 @@ async function orderContext(userId?: string) {
   };
 }
 
-export async function answerFromStoreData(
+function buildHistory(history?: ChatHistoryMessage[]) {
+  if (!history || history.length === 0) {
+    return "Sem historico relevante.";
+  }
+
+  return history
+    .slice(-6)
+    .map((entry) => `${entry.role === "user" ? "Cliente" : "Assistente"}: ${entry.content}`)
+    .join("\n");
+}
+
+function fallbackReply(
   message: string,
-  userId?: string,
-  currentProductSlug?: string
-) {
-  const products = await relevantProducts(message, currentProductSlug);
-  const cards = products.map(cardFromProduct);
-  const orderData = wantsOrders(message) ? await orderContext(userId) : null;
-
-  if (wantsOrders(message) && !userId) {
-    return {
-      reply: orderData?.reply ?? "Faça login para consultar seus pedidos.",
-      products: cards,
-      quickActions: ["ver promocoes", "mais barato", "ir para o carrinho"],
-      source: "fallback" as const
-    };
-  }
-
-  const productsContext =
-    products.length > 0
-      ? products.map(productLine).join("\n")
-      : "Nenhum produto ativo encontrado para essa consulta.";
-  const context = [
-    `Produtos relevantes:\n${productsContext}`,
-    orderData ? `Pedidos do usuario:\n${orderData.context}` : null,
-    currentProductSlug ? `Pagina atual: /produtos/${currentProductSlug}` : null
-  ]
-    .filter(Boolean)
-    .join("\n\n");
-
-  const geminiReply = await generateGeminiReply({ message, context }).catch(() => null);
-
-  if (geminiReply) {
-    return {
-      reply: geminiReply,
-      products: cards,
-      quickActions: ["ver detalhes", "comparar", "adicionar ao carrinho", "ir para o carrinho"],
-      source: "gemini" as const
-    };
-  }
-
+  products: Product[],
+  cards: ChatProductCard[],
+  orderData: Awaited<ReturnType<typeof orderContext>> | null,
+  geminiStatus: GeminiReplyStatus
+): ChatAnswer {
   if (wantsOrders(message) && orderData) {
     return {
       reply: orderData.reply,
       products: cards,
       quickActions: ["ver promocoes", "ir para o carrinho"],
-      source: "fallback" as const
+      source: "fallback",
+      fallbackReason: orderData.context.includes("nao esta logado") ? "auth_required" : "deterministic"
     };
   }
 
   if (products.length === 0) {
     return {
-      reply: "Ainda nao tem produto ativo batendo com isso. Sem fanfic de estoque por aqui.",
+      reply:
+        "Nao achei produto ativo batendo com isso agora. Me manda categoria, marca ou o nome do item que eu refino.",
       products: [],
       quickActions: ["ver promocoes", "mais barato"],
-      source: "fallback" as const
+      source: "fallback",
+      fallbackReason: "no_product_match"
     };
   }
 
-  const intro = wantsLink(message)
-    ? "Link certo, sem caça ao tesouro:"
-    : wantsPromos(message)
-      ? "Promos reais que achei no banco:"
-      : "Achei esses candidatos na fonte da loja:";
+  if (wantsLink(message)) {
+    const first = products[0];
+    return {
+      reply: `Link certo: [${first.name}](${productUrl(first.slug)})\n${first.name} | ${centsToBRL(
+        first.promotionalCents ?? first.priceCents
+      )} | ${first.stock} em estoque.`,
+      products: cards,
+      quickActions: quickActionsFor(message, cards.length > 0),
+      source: "fallback",
+      fallbackReason: geminiStatus === "provider_error" ? "provider_error" : "deterministic"
+    };
+  }
+
+  const lines = products.map((product) => {
+    const price = centsToBRL(product.promotionalCents ?? product.priceCents);
+    return `${product.name} | ${price} | estoque ${product.stock} | [Ver produto](${productUrl(
+      product.slug
+    )})`;
+  });
 
   return {
-    reply: `${intro}\n${products.map(productLine).join("\n")}`,
+    reply: `${wantsCheaper(message) ? "Opcoes mais em conta que achei:" : "Achei isso no estoque real:"}\n${lines.join("\n")}`,
     products: cards,
-    quickActions: ["ver detalhes", "comparar", "adicionar ao carrinho", "ir para o carrinho"],
-    source: "fallback" as const
+    quickActions: quickActionsFor(message, cards.length > 0),
+    source: "fallback",
+    fallbackReason: geminiStatus === "missing_api_key" ? "missing_api_key" : "deterministic"
   };
+}
+
+export async function answerFromStoreData({
+  message,
+  userId,
+  currentProductSlug,
+  pathname,
+  history
+}: AnswerInput): Promise<ChatAnswer> {
+  const [products, orderData, currentProduct] = await Promise.all([
+    relevantProducts(message, currentProductSlug),
+    wantsOrders(message) ? orderContext(userId) : Promise.resolve(null),
+    getCurrentProduct(currentProductSlug)
+  ]);
+  const cards = products.map(cardFromProduct);
+
+  if (wantsOrders(message) && !userId) {
+    return {
+      reply:
+        orderData?.reply ??
+        "Pra falar de pedido eu preciso que voce esteja logado. Sem furar a fila da seguranca.",
+      products: cards,
+      quickActions: ["ver promocoes", "mais barato", "ir para o carrinho"],
+      source: "fallback",
+      fallbackReason: "auth_required"
+    };
+  }
+
+  const context = [
+    `Pagina atual: ${pathname ?? "/"}${currentProductSlug ? ` | produto atual ${currentProductSlug}` : ""}`,
+    currentProduct ? `Produto em foco:\n${productSummary(currentProduct)}` : "Sem produto em foco.",
+    `Produtos relevantes:\n${products.map(productSummary).join("\n") || "Nenhum produto encontrado."}`,
+    orderData ? `Pedidos do cliente:\n${orderData.context}` : "Pedidos do cliente: nao consultados.",
+    `Historico recente:\n${buildHistory(history)}`
+  ].join("\n\n");
+
+  const gemini = await generateGeminiReply({
+    message,
+    context,
+    products: cards,
+    pathname,
+    currentProduct: currentProduct ? cardFromProduct(currentProduct) : null
+  });
+
+  if (gemini.reply) {
+    return {
+      reply: gemini.reply,
+      products: cards,
+      quickActions: quickActionsFor(message, cards.length > 0),
+      source: "gemini"
+    };
+  }
+
+  return fallbackReply(message, products, cards, orderData, gemini.status);
 }

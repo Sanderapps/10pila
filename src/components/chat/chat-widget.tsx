@@ -21,6 +21,9 @@ type Message = {
   role: "user" | "assistant";
   content: string;
   products?: ChatProductCard[];
+  source?: "gemini" | "fallback";
+  fallbackReason?: string;
+  note?: string;
 };
 
 const HINT_STORAGE_KEY = "10pila-chat-next-hint-at";
@@ -34,26 +37,60 @@ function currentProductSlug(pathname: string) {
   return match?.[1] ? decodeURIComponent(match[1]) : undefined;
 }
 
+function renderInlineContent(line: string) {
+  const parts = line.split(/(\[[^\]]+\]\((https?:\/\/[^)]+)\)|https?:\/\/[^\s]+)/g).filter(Boolean);
+
+  return parts.map((part, partIndex) => {
+    const markdown = part.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
+
+    if (markdown) {
+      return (
+        <a
+          className="chat-link"
+          href={markdown[2]}
+          key={`${markdown[2]}-${partIndex}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          {markdown[1]}
+        </a>
+      );
+    }
+
+    if (part.startsWith("http")) {
+      let label = part;
+
+      try {
+        const url = new URL(part);
+        label = url.pathname.replace(/^\/+/, "") || url.hostname;
+        label = label.length > 30 ? `${label.slice(0, 27)}...` : label;
+      } catch {
+        label = "Abrir link";
+      }
+
+      return (
+        <a
+          className="chat-link"
+          href={part}
+          key={`${part}-${partIndex}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          {label}
+        </a>
+      );
+    }
+
+    return <span key={`${part}-${partIndex}`}>{part}</span>;
+  });
+}
+
 function MessageContent({ content }: { content: string }) {
   return (
     <>
       {content.split("\n").map((line, lineIndex) => (
-        <span className="block" key={`${line}-${lineIndex}`}>
-          {line.split(/(https?:\/\/[^\s]+)/g).map((part, partIndex) =>
-            part.startsWith("http") ? (
-              <a
-                className="font-bold text-[#60a5fa] underline underline-offset-2"
-                href={part}
-                key={`${part}-${partIndex}`}
-                rel="noreferrer"
-                target="_blank"
-              >
-                {part}
-              </a>
-            ) : (
-              <span key={`${part}-${partIndex}`}>{part}</span>
-            )
-          )}
+        <span className="block break-words" key={`${line}-${lineIndex}`}>
+          {renderInlineContent(line)}
         </span>
       ))}
     </>
@@ -80,8 +117,11 @@ export function ChatWidget() {
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [cartLoadingId, setCartLoadingId] = useState("");
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const nextHintAtRef = useRef(0);
   const lastScrollAtRef = useRef(0);
+  const endRef = useRef<HTMLDivElement | null>(null);
+  const shouldStickToBottomRef = useRef(true);
 
   const context = useMemo(() => {
     if (pathname.startsWith("/produtos/")) {
@@ -171,6 +211,32 @@ export function ChatWidget() {
     return () => window.clearInterval(interval);
   }, [context.hints, open]);
 
+  function scrollToBottom(force = false) {
+    if (!endRef.current) {
+      return;
+    }
+
+    if (force || shouldStickToBottomRef.current) {
+      endRef.current.scrollIntoView({ block: "end", behavior: force ? "auto" : "smooth" });
+    }
+  }
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    scrollToBottom(true);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    scrollToBottom();
+  }, [messages, loading, open]);
+
   async function addOne(productId: string) {
     setCartLoadingId(productId);
     const response = await fetch("/api/cart", {
@@ -192,7 +258,9 @@ export function ChatWidget() {
         role: "assistant",
         content: response.ok
           ? "Adicionei 1 no carrinho. Setup recebeu upgrade."
-          : data.error ?? "Nao consegui adicionar agora."
+          : data.error ?? "Nao consegui adicionar agora.",
+        note: response.ok ? "acao executada" : "falha de carrinho",
+        source: "fallback"
       }
     ]);
   }
@@ -207,32 +275,77 @@ export function ChatWidget() {
     setMessages((current) => [...current, { role: "user", content: trimmed }]);
     setLoading(true);
 
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        sessionId,
-        message: trimmed,
-        currentProductSlug: currentProductSlug(pathname)
-      })
-    });
-    const data = await response.json();
+    let response: Response;
+    let data: Record<string, unknown>;
+
+    try {
+      response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          message: trimmed,
+          currentProductSlug: currentProductSlug(pathname),
+          pathname
+        })
+      });
+      data = await response.json();
+    } catch {
+      setLoading(false);
+      setMessages((current) => [
+        ...current,
+        {
+          role: "assistant",
+          content: "A rede deu rage quit agora. Tenta de novo em alguns segundos.",
+          source: "fallback",
+          fallbackReason: "network_error",
+          note: "erro de rede"
+        }
+      ]);
+      return;
+    }
+
     setLoading(false);
 
     if (data.sessionId) {
-      setSessionId(data.sessionId);
+      setSessionId(String(data.sessionId));
     }
 
     if (Array.isArray(data.quickActions) && data.quickActions.length > 0) {
-      setServerQuickActions({ pathname, actions: data.quickActions });
+      setServerQuickActions({ pathname, actions: data.quickActions.map(String) });
     }
+
+    const fallbackReason = typeof data.fallbackReason === "string" ? data.fallbackReason : undefined;
+    const source = data.source === "gemini" ? "gemini" : "fallback";
+    const note =
+      !response.ok
+        ? "erro do chat"
+        : source === "gemini"
+          ? "Gemini ativo"
+          : fallbackReason === "missing_api_key"
+            ? "modo seguro sem Gemini"
+            : fallbackReason === "provider_error"
+              ? "modo seguro por falha da IA"
+              : fallbackReason === "auth_required"
+                ? "login necessario"
+                : fallbackReason === "no_product_match"
+                  ? "produto nao encontrado"
+                  : "modo seguro";
 
     setMessages((current) => [
       ...current,
       {
         role: "assistant",
-        content: data.reply ?? "Buguei com classe, mas nao inventei moda. Tenta de novo.",
-        products: Array.isArray(data.products) ? data.products : []
+        content:
+          typeof data.reply === "string"
+            ? data.reply
+            : !response.ok
+              ? "Deu ruim aqui no chat. Tenta de novo em instantes."
+              : "Buguei com classe, mas nao inventei moda. Tenta de novo.",
+        products: Array.isArray(data.products) ? (data.products as ChatProductCard[]) : [],
+        source,
+        fallbackReason,
+        note
       }
     ]);
   }
@@ -264,13 +377,24 @@ export function ChatWidget() {
   }
 
   function onQuickAction(action: string) {
+    const lastAssistantWithProducts = [...messages]
+      .reverse()
+      .find((message) => message.role === "assistant" && message.products?.length);
+
     if (action === "ir para o carrinho") {
       router.push("/carrinho");
       return;
     }
 
-    if (action === "adicionar ao carrinho") {
-      void sendMessage("adicionar ao carrinho");
+    if (action === "adicionar ao carrinho" || action === "adicionar 1 ao carrinho") {
+      const firstProduct = lastAssistantWithProducts?.products?.[0];
+
+      if (firstProduct) {
+        void addOne(firstProduct.id);
+        return;
+      }
+
+      void sendMessage("adicionar 1 ao carrinho");
       return;
     }
 
@@ -291,7 +415,7 @@ export function ChatWidget() {
         {open ? (
           <motion.section
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="chat-shell pointer-events-auto mr-4 grid h-[min(560px,calc(100vh-110px))] w-[min(410px,calc(100vw-24px))] grid-rows-[auto_1fr_auto] overflow-hidden rounded-[8px] border border-[var(--line)] bg-[rgba(10,12,15,0.95)] shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl max-sm:mr-3"
+            className="chat-shell pointer-events-auto mr-4 grid h-[min(560px,calc(100vh-110px))] w-[min(410px,calc(100vw-24px))] grid-rows-[auto_1fr_auto] overflow-hidden rounded-[8px] border border-[var(--line)] bg-[rgba(10,12,15,0.95)] shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl max-sm:mr-2 max-sm:h-[min(72vh,calc(100vh-92px))] max-sm:w-[min(390px,calc(100vw-12px))]"
             exit={{ opacity: 0, y: 14, scale: 0.98 }}
             initial={{ opacity: 0, y: 14, scale: 0.98 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
@@ -317,7 +441,17 @@ export function ChatWidget() {
               </button>
             </div>
 
-            <div className="grid content-start gap-3 overflow-y-auto p-4 text-sm">
+            <div
+              className="grid content-start gap-3 overflow-y-auto p-4 text-sm"
+              onScroll={(event) => {
+                const element = event.currentTarget;
+                const distanceToBottom =
+                  element.scrollHeight - element.scrollTop - element.clientHeight;
+                const nearBottom = distanceToBottom < 96;
+                shouldStickToBottomRef.current = nearBottom;
+                setShowScrollButton(!nearBottom);
+              }}
+            >
               {messages.map((message, index) => (
                 <div
                   className={
@@ -327,6 +461,11 @@ export function ChatWidget() {
                   }
                   key={`${message.role}-${index}`}
                 >
+                  {message.note ? (
+                    <p className="mb-2 text-[10px] font-black uppercase tracking-normal text-[var(--accent-2)]">
+                      {message.note}
+                    </p>
+                  ) : null}
                   <MessageContent content={message.content} />
                   {message.products?.length ? (
                     <div className="mt-3 grid gap-2">
@@ -375,9 +514,23 @@ export function ChatWidget() {
                   <span>Consultando Gemini + banco...</span>
                 </div>
               ) : null}
+              <div ref={endRef} />
             </div>
 
             <div className="grid gap-2 border-t border-[var(--line)] p-3">
+              {showScrollButton ? (
+                <button
+                  className="quick-chip w-fit"
+                  onClick={() => {
+                    shouldStickToBottomRef.current = true;
+                    setShowScrollButton(false);
+                    scrollToBottom();
+                  }}
+                  type="button"
+                >
+                  voltar para o fim
+                </button>
+              ) : null}
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {quickActions.map((action) => (
                   <button
@@ -396,7 +549,7 @@ export function ChatWidget() {
                   name="message"
                   placeholder="Produto, promo ou pedido"
                 />
-                <button className="btn" disabled={loading} type="submit">
+                <button className="btn shrink-0" disabled={loading} type="submit">
                   Enviar
                 </button>
               </form>

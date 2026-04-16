@@ -155,14 +155,20 @@ Quando receber evento aprovado com `reference_id` do pedido, marca pagamento com
 
 ## Chat IA
 
-O componente de chat chama `/api/chat`, persiste mensagens e usa Gemini no servidor quando `GEMINI_API_KEY` esta configurada. A key nunca deve ir para o frontend. A rota monta contexto real do banco e mantem fallback deterministico quando a API falha ou a credencial falta.
+O componente de chat chama `/api/chat`, persiste mensagens e usa Gemini no servidor quando `GEMINI_API_KEY` esta configurada. A key nunca vai para o frontend.
 
-- produtos
-- promocoes
-- pedidos do usuario logado
-- fallback honesto quando faltar dado
+O backend do chat combina:
 
-Quando cita produto, a resposta inclui nome, preco, estoque e link clicavel para a pagina do item. A UI tambem renderiza cards com botoes "Ver produto" e "Adicionar 1". A busca usa termos da mensagem e o produto da pagina atual para evitar resposta vaga, sem inventar preco, estoque, prazo ou status.
+- historico curto da conversa
+- rota/pagina atual
+- produto atual, quando existir
+- produtos relevantes do banco
+- promocoes reais
+- pedidos do usuario logado, quando a pergunta pede isso
+
+Se `GEMINI_API_KEY` faltar, se a API do Gemini falhar ou se a resposta vier vazia, a rota cai em fallback deterministico. Nesse modo o chat continua respondendo com dados reais do banco, sem inventar preco, estoque, promocao, prazo ou status.
+
+Quando cita produto, a resposta traz nome, preco, estoque e link clicavel. A UI tambem renderiza cards com botoes "Ver produto" e "Adicionar 1". O chat tenta manter respostas curtas, mais comerciais e menos genericas, com quick actions ligadas a conversao.
 
 Variaveis:
 
