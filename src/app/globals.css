@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050608;
+  --foreground: #f5f7fb;
+  --muted: #98a2b3;
+  --panel: #11151d;
+  --line: #263041;
+  --accent: #3ddc97;
+  --accent-2: #4db6ff;
+  --danger: #ff5c7a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(77, 182, 255, 0.18), transparent 28rem),
+    radial-gradient(circle at 85% 10%, rgba(61, 220, 151, 0.14), transparent 24rem),
+    var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.container {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 21, 29, 0.84);
+}
+
+.btn {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: #03120c;
+  font-weight: 800;
+  padding: 0 16px;
+  transition: transform 140ms ease, opacity 140ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn.secondary {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--foreground);
+}
+
+.btn.danger {
+  background: var(--danger);
+  color: #1b0207;
+}
+
+.input {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #080b10;
+  color: var(--foreground);
+  padding: 12px 14px;
+}
+
+.label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.grid-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}

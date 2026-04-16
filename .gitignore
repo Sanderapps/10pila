@@ -1,0 +1,10 @@
+node_modules
+.next
+.codex
+out
+dist
+coverage
+.env
+.env*.local
+*.log
+prisma/dev.db
