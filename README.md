@@ -72,7 +72,14 @@ O projeto usa NextAuth com Prisma Adapter configurado. Como o login do MVP e por
 
 ## Pagamentos
 
-O checkout salva pedido e pagamento. Se `PAGBANK_ACCESS_TOKEN` estiver configurado, a API cria um Checkout hospedado no PagBank e retorna a URL de redirecionamento. Sem token, o fluxo fica em modo estrutural: pedido salvo, pagamento pendente e aviso claro na tela.
+O checkout salva pedido e pagamento. O MVP usa PagBank Checkout hospedado em sandbox por padrao:
+
+```env
+PAGBANK_API_URL=https://sandbox.api.pagseguro.com
+PAGBANK_ACCESS_TOKEN=seu-token-sandbox
+```
+
+Se `PAGBANK_ACCESS_TOKEN` estiver configurado com um token sandbox liberado, a API cria um Checkout hospedado no PagBank e retorna a URL de redirecionamento. Sem token, ou se o PagBank recusar a criacao do checkout, o fluxo fica em modo estrutural: pedido salvo, pagamento pendente e aviso claro na tela.
 
 Webhook preparado:
 
@@ -90,6 +97,8 @@ O componente de chat chama `/api/chat`, persiste mensagens e responde com base n
 - promocoes
 - pedidos do usuario logado
 - fallback honesto quando faltar dado
+
+Quando cita produto, a resposta inclui nome, preco, estoque e link clicavel para a pagina do item. A busca usa termos da mensagem para evitar resposta vaga e nunca inventa preco, estoque ou status.
 
 `OPENAI_API_KEY` esta reservado para evoluir a rota para OpenAI Responses API. O MVP atual evita inventar informacao porque usa respostas deterministicas do backend.
 

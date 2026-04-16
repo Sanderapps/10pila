@@ -54,6 +54,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Produto indisponivel." }, { status: 400 });
   }
 
+  const currentItem = await prisma.cartItem.findUnique({
+    where: {
+      userId_productId: {
+        userId: user.id,
+        productId: product.id
+      }
+    },
+    select: { quantity: true }
+  });
+  const nextQuantity = (currentItem?.quantity ?? 0) + parsed.data.quantity;
+
+  if (nextQuantity > product.stock) {
+    return NextResponse.json(
+      { error: `Estoque disponivel: ${product.stock}. Ajusta a quantidade e bora.` },
+      { status: 400 }
+    );
+  }
+
   const item = await prisma.cartItem.upsert({
     where: {
       userId_productId: {
@@ -87,12 +105,28 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Quantidade invalida." }, { status: 400 });
   }
 
-  const result = await prisma.cartItem.updateMany({
+  const cartItem = await prisma.cartItem.findFirst({
     where: { id: parsed.data.itemId, userId: user.id },
+    include: { product: true }
+  });
+
+  if (!cartItem) {
+    return NextResponse.json({ error: "Item nao encontrado." }, { status: 404 });
+  }
+
+  if (!cartItem.product.active || parsed.data.quantity > cartItem.product.stock) {
+    return NextResponse.json(
+      { error: `Estoque disponivel: ${cartItem.product.stock}.` },
+      { status: 400 }
+    );
+  }
+
+  const item = await prisma.cartItem.update({
+    where: { id: cartItem.id },
     data: { quantity: parsed.data.quantity }
   });
 
-  return NextResponse.json({ ok: result.count > 0 });
+  return NextResponse.json({ ok: true, item });
 }
 
 export async function DELETE(request: Request) {

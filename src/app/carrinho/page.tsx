@@ -55,7 +55,11 @@ export default async function CartPage() {
                       <h2 className="text-xl font-bold">{item.product.name}</h2>
                       <p className="text-sm text-[var(--muted)]">{centsToBRL(price)} cada</p>
                     </div>
-                    <CartActions itemId={item.id} quantity={item.quantity} />
+                    <CartActions
+                      itemId={item.id}
+                      maxQuantity={item.product.stock}
+                      quantity={item.quantity}
+                    />
                   </div>
                 </article>
               );

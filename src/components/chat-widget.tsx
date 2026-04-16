@@ -7,6 +7,32 @@ type Message = {
   content: string;
 };
 
+function MessageContent({ content }: { content: string }) {
+  return (
+    <>
+      {content.split("\n").map((line, lineIndex) => (
+        <span className="block" key={`${line}-${lineIndex}`}>
+          {line.split(/(https?:\/\/[^\s]+)/g).map((part, partIndex) =>
+            part.startsWith("http") ? (
+              <a
+                className="font-bold text-[var(--accent-2)] underline"
+                href={part}
+                key={`${part}-${partIndex}`}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {part}
+              </a>
+            ) : (
+              <span key={`${part}-${partIndex}`}>{part}</span>
+            )
+          )}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -66,7 +92,7 @@ export function ChatWidget() {
                 }
                 key={`${message.role}-${index}`}
               >
-                {message.content}
+                <MessageContent content={message.content} />
               </p>
             ))}
             {loading ? <p className="text-[var(--muted)]">Consultando a matrix...</p> : null}

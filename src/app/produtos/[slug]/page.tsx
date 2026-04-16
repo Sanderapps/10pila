@@ -48,7 +48,7 @@ export default async function ProductPage({
           {product.stock > 0 ? `${product.stock} unidades disponiveis` : "Sem estoque agora"}
         </p>
         {product.stock > 0 ? (
-          <AddToCartButton productId={product.id} />
+          <AddToCartButton maxQuantity={product.stock} productId={product.id} />
         ) : (
           <button className="btn secondary" disabled>
             Indisponivel
