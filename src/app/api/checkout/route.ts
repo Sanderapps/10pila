@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
-import { createMercadoPagoPreference } from "@/lib/payments/mercadopago";
+import { createPagBankCheckout } from "@/lib/payments/pagbank";
 import { freightCents } from "@/lib/utils/money";
 
 const addressSchema = z.object({
@@ -89,6 +89,7 @@ export async function POST(request: Request) {
         },
         payment: {
           create: {
+            provider: "pagbank",
             status: "PENDING",
             amountCents: subtotalCents + fixedFreight
           }
@@ -102,19 +103,19 @@ export async function POST(request: Request) {
     return savedOrder;
   });
 
-  const preference = await createMercadoPagoPreference({ order });
+  const checkout = await createPagBankCheckout({ order });
 
   await prisma.payment.update({
     where: { orderId: order.id },
     data: {
-      preferenceId: preference.preferenceId,
-      checkoutUrl: preference.checkoutUrl,
-      raw: preference.raw
+      preferenceId: checkout.checkoutId,
+      checkoutUrl: checkout.checkoutUrl,
+      raw: checkout.raw
     }
   });
 
   return NextResponse.json({
     orderId: order.id,
-    checkoutUrl: preference.checkoutUrl
+    checkoutUrl: checkout.checkoutUrl
   });
 }

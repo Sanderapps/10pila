@@ -1,6 +1,6 @@
 # 10PILA
 
-E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind, Prisma, PostgreSQL, Auth.js/NextAuth, Mercado Pago Checkout Pro estrutural e chat IA preparado para consultar dados da loja.
+E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind, Prisma, PostgreSQL, Auth.js/NextAuth, PagBank Checkout estrutural e chat IA preparado para consultar dados da loja.
 
 ## Stack
 
@@ -8,7 +8,7 @@ E-commerce MVP de importados tech com Next.js, TypeScript, App Router, Tailwind,
 - Tailwind CSS
 - Prisma + PostgreSQL
 - NextAuth com email e senha, Prisma Adapter e sessoes JWT
-- Mercado Pago Checkout Pro
+- PagBank Checkout hospedado
 - Railway para deploy
 
 ## Setup local
@@ -39,8 +39,9 @@ Variaveis obrigatorias para operar localmente:
 
 Variaveis opcionais no MVP:
 
-- `MERCADOPAGO_ACCESS_TOKEN`: cria preferencia real do Checkout Pro quando preenchido.
-- `MERCADOPAGO_WEBHOOK_SECRET`: segredo simples para validar webhook estrutural.
+- `PAGBANK_ACCESS_TOKEN`: cria checkout real do PagBank quando preenchido.
+- `PAGBANK_WEBHOOK_SECRET`: segredo simples para validar webhook estrutural.
+- `PAGBANK_API_URL`: base da API PagBank, por padrao `https://sandbox.api.pagseguro.com`.
 - `OPENAI_API_KEY`: reservado para evoluir o chat para OpenAI Responses API.
 
 4. Rode migration e seed:
@@ -71,15 +72,15 @@ O projeto usa NextAuth com Prisma Adapter configurado. Como o login do MVP e por
 
 ## Pagamentos
 
-O checkout salva pedido e pagamento. Se `MERCADOPAGO_ACCESS_TOKEN` estiver configurado, a API cria uma preferencia Checkout Pro e retorna a URL de redirecionamento. Sem token, o fluxo fica em modo estrutural: pedido salvo, pagamento pendente e aviso claro na tela.
+O checkout salva pedido e pagamento. Se `PAGBANK_ACCESS_TOKEN` estiver configurado, a API cria um Checkout hospedado no PagBank e retorna a URL de redirecionamento. Sem token, o fluxo fica em modo estrutural: pedido salvo, pagamento pendente e aviso claro na tela.
 
 Webhook preparado:
 
 ```text
-/api/payments/mercadopago/webhook
+/api/payments/pagbank/webhook
 ```
 
-Quando receber evento aprovado com `external_reference` do pedido, marca pagamento como aprovado e reduz estoque em transacao idempotente. Se o mesmo pedido ja estiver `PAID`, o estoque nao e reduzido de novo.
+Quando receber evento aprovado com `reference_id` do pedido, marca pagamento como aprovado e reduz estoque em transacao idempotente. Se o mesmo pedido ja estiver `PAID`, o estoque nao e reduzido de novo.
 
 ## Chat IA
 

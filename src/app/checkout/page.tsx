@@ -47,11 +47,11 @@ export default async function CheckoutPage({
           </p>
           {recentOrder.payment?.checkoutUrl ? (
             <Link className="btn w-fit" href={recentOrder.payment.checkoutUrl}>
-              Voltar ao Mercado Pago
+              Voltar ao PagBank
             </Link>
           ) : (
             <p className="text-sm text-[var(--muted)]">
-              Checkout Pro estrutural salvo. Configure MERCADOPAGO_ACCESS_TOKEN para redirecionar.
+              Checkout PagBank estrutural salvo. Configure PAGBANK_ACCESS_TOKEN para redirecionar.
             </p>
           )}
         </section>

@@ -192,7 +192,7 @@ model OrderItem {
 model Payment {
   id                    String        @id @default(cuid())
   orderId               String        @unique
-  provider              String        @default("mercadopago")
+  provider              String        @default("pagbank")
   status                PaymentStatus @default(PENDING)
   amountCents           Int
   preferenceId          String?
