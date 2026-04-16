@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
+import { EmptyState } from "@/components/empty-state";
 import { SearchIcon, SparkIcon } from "@/components/icons";
 import { prisma } from "@/lib/db/prisma";
 
@@ -79,10 +81,21 @@ export default async function ProductsPage({
           ))}
         </div>
       ) : (
-        <section className="panel grid gap-3 p-6 text-[var(--muted)]">
-          <p className="text-xl font-black text-[var(--foreground)]">Nada encontrado.</p>
-          <p>Talvez o produto ainda esteja no multiverso do fornecedor. Tenta outro termo.</p>
-        </section>
+        <EmptyState
+          eyebrow={
+            <>
+              <SparkIcon />
+              busca
+            </>
+          }
+          title="Nada encontrado"
+          description="Esse termo nao puxou item nenhum do estoque. Tenta categoria, marca ou um nome mais curto."
+          actions={
+            <Link className="btn secondary" href="/produtos">
+              Limpar busca
+            </Link>
+          }
+        />
       )}
     </main>
   );

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
+import { StatusMessage } from "@/components/status-message";
 
 type FieldErrors = Record<string, string>;
 type CheckoutAddress = {
@@ -70,25 +71,6 @@ function validateCheckout(values: AddressFormValues) {
   }
 
   return errors;
-}
-
-function ErrorBox({ error, fieldErrors }: { error: string; fieldErrors: FieldErrors }) {
-  if (!error && Object.keys(fieldErrors).length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="rounded-lg border border-[var(--danger)] bg-black/40 p-3 text-sm text-[var(--danger)]">
-      {error ? <p className="font-bold">{error}</p> : null}
-      {Object.keys(fieldErrors).length > 0 ? (
-        <ul className="mt-2 grid gap-1">
-          {Object.entries(fieldErrors).map(([field, message]) => (
-            <li key={field}>{message}</li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
-  );
 }
 
 function summariseAddress(address: CheckoutAddress | AddressFormValues) {
@@ -463,8 +445,13 @@ export function CheckoutForm({ initialAddresses }: CheckoutFormProps) {
         </>
       ) : null}
 
-      <ErrorBox error={error} fieldErrors={fieldErrors} />
-      {status ? <p className="text-sm text-[var(--accent)]">{status}</p> : null}
+      <StatusMessage
+        fieldErrors={fieldErrors}
+        message={error}
+        title={error ? "Checkout precisa de ajuste" : undefined}
+        variant="error"
+      />
+      {status ? <StatusMessage message={status} variant="success" /> : null}
     </form>
   );
 }

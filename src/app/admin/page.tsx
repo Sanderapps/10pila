@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
 import { BoltIcon, CartIcon, ShieldIcon } from "@/components/icons";
 import { requireAdmin } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
@@ -28,21 +29,22 @@ export default async function AdminPage() {
   return (
     <main className="container grid gap-8 py-10">
       <div>
+        <BrandLogo animated variant="compact" className="mb-4 w-fit" />
         <p className="eyebrow">admin</p>
         <h1 className="text-4xl font-black">Operacao 10PILA</h1>
       </div>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="panel p-5">
+        <div className="panel interactive-panel p-5">
           <p className="text-sm text-[var(--muted)]">Produtos ativos</p>
           <p className="text-4xl font-black">{activeProducts}</p>
           <p className="text-xs text-[var(--muted)]">{inactiveProducts} inativo(s)</p>
         </div>
-        <div className="panel p-5">
+        <div className="panel interactive-panel p-5">
           <p className="text-sm text-[var(--muted)]">Pedidos</p>
           <p className="text-4xl font-black">{orders}</p>
         </div>
-        <div className="panel p-5">
+        <div className="panel interactive-panel p-5">
           <p className="text-sm text-[var(--muted)]">Receita paga</p>
           <p className="text-4xl font-black">{centsToBRL(revenue._sum.totalCents ?? 0)}</p>
         </div>

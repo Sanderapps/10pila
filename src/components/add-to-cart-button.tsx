@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { StatusMessage } from "@/components/status-message";
 
 export function AddToCartButton({
   productId,
@@ -54,7 +55,7 @@ export function AddToCartButton({
     <div className="grid gap-2">
       <div className="surface flex w-fit items-center gap-2 p-2">
         <button
-          className="btn secondary"
+          className="btn secondary min-h-10 min-w-10 px-3"
           disabled={loading || quantity <= 1}
           onClick={() => setSafeQuantity(quantity - 1)}
           type="button"
@@ -71,7 +72,7 @@ export function AddToCartButton({
           value={quantity}
         />
         <button
-          className="btn secondary"
+          className="btn secondary min-h-10 min-w-10 px-3"
           disabled={loading || quantity >= maxQuantity}
           onClick={() => setSafeQuantity(quantity + 1)}
           type="button"
@@ -79,13 +80,17 @@ export function AddToCartButton({
           +
         </button>
       </div>
-      <button className="btn" disabled={loading} onClick={addToCart}>
+      <button className="btn min-h-11" disabled={loading} onClick={addToCart}>
         {loading ? "Adicionando ao setup..." : "Adicionar ao carrinho"}
       </button>
-      {message ? <p className="text-sm text-[var(--muted)]">{message}</p> : null}
+      {message && !showFeedback ? (
+        <StatusMessage message={message} title="Nao deu para adicionar" variant="error" />
+      ) : null}
       {showFeedback ? (
-        <div className="surface fixed right-4 bottom-4 z-50 grid w-[min(420px,calc(100vw-32px))] gap-3 p-4 shadow-2xl">
+        <div className="surface fixed bottom-4 right-4 z-50 grid w-[min(420px,calc(100vw-32px))] gap-3 border border-[var(--line-strong)] p-4 shadow-2xl">
+          <p className="text-xs font-black uppercase tracking-normal text-[var(--accent)]">add to cart</p>
           <p className="font-bold">Produto adicionado. Carrinho ganhou buff.</p>
+          <p className="text-sm text-[var(--muted)]">{message}</p>
           <div className="flex flex-wrap gap-2">
             <a className="btn" href="/carrinho">
               Ir para o carrinho

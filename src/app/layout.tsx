@@ -5,7 +5,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "10PILA",
-  description: "Importados tech com estoque proprio e checkout sem enrolacao."
+  description: "Importados tech com estoque proprio e checkout sem enrolacao.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg"
+  }
 };
 
 export default function RootLayout({

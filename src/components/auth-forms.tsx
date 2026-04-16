@@ -3,6 +3,7 @@
 import { getProviders, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
+import { StatusMessage } from "@/components/status-message";
 
 type FieldErrors = Record<string, string>;
 
@@ -36,33 +37,6 @@ function validatePassword(password: string) {
   return "";
 }
 
-function ErrorBox({ error, fieldErrors }: { error: string; fieldErrors: FieldErrors }) {
-  if (!error && Object.keys(fieldErrors).length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="rounded-lg border border-[var(--danger)] bg-black/40 p-3 text-sm text-[var(--danger)]">
-      {error ? <p className="font-bold">{error}</p> : null}
-      {Object.keys(fieldErrors).length > 0 ? (
-        <ul className="mt-2 grid gap-1">
-          {Object.entries(fieldErrors).map(([field, message]) => (
-            <li key={field}>{message}</li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
-  );
-}
-
-function SuccessBox({ message }: { message: string }) {
-  return message ? (
-    <p className="rounded-lg border border-[var(--accent)] bg-black/40 p-3 text-sm text-[var(--accent)]">
-      {message}
-    </p>
-  ) : null;
-}
-
 function GoogleButton({ disabledText }: { disabledText: string }) {
   const [googleReady, setGoogleReady] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -85,7 +59,7 @@ function GoogleButton({ disabledText }: { disabledText: string }) {
   return (
     <div className="grid gap-2">
       <button
-        className="btn secondary"
+        className="btn secondary min-h-11"
         disabled={!googleReady || loading}
         onClick={onGoogleLogin}
         type="button"
@@ -167,6 +141,7 @@ export function LoginForm() {
           placeholder="voce@email.com"
           type="email"
         />
+        {fieldErrors.email ? <span className="text-xs text-[var(--danger)]">{fieldErrors.email}</span> : null}
       </label>
       <label className="label">
         Senha
@@ -177,10 +152,18 @@ export function LoginForm() {
           placeholder="Sua senha"
           type="password"
         />
+        {fieldErrors.password ? (
+          <span className="text-xs text-[var(--danger)]">{fieldErrors.password}</span>
+        ) : null}
       </label>
-      <ErrorBox error={error} fieldErrors={fieldErrors} />
-      <SuccessBox message={success} />
-      <button className="btn" disabled={loading} type="submit">
+      <StatusMessage
+        fieldErrors={fieldErrors}
+        message={error}
+        title={error ? "Acesso travado" : undefined}
+        variant="error"
+      />
+      <StatusMessage message={success} variant="success" />
+      <button className="btn min-h-11" disabled={loading} type="submit">
         {loading ? "Validando acesso..." : "Entrar"}
       </button>
     </form>
@@ -266,6 +249,7 @@ export function RegisterForm() {
       <label className="label">
         Nome
         <input autoComplete="name" className="input" name="name" placeholder="Seu nome" />
+        {fieldErrors.name ? <span className="text-xs text-[var(--danger)]">{fieldErrors.name}</span> : null}
       </label>
       <label className="label">
         Email
@@ -276,6 +260,7 @@ export function RegisterForm() {
           placeholder="voce@email.com"
           type="email"
         />
+        {fieldErrors.email ? <span className="text-xs text-[var(--danger)]">{fieldErrors.email}</span> : null}
       </label>
       <label className="label">
         Senha
@@ -286,13 +271,21 @@ export function RegisterForm() {
           placeholder="Minimo 8 caracteres, letras e numeros"
           type="password"
         />
+        {fieldErrors.password ? (
+          <span className="text-xs text-[var(--danger)]">{fieldErrors.password}</span>
+        ) : null}
       </label>
       <p className="text-xs text-[var(--muted)]">
         Ainda nao fazemos verificacao real por email. A base esta pronta para essa etapa depois.
       </p>
-      <ErrorBox error={error} fieldErrors={fieldErrors} />
-      <SuccessBox message={success} />
-      <button className="btn" disabled={loading} type="submit">
+      <StatusMessage
+        fieldErrors={fieldErrors}
+        message={error}
+        title={error ? "Cadastro precisa de ajuste" : undefined}
+        variant="error"
+      />
+      <StatusMessage message={success} variant="success" />
+      <button className="btn min-h-11" disabled={loading} type="submit">
         {loading ? "Criando sua conta..." : "Criar conta"}
       </button>
     </form>

@@ -56,7 +56,7 @@ export default async function ProductPage({
         </p>
         <h1 className="text-4xl font-black">{product.name}</h1>
         <p className="text-lg text-[var(--muted)]">{product.description}</p>
-        <div className="surface grid gap-2 p-4">
+        <div className="surface interactive-panel grid gap-2 p-4">
           {product.promotionalCents ? (
             <p className="text-[var(--muted)] line-through">{centsToBRL(product.priceCents)}</p>
           ) : null}
@@ -84,7 +84,7 @@ export default async function ProductPage({
             Indisponivel
           </button>
         )}
-        <div className="panel grid gap-2 p-4 text-sm text-[var(--muted)]">
+        <div className="panel interactive-panel grid gap-2 p-4 text-sm text-[var(--muted)]">
           <p className="font-bold text-[var(--foreground)]">Ficha rapida</p>
           <p>Sem variacoes no MVP. Quantidade limitada ao estoque real.</p>
           <p>Chat IA consulta esse produto pelo banco e manda o link certo.</p>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CartActions } from "@/components/cart-actions";
+import { EmptyState } from "@/components/empty-state";
 import { CartIcon, ShieldIcon, TruckIcon } from "@/components/icons";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
@@ -32,12 +33,21 @@ export default async function CartPage() {
       </div>
 
       {items.length === 0 ? (
-        <section className="panel grid gap-4 p-5">
-          <p className="text-[var(--muted)]">Carrinho vazio. Sem item, sem loot.</p>
-          <Link className="btn w-fit" href="/produtos">
-            Ver produtos
-          </Link>
-        </section>
+        <EmptyState
+          eyebrow={
+            <>
+              <CartIcon />
+              carrinho
+            </>
+          }
+          title="Carrinho vazio"
+          description="Ainda nao entrou nenhum gadget aqui. Escolhe um item e o checkout ja fica no jeito."
+          actions={
+            <Link className="btn" href="/produtos">
+              Ver produtos
+            </Link>
+          }
+        />
       ) : (
         <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
           <section className="grid gap-4">

@@ -7,11 +7,13 @@ import { centsToBRL } from "@/lib/utils/money";
 export function ProductCard({ product }: { product: Product }) {
   const price = product.promotionalCents ?? product.priceCents;
   const hasDiscount = product.promotionalCents !== null;
+  const stockTone = product.stock > 0 ? "chip" : "chip text-[var(--danger)]";
 
   return (
-    <article className="panel shine group grid overflow-hidden transition duration-200 hover:-translate-y-1 hover:border-[var(--line-strong)]">
+    <article className="panel interactive-panel shine group grid overflow-hidden">
       <Link href={`/produtos/${product.slug}`}>
         <div className="relative aspect-[4/3] overflow-hidden bg-black">
+          <div className="absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/55 to-transparent" />
           <div className="absolute left-3 top-3 z-10 flex flex-wrap gap-2">
             {hasDiscount ? (
               <span className="chip border-[var(--accent)] bg-black/70 text-[var(--accent)]">
@@ -53,7 +55,7 @@ export function ProductCard({ product }: { product: Product }) {
               {centsToBRL(price)}
             </p>
           </div>
-          <span className={product.stock > 0 ? "chip" : "chip text-[var(--danger)]"}>
+          <span className={stockTone}>
             {product.stock > 0 ? `${product.stock} em estoque` : "sem estoque"}
           </span>
         </div>

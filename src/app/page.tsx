@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { BrandLogo } from "@/components/brand-logo";
 import { BoltIcon, ShieldIcon, SparkIcon, TruckIcon } from "@/components/icons";
 import { ProductCard } from "@/components/product-card";
 import { prisma } from "@/lib/db/prisma";
@@ -17,6 +18,7 @@ export default async function HomePage() {
     <main>
       <section className="container grid gap-8 py-10 md:grid-cols-[1.05fr_0.95fr] md:items-center md:py-14">
         <div className="grid gap-6 float-in">
+          <BrandLogo animated variant="compact" className="w-fit" />
           <p className="eyebrow">
             <SparkIcon />
             Importados tech com estoque proprio
@@ -51,7 +53,7 @@ export default async function HomePage() {
             </span>
           </div>
         </div>
-        <div className="panel shine relative overflow-hidden p-4">
+        <div className="hero-card panel shine relative overflow-hidden p-4">
           <div className="absolute left-4 right-4 top-4 z-10 flex items-center justify-between">
             <span className="chip bg-black/60 text-[var(--accent)]">drop do dia</span>
             <span className="chip bg-black/60">10PILA checked</span>
@@ -76,6 +78,11 @@ export default async function HomePage() {
             <p className="text-sm text-[var(--muted)]">
               Produto com foto, estoque e preço vindo direto do banco. Sem vitrine fantasma.
             </p>
+            <div className="flex flex-wrap gap-2 pt-2 text-xs text-[var(--muted)]">
+              <span className="chip">checkout externo</span>
+              <span className="chip">estoque sincronizado</span>
+              <span className="chip">chat no contexto</span>
+            </div>
           </div>
         </div>
       </section>
