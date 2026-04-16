@@ -40,7 +40,7 @@ function MessageContent({ content }: { content: string }) {
           {line.split(/(https?:\/\/[^\s]+)/g).map((part, partIndex) =>
             part.startsWith("http") ? (
               <a
-                className="font-bold text-[var(--accent-2)] underline"
+                className="font-bold text-[#60a5fa] underline underline-offset-2"
                 href={part}
                 key={`${part}-${partIndex}`}
                 rel="noreferrer"
@@ -392,12 +392,12 @@ export function ChatWidget() {
         ) : null}
       </AnimatePresence>
 
-      <div className="pointer-events-auto relative mr-0 h-28 w-[96px] overflow-hidden max-sm:w-[86px]">
+      <div className="pointer-events-auto relative mr-0 h-28 w-[112px] overflow-hidden max-sm:w-[102px]">
         <AnimatePresence>
           {hint ? (
             <motion.button
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="absolute bottom-20 right-14 max-w-[220px] rounded-[8px] border border-[var(--line)] bg-[rgba(8,10,14,0.96)] px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] shadow-[0_16px_40px_rgba(0,0,0,0.38)]"
+              className="absolute bottom-20 right-16 max-w-[220px] rounded-[8px] border border-[var(--line)] bg-[rgba(8,10,14,0.96)] px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] shadow-[0_16px_40px_rgba(0,0,0,0.38)]"
               exit={{ opacity: 0, y: 8, scale: 0.96 }}
               initial={{ opacity: 0, y: 8, scale: 0.96 }}
               onClick={openChat}
@@ -415,13 +415,13 @@ export function ChatWidget() {
             y: [0, -1, 0],
             rotate: [0, 0.8, 0, -0.8, 0]
           }}
-          className="absolute bottom-[-6px] right-[-28px] max-sm:right-[-30px]"
+          className="absolute bottom-[-4px] right-[-10px] max-sm:right-[-12px]"
           key={nudgeTick}
           transition={{ duration: 0.72, ease: "easeInOut" }}
         >
           <div className="relative">
             <div className="absolute inset-x-10 bottom-3 h-8 rounded-full bg-[rgba(61,245,165,0.12)] blur-2xl" />
-            <div className="translate-x-3 translate-y-1 max-sm:translate-x-2">
+            <div className="translate-x-1 translate-y-1">
               <AssistantMascot onClick={openChat} />
             </div>
           </div>

@@ -6,6 +6,8 @@ import { createPagBankCheckout } from "@/lib/payments/pagbank";
 import { freightCents } from "@/lib/utils/money";
 
 const addressSchema = z.object({
+  addressId: z.string().cuid().optional(),
+  saveAsDefault: z.boolean().optional(),
   recipient: z.string().trim().min(2, "Informe quem vai receber o pedido."),
   phone: z.string().trim().min(8, "Informe um telefone com DDD."),
   zipCode: z.string().trim().min(8, "Informe um CEP valido."),
@@ -25,7 +27,8 @@ export async function POST(request: Request) {
   }
 
   const userEmail = user.email;
-  const parsed = addressSchema.safeParse(await request.json());
+  const payload = await request.json();
+  const parsed = addressSchema.safeParse(payload);
 
   if (!parsed.success) {
     const fieldErrors = Object.fromEntries(
@@ -61,54 +64,131 @@ export async function POST(request: Request) {
     return total + price * item.quantity;
   }, 0);
   const fixedFreight = freightCents();
+  const addressInput = {
+    recipient: parsed.data.recipient.trim(),
+    phone: parsed.data.phone.trim(),
+    zipCode: parsed.data.zipCode.trim(),
+    street: parsed.data.street.trim(),
+    number: parsed.data.number.trim(),
+    complement: parsed.data.complement?.trim() || undefined,
+    district: parsed.data.district.trim(),
+    city: parsed.data.city.trim(),
+    state: parsed.data.state.trim().toUpperCase()
+  };
 
-  const order = await prisma.$transaction(async (tx) => {
-    const address = await tx.address.create({
-      data: {
-        userId: user.id,
-        ...parsed.data
-      }
-    });
+  let order;
 
-    const savedOrder = await tx.order.create({
-      data: {
-        userId: user.id,
-        addressId: address.id,
-        status: "AWAITING_PAYMENT",
-        subtotalCents,
-        freightCents: fixedFreight,
-        totalCents: subtotalCents + fixedFreight,
-        customerName: user.name ?? parsed.data.recipient,
-        customerEmail: userEmail,
-        shippingAddress: parsed.data,
-        items: {
-          create: cartItems.map((item) => {
-            const price = item.product.promotionalCents ?? item.product.priceCents;
-            return {
-              productId: item.productId,
-              name: item.product.name,
-              imageUrl: item.product.imageUrl,
-              unitCents: price,
-              quantity: item.quantity,
-              totalCents: price * item.quantity
-            };
-          })
-        },
-        payment: {
-          create: {
-            provider: "pagbank",
-            status: "PENDING",
-            amountCents: subtotalCents + fixedFreight
+  try {
+    order = await prisma.$transaction(async (tx) => {
+      const existingAddressCount = await tx.address.count({
+        where: { userId: user.id }
+      });
+      const shouldBeDefault = parsed.data.saveAsDefault ?? existingAddressCount === 0;
+
+      let address;
+
+      if (parsed.data.addressId) {
+        address = await tx.address.findFirst({
+          where: {
+            id: parsed.data.addressId,
+            userId: user.id
           }
+        });
+
+        if (!address) {
+          throw new Error("Endereco salvo nao encontrado.");
         }
-      },
-      include: { items: true, payment: true }
+
+        if (shouldBeDefault) {
+          await tx.address.updateMany({
+            where: { userId: user.id, id: { not: address.id } },
+            data: { isDefault: false }
+          });
+        }
+
+        address = await tx.address.update({
+          where: { id: address.id },
+          data: {
+            ...addressInput,
+            isDefault: shouldBeDefault ? true : address.isDefault
+          }
+        });
+      } else {
+        if (shouldBeDefault) {
+          await tx.address.updateMany({
+            where: { userId: user.id },
+            data: { isDefault: false }
+          });
+        }
+
+        address = await tx.address.create({
+          data: {
+            userId: user.id,
+            isDefault: shouldBeDefault,
+            ...addressInput
+          }
+        });
+      }
+
+      const hasDefaultAddress = await tx.address.count({
+        where: { userId: user.id, isDefault: true }
+      });
+
+      if (hasDefaultAddress === 0) {
+        await tx.address.update({
+          where: { id: address.id },
+          data: { isDefault: true }
+        });
+      }
+
+      const savedOrder = await tx.order.create({
+        data: {
+          userId: user.id,
+          addressId: address.id,
+          status: "AWAITING_PAYMENT",
+          subtotalCents,
+          freightCents: fixedFreight,
+          totalCents: subtotalCents + fixedFreight,
+          customerName: user.name ?? parsed.data.recipient,
+          customerEmail: userEmail,
+          shippingAddress: addressInput,
+          items: {
+            create: cartItems.map((item) => {
+              const price = item.product.promotionalCents ?? item.product.priceCents;
+              return {
+                productId: item.productId,
+                name: item.product.name,
+                imageUrl: item.product.imageUrl,
+                unitCents: price,
+                quantity: item.quantity,
+                totalCents: price * item.quantity
+              };
+            })
+          },
+          payment: {
+            create: {
+              provider: "pagbank",
+              status: "PENDING",
+              amountCents: subtotalCents + fixedFreight
+            }
+          }
+        },
+        include: { items: true, payment: true }
+      });
+
+      await tx.cartItem.deleteMany({ where: { userId: user.id } });
+
+      return savedOrder;
     });
-
-    await tx.cartItem.deleteMany({ where: { userId: user.id } });
-
-    return savedOrder;
-  });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error ? error.message : "Nao foi possivel salvar o endereco agora."
+      },
+      { status: 400 }
+    );
+  }
 
   const checkout = await createPagBankCheckout({ order });
 

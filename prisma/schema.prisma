@@ -95,6 +95,7 @@ model VerificationToken {
 model Address {
   id         String   @id @default(cuid())
   userId     String
+  isDefault  Boolean  @default(false)
   recipient  String
   phone      String
   zipCode    String

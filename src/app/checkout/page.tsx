@@ -17,6 +17,10 @@ export default async function CheckoutPage({
     where: { userId: user.id },
     include: { product: true }
   });
+  const addresses = await prisma.address.findMany({
+    where: { userId: user.id },
+    orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }]
+  });
 
   const recentOrder = pedido
     ? await prisma.order.findFirst({
@@ -69,7 +73,21 @@ export default async function CheckoutPage({
 
       {items.length > 0 ? (
         <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
-          <CheckoutForm />
+          <CheckoutForm
+            initialAddresses={addresses.map((address) => ({
+              id: address.id,
+              isDefault: address.isDefault,
+              recipient: address.recipient,
+              phone: address.phone,
+              zipCode: address.zipCode,
+              street: address.street,
+              number: address.number,
+              complement: address.complement ?? "",
+              district: address.district,
+              city: address.city,
+              state: address.state
+            }))}
+          />
           <aside className="panel grid h-fit gap-3 p-5">
             <p className="text-sm text-[var(--muted)]">Resumo</p>
             <div className="grid gap-2 text-sm">

@@ -33,6 +33,6 @@
   <path d="M54 39C64 31 75 27 90 27C105 27 117 31 126 39" stroke="white" stroke-opacity="0.1" stroke-width="2"/>
   <rect x="66" y="60" width="17" height="16" rx="7" fill="#55F0C0"/>
   <rect x="97" y="60" width="17" height="16" rx="7" fill="#55C8FF"/>
-  <path d="M74 86C82 93 98 93 106 86" stroke="url(#glow)" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M72 84C81 94 99 94 108 84" stroke="url(#glow)" stroke-width="3.2" stroke-linecap="round"/>
   <path d="M55 93C66 98 78 101 90 101C103 101 115 98 125 93" stroke="#55C8FF" stroke-opacity="0.35" stroke-width="1.8" stroke-linecap="round"/>
 </svg>

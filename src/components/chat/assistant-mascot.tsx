@@ -227,10 +227,10 @@ export function AssistantMascot({
           <motion.path
             animate={
               thinking
-                ? { d: ["M76 84h28", "M74 86q16 7 32 0", "M76 84h28"] }
+                ? { d: ["M75 84h30", "M72 85q18 10 36 0", "M75 84h30"] }
                 : undefined
             }
-            d="M74 86q16 7 32 0"
+            d="M72 84q18 10 36 0"
             fill="none"
             filter="url(#bot-neon)"
             stroke="url(#bot-glow)"
