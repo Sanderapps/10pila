@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminConsoleIllustration } from "@/components/brand-illustrations";
 import { BrandLogo } from "@/components/brand-logo";
 import { BoltIcon, CartIcon, ShieldIcon } from "@/components/icons";
 import { requireAdmin } from "@/lib/auth/session";
@@ -84,7 +85,10 @@ export default async function AdminPage() {
             </p>
           ))
         ) : (
-          <p className="text-sm text-[var(--muted)]">Nada critico agora.</p>
+          <div className="grid justify-items-start gap-3 text-sm text-[var(--muted)]">
+            <AdminConsoleIllustration className="size-20" />
+            <p>Nada critico agora.</p>
+          </div>
         )}
       </section>
     </main>

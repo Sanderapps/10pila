@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SearchShelfIllustration } from "@/components/brand-illustrations";
 import { ProductCard } from "@/components/product-card";
 import { EmptyState } from "@/components/empty-state";
 import { SearchIcon, SparkIcon } from "@/components/icons";
@@ -82,6 +83,7 @@ export default async function ProductsPage({
         </div>
       ) : (
         <EmptyState
+          art={<SearchShelfIllustration className="size-24" />}
           eyebrow={
             <>
               <SparkIcon />

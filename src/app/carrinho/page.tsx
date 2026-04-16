@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CartOrbitIllustration } from "@/components/brand-illustrations";
 import { CartActions } from "@/components/cart-actions";
 import { EmptyState } from "@/components/empty-state";
 import { CartIcon, ShieldIcon, TruckIcon } from "@/components/icons";
@@ -34,6 +35,7 @@ export default async function CartPage() {
 
       {items.length === 0 ? (
         <EmptyState
+          art={<CartOrbitIllustration className="size-24" />}
           eyebrow={
             <>
               <CartIcon />
