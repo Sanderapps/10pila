@@ -24,6 +24,9 @@ export function AssistantMascot({
   const neonId = `${id}-neon`;
   const shadowId = `${id}-shadow`;
   const Wrapper = onClick ? motion.button : motion.div;
+  const triggerStateClass = onClick
+    ? `${open ? "assistant-mascot-open" : "assistant-mascot-closed"} ${thinking ? "assistant-mascot-thinking" : ""}`
+    : "";
   const sizeClass = compact
     ? "assistant-mascot-svg h-14 w-14"
     : "assistant-mascot-svg h-28 w-28 drop-shadow-[0_24px_44px_rgba(0,0,0,0.48)]";
@@ -33,15 +36,21 @@ export function AssistantMascot({
       animate={
         compact
           ? undefined
-          : {
-              y: [0, -3, 0],
-              rotate: [0, -1.6, 0, 1.2, 0]
-            }
+          : open
+            ? {
+                y: [0, -1.5, 0],
+                rotate: [0, 0.8, 0, -0.8, 0],
+                scale: [0.98, 1, 0.98]
+              }
+            : {
+                y: [0, -3, 0],
+                rotate: [0, -1.6, 0, 1.2, 0]
+              }
       }
       aria-label={onClick ? (open ? "Fechar chat da IA 10PILA" : "Abrir chat da IA 10PILA") : undefined}
       className={
         onClick
-          ? "assistant-mascot-trigger group relative block h-24 w-24 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-2)]"
+          ? `assistant-mascot-trigger ${triggerStateClass} group relative block h-24 w-24 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-2)]`
           : "relative block"
       }
       onClick={onClick}
@@ -49,14 +58,15 @@ export function AssistantMascot({
         compact
           ? undefined
           : {
-              duration: 4.8,
+              duration: open ? 2.8 : 4.8,
               repeat: Infinity,
-              repeatDelay: 3.2,
+              repeatDelay: open ? 1.2 : 3.2,
               ease: "easeInOut"
             }
       }
       type={onClick ? "button" : undefined}
-      whileTap={onClick ? { scale: 0.97 } : undefined}
+      whileHover={onClick ? { y: -4, scale: 1.04 } : undefined}
+      whileTap={onClick ? { scale: 0.9, rotate: -3 } : undefined}
     >
       <svg
         aria-hidden="true"
@@ -103,7 +113,7 @@ export function AssistantMascot({
           <motion.path
             animate={
               thinking
-                ? { opacity: [0.45, 0.95, 0.45] }
+                ? { opacity: [0.45, 1, 0.45], pathLength: [0.55, 1, 0.55] }
                 : compact
                   ? undefined
                   : { opacity: [0.38, 0.68, 0.38] }
@@ -114,7 +124,7 @@ export function AssistantMascot({
             stroke={`url(#${glowId})`}
             strokeLinecap="round"
             strokeWidth="6"
-            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: thinking ? 0.8 : 1.4, repeat: Infinity, ease: "easeInOut" }}
           />
 
           <rect
@@ -176,13 +186,17 @@ export function AssistantMascot({
 
           <path d="M90 16v12" stroke="#8191a5" strokeLinecap="round" strokeWidth="3" />
           <motion.circle
-            animate={thinking ? { opacity: [0.35, 1, 0.35] } : { opacity: [0.45, 0.9, 0.45] }}
+            animate={
+              thinking
+                ? { opacity: [0.35, 1, 0.35], r: [4.5, 6.2, 4.5] }
+                : { opacity: [0.45, 0.9, 0.45], r: [4.5, 5.2, 4.5] }
+            }
             cx="90"
             cy="12"
             fill="#3df5a5"
             filter={`url(#${neonId})`}
             r="4.5"
-            transition={{ duration: thinking ? 0.75 : 2.2, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: thinking ? 0.65 : 2.2, repeat: Infinity, ease: "easeInOut" }}
           />
           <path d="M54 39c10-8 21-12 36-12 15 0 27 4 36 12" opacity="0.1" stroke="#fff" strokeWidth="2" />
 

@@ -643,13 +643,16 @@ export function ChatWidget() {
                 </div>
               ) : null}
               {messages.map((message, index) => (
-                <div
+                <motion.div
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
                   className={
                     message.role === "user"
                       ? "chat-bubble-user ml-8 rounded-lg border border-[rgba(61,245,165,0.38)] bg-[rgba(18,64,49,0.96)] p-3 text-[#f7fbff] shadow-[0_12px_34px_rgba(0,0,0,0.32)]"
                       : "chat-bubble-assistant mr-8 rounded-lg border border-[rgba(85,200,255,0.34)] bg-[rgba(17,28,40,0.96)] p-3 text-[#f7fbff] shadow-[0_12px_34px_rgba(0,0,0,0.38)]"
                   }
+                  initial={{ opacity: 0, y: 8, scale: 0.985 }}
                   key={`${message.role}-${index}`}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
                 >
                   {message.note ? (
                     <p className="mb-2 text-[10px] font-black uppercase tracking-normal text-[var(--accent-2)]">
@@ -696,11 +699,15 @@ export function ChatWidget() {
                       ))}
                     </div>
                   ) : null}
-                </div>
+                </motion.div>
               ))}
               {loading ? (
                 <div className="chat-loading-row">
-                  <span className="chat-loading-dot" />
+                  <span className="chat-loading-dots" aria-hidden="true">
+                    <span className="chat-loading-dot" />
+                    <span className="chat-loading-dot" />
+                    <span className="chat-loading-dot" />
+                  </span>
                   <span>Consultando a loja...</span>
                 </div>
               ) : null}
