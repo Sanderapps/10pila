@@ -8,15 +8,15 @@ export default function LoginPage() {
       <div className="commerce-hero-panel panel grid gap-3 p-5 md:p-6">
         <BrandLogo animated variant="symbol" className="w-fit" />
         <p className="eyebrow">login</p>
-        <h1 className="text-4xl font-black">Entra na conta</h1>
+        <h1 className="text-4xl font-black">Entrar na conta</h1>
         <p className="max-w-md text-sm text-[var(--muted)]">
-          Acompanha pedido, fecha compra mais rapido e guarda teus atalhos da 10PILA no mesmo lugar.
+          Acesse sua conta para continuar uma compra, acompanhar pedidos e manter seus dados salvos.
         </p>
       </div>
       <LoginForm />
       <div className="surface grid gap-2 p-4 text-sm text-[var(--muted)]">
         <strong className="text-[var(--foreground)]">Ainda sem conta?</strong>
-        <p>Cria teu cadastro para salvar pedido, usar indicacao e voltar pro carrinho sem perder o fio.</p>
+        <p>Crie um cadastro para salvar seus pedidos, usar codigo de indicacao e voltar ao carrinho depois.</p>
         <Link className="text-[var(--accent)]" href="/auth/register">
           Criar cadastro
         </Link>

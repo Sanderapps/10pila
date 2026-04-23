@@ -15,9 +15,9 @@ export default async function RegisterPage({
       <div className="commerce-hero-panel panel grid gap-3 p-5 md:p-6">
         <BrandLogo animated variant="symbol" className="w-fit" />
         <p className="eyebrow">cadastro</p>
-        <h1 className="text-4xl font-black">Cria tua conta</h1>
+        <h1 className="text-4xl font-black">Criar conta</h1>
         <p className="max-w-md text-sm text-[var(--muted)]">
-          Salva teus pedidos, usa indicacao, volta pro carrinho sem perder o fio e acompanha tudo num lugar so.
+          Cadastre-se para comprar com mais facilidade, acompanhar pedidos e usar codigo de indicacao quando tiver.
         </p>
       </div>
       <RegisterForm initialReferralCode={initialReferralCode} />

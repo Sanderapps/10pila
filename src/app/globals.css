@@ -690,6 +690,7 @@ select {
 }
 
 .chat-shell {
+  color: var(--foreground);
   will-change: transform, opacity;
 }
 
@@ -885,15 +886,18 @@ select {
 
 .chat-head {
   position: relative;
+  color: var(--foreground);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
 }
 
 .chat-bubble-assistant {
   border: 1px solid rgba(85, 200, 255, 0.12);
+  color: var(--foreground);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .chat-bubble-user {
+  color: #06110d;
   box-shadow: 0 14px 34px rgba(61, 245, 165, 0.14);
 }
 
@@ -901,6 +905,7 @@ select {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
     rgba(5, 7, 10, 0.55);
+  color: var(--foreground);
 }
 
 .chat-link {
@@ -946,6 +951,7 @@ select {
     radial-gradient(circle at 16% 16%, rgba(61, 245, 165, 0.1), transparent 10rem),
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
     rgba(7, 10, 14, 0.84);
+  color: var(--foreground);
   padding: 14px;
 }
 

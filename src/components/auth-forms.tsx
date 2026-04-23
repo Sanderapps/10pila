@@ -299,7 +299,7 @@ export function LoginForm() {
     <form className="panel grid gap-5 p-5 md:p-6" noValidate onSubmit={onSubmit}>
       <div className="grid gap-1">
         <p className="text-sm font-bold text-[var(--foreground)]">Entrar com email</p>
-        <p className="text-sm text-[var(--muted)]">Usa teu login para acompanhar pedido, carrinho e indicacao no mesmo lugar.</p>
+        <p className="text-sm text-[var(--muted)]">Use o email e a senha cadastrados para continuar.</p>
       </div>
       <label className="label">
         Email
@@ -335,7 +335,7 @@ export function LoginForm() {
         {loading ? "Validando acesso..." : "Entrar"}
       </button>
       <div className="grid gap-3 border-t border-[var(--line)] pt-4">
-        <p className="text-xs font-bold uppercase text-[var(--muted)]">Ou usa acesso rapido</p>
+        <p className="text-xs font-bold uppercase text-[var(--muted)]">Ou entre com uma conta externa</p>
         <SocialProviders mode="login" />
       </div>
     </form>
@@ -436,7 +436,7 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
       <SocialProviders mode="register" />
       <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
         <span className="h-px flex-1 bg-[var(--line)]" />
-        ou cria com email
+        ou preencha os dados
         <span className="h-px flex-1 bg-[var(--line)]" />
       </div>
       <label className="label">
@@ -504,8 +504,8 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
       <div className="grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="grid gap-1">
-            <p className="text-sm font-bold text-[var(--foreground)]">Tem codigo de indicacao? Use aqui.</p>
-            <p className="text-xs text-[var(--muted)]">Opcional. Se voce veio por um amigo, pode colar ou editar o codigo.</p>
+            <p className="text-sm font-bold text-[var(--foreground)]">Codigo de indicacao</p>
+            <p className="text-xs text-[var(--muted)]">Opcional. Se alguem te indicou, use o codigo aqui.</p>
           </div>
           {initialReferralFromLink && referralCode ? (
             <span className="rounded-full border border-[rgba(61,245,165,0.28)] bg-[rgba(61,245,165,0.12)] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--accent)]">
@@ -541,9 +541,9 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
             ) : null}
           </div>
           {initialReferralFromLink && referralCode ? (
-            <span className="text-xs text-[var(--accent)]">Codigo preenchido automaticamente pelo link. Pode editar ou remover.</span>
+            <span className="text-xs text-[var(--accent)]">Codigo preenchido pelo link. Voce pode editar ou remover.</span>
           ) : (
-            <span className="text-xs text-[var(--muted)]">Nao veio por link? Sem problema, voce pode digitar o codigo manualmente.</span>
+            <span className="text-xs text-[var(--muted)]">Se nao tiver codigo, pode deixar em branco.</span>
           )}
           {fieldErrors.referralCode ? (
             <span className="text-xs text-[var(--danger)]">{fieldErrors.referralCode}</span>
@@ -551,7 +551,7 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
         </label>
       </div>
       <p className="text-xs text-[var(--muted)]">
-        Ainda nao fazemos verificacao real por email. A base esta pronta para essa etapa depois.
+        Use um email que voce consiga acessar. Ele sera usado para identificar sua conta e seus pedidos.
       </p>
       <StatusMessage
         fieldErrors={fieldErrors}
