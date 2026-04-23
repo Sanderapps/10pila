@@ -20,7 +20,9 @@ export async function resolveCartCoupon(
       where: { userId },
       include: { coupon: true }
     }),
-    prisma.order.count({ where: { userId } })
+    prisma.order.count({
+      where: { userId, status: { in: ["PAID", "PROCESSING", "SHIPPED", "DELIVERED"] } }
+    })
   ]);
 
   if (!application) {

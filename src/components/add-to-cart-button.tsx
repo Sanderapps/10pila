@@ -1,8 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StatusMessage } from "@/components/status-message";
+import {
+  clearPendingCartAction,
+  readPendingCartAction,
+  savePendingCartAction
+} from "@/lib/utils/pending-cart";
 
 export function AddToCartButton({
   productId,
@@ -17,6 +22,7 @@ export function AddToCartButton({
   const [errorMessage, setErrorMessage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [showFeedback, setShowFeedback] = useState(false);
+  const replayedIntentRef = useRef(false);
 
   function setSafeQuantity(nextQuantity: number) {
     setQuantity(Math.min(Math.max(nextQuantity, 1), maxQuantity));
@@ -36,6 +42,12 @@ export function AddToCartButton({
 
     if (response.status === 401) {
       const currentPath = `${window.location.pathname}${window.location.search}`;
+      savePendingCartAction({
+        productId,
+        quantity,
+        pathname: currentPath,
+        source: "product-page"
+      });
       setLoading(false);
       router.push(`/auth/login?callbackUrl=${encodeURIComponent(currentPath)}`);
       return;
@@ -53,6 +65,52 @@ export function AddToCartButton({
     setShowFeedback(true);
     router.refresh();
   }
+
+  useEffect(() => {
+    if (replayedIntentRef.current) {
+      return;
+    }
+
+    const pendingAction = readPendingCartAction();
+
+    if (!pendingAction || pendingAction.source !== "product-page" || pendingAction.productId !== productId) {
+      return;
+    }
+
+    replayedIntentRef.current = true;
+
+    void (async () => {
+      setLoading(true);
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: pendingAction.productId,
+          quantity: pendingAction.quantity
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      setLoading(false);
+
+      if (response.ok) {
+        clearPendingCartAction();
+        setSuccessMessage(
+          `${pendingAction.quantity} item(ns) no carrinho. Achadinho guardado com sucesso.`
+        );
+        setShowFeedback(true);
+        router.refresh();
+        return;
+      }
+
+      if (response.status !== 401) {
+        clearPendingCartAction();
+      }
+
+      if (!response.ok && data && typeof data.error === "string") {
+        setErrorMessage(data.error);
+      }
+    })();
+  }, [productId, router]);
 
   function closeFeedback() {
     setShowFeedback(false);

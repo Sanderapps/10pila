@@ -7,6 +7,11 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { BotSignalIllustration } from "@/components/brand-illustrations";
 import { BrandLogo } from "@/components/brand-logo";
 import { BoltIcon } from "@/components/icons";
+import {
+  clearPendingCartAction,
+  readPendingCartAction,
+  savePendingCartAction
+} from "@/lib/utils/pending-cart";
 import { AssistantMascot } from "./assistant-mascot";
 
 type ChatProductCard = {
@@ -129,6 +134,7 @@ export function ChatWidget() {
   const endRef = useRef<HTMLDivElement | null>(null);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const shouldStickToBottomRef = useRef(true);
+  const replayedIntentRef = useRef(false);
 
   const context = useMemo(() => {
     if (pathname.startsWith("/produtos/")) {
@@ -294,6 +300,12 @@ export function ChatWidget() {
     setCartLoadingId("");
 
     if (response.status === 401) {
+      savePendingCartAction({
+        productId,
+        quantity: 1,
+        pathname,
+        source: "chat"
+      });
       router.push(`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`);
       return;
     }
@@ -311,6 +323,66 @@ export function ChatWidget() {
       }
     ]);
   }
+
+  useEffect(() => {
+    if (replayedIntentRef.current) {
+      return;
+    }
+
+    const pendingAction = readPendingCartAction();
+
+    if (!pendingAction || pendingAction.source !== "chat" || pendingAction.pathname !== pathname) {
+      return;
+    }
+
+    replayedIntentRef.current = true;
+
+    void (async () => {
+      setCartLoadingId(pendingAction.productId);
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: pendingAction.productId,
+          quantity: pendingAction.quantity
+        })
+      });
+      setCartLoadingId("");
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        clearPendingCartAction();
+        setMessages((current) => [
+          ...current,
+          {
+            role: "assistant",
+            content: "Retomei a acao depois do login e adicionei 1 no carrinho.",
+            note: "acao retomada apos login",
+            source: "fallback"
+          }
+        ]);
+        router.refresh();
+        return;
+      }
+
+      if (response.status !== 401) {
+        clearPendingCartAction();
+      }
+
+      setMessages((current) => [
+        ...current,
+        {
+          role: "assistant",
+          content:
+            data && typeof data.error === "string"
+              ? data.error
+              : "Nao consegui retomar a adicao ao carrinho agora.",
+          note: "falha ao retomar acao",
+          source: "fallback"
+        }
+      ]);
+    })();
+  }, [pathname, router]);
 
   async function sendMessage(content: string) {
     const trimmed = content.trim();

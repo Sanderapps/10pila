@@ -70,7 +70,9 @@ export async function POST(request: Request) {
       where: { userId: user.id },
       include: { coupon: true }
     }),
-    prisma.order.count({ where: { userId: user.id } })
+    prisma.order.count({
+      where: { userId: user.id, status: { in: ["PAID", "PROCESSING", "SHIPPED", "DELIVERED"] } }
+    })
   ]);
   const couponResult = couponApplication
     ? computeCoupon({
