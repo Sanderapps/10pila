@@ -1,4 +1,5 @@
 import { AIAssistantMode, AIProvider } from "@prisma/client";
+import { logError, logWarn } from "@/lib/utils/ops-log";
 import { assistantModeLabel, modelForProvider, providerOrder, type StoredChatConfig } from "./config";
 
 export type AIReplyStatus = "ok" | "missing_provider" | "provider_error";
@@ -124,7 +125,7 @@ async function runGemini(input: ProviderRequest): Promise<AIReplyResult> {
 
     if (!response.ok) {
       const body = await response.text();
-      console.error("[chat][provider][gemini] request failed", {
+      logWarn("chat.provider.gemini.request_failed", {
         status: response.status,
         body: body.slice(0, 300)
       });
@@ -143,7 +144,7 @@ async function runGemini(input: ProviderRequest): Promise<AIReplyResult> {
 
     return reply ? { reply, status: "ok", provider: AIProvider.GEMINI } : { reply: null, status: "provider_error" };
   } catch (error) {
-    console.error("[chat][provider][gemini] request error", {
+    logError("chat.provider.gemini.request_error", {
       message: error instanceof Error ? error.message : "unknown"
     });
     return { reply: null, status: "provider_error" };
@@ -194,7 +195,7 @@ async function runOpenAiCompat(
 
     if (!response.ok) {
       const body = await response.text();
-      console.error(`[chat][provider][${provider.toLowerCase()}] request failed`, {
+      logWarn(`chat.provider.${provider.toLowerCase()}.request_failed`, {
         status: response.status,
         body: body.slice(0, 300)
       });
@@ -208,7 +209,7 @@ async function runOpenAiCompat(
 
     return reply ? { reply, status: "ok", provider } : { reply: null, status: "provider_error" };
   } catch (error) {
-    console.error(`[chat][provider][${provider.toLowerCase()}] request error`, {
+    logError(`chat.provider.${provider.toLowerCase()}.request_error`, {
       message: error instanceof Error ? error.message : "unknown"
     });
     return { reply: null, status: "provider_error" };

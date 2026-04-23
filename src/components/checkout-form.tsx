@@ -151,6 +151,10 @@ export function CheckoutForm({
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [zipStatus, setZipStatus] = useState("");
+  const totalUnits = useMemo(
+    () => items.reduce((count, item) => count + item.quantity, 0),
+    [items]
+  );
 
   const selectedAddress =
     savedAddresses.find((address) => address.id === selectedAddressId) ?? defaultAddress;
@@ -181,7 +185,7 @@ export function CheckoutForm({
     setValues(payloadValues);
     setError("");
     setFieldErrors({});
-    setStatus("Endereco confirmado. Revise o pedido antes do redirect.");
+    setStatus("Endereco confirmado. Agora so falta revisar o pedido e seguir para o pagamento seguro.");
     setReviewing(true);
   }
 
@@ -241,7 +245,7 @@ export function CheckoutForm({
       return;
     }
 
-    setStatus("Separando seu pedido e preparando o pagamento seguro...");
+    setStatus("Conferindo estoque, endereco e preparando o redirecionamento seguro...");
 
     const response = await fetch("/api/checkout", {
       method: "POST",
@@ -264,18 +268,38 @@ export function CheckoutForm({
     }
 
     if (data.checkoutUrl) {
-      setStatus("Pedido pronto. Indo para o pagamento seguro...");
+      setStatus("Pedido revisado. Indo para o ambiente seguro do PagBank...");
       window.location.href = data.checkoutUrl;
       return;
     }
 
-    setStatus(data.checkoutMessage ?? "Pedido criado em modo estrutural.");
+    setStatus(
+      data.checkoutMessage ??
+        "Pedido salvo na 10PILA. O link de pagamento ainda nao voltou, mas seu pedido ficou registrado."
+    );
     router.push(`/checkout?pedido=${data.orderId}`);
     router.refresh();
   }
 
   return (
     <form className="panel grid gap-4 p-5" noValidate onSubmit={onSubmit}>
+      <section className="grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
+        <div className="grid gap-1">
+          <p className="text-sm font-bold text-[var(--accent)]">Etapa final</p>
+          <h2 className="text-2xl font-black">Revise o pedido antes do pagamento</h2>
+          <p className="text-sm text-[var(--muted)]">
+            O fechamento continua na 10PILA ate o momento do pagamento. Depois disso, voce segue para o ambiente
+            seguro do PagBank e volta para acompanhar tudo por aqui.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2 text-xs text-[var(--muted)]">
+          <span className="chip">estoque validado antes do fechamento</span>
+          <span className="chip">endereco revisavel</span>
+          <span className="chip">pedido vinculado a esta conta</span>
+          <span className="chip">retorno para acompanhamento no 10PILA</span>
+        </div>
+      </section>
+
       {savedAddresses.length > 0 ? (
         <section className="grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
           <div className="flex items-start justify-between gap-3">
@@ -525,9 +549,10 @@ export function CheckoutForm({
           <div className="checkout-review-backdrop" />
           <div className="grid gap-1">
             <p className="text-sm font-bold text-[var(--accent)]">Revisao final</p>
-            <h3 className="text-xl font-black">Tudo certo antes do PagBank</h3>
+            <h3 className="text-xl font-black">Tudo certo antes do pagamento seguro</h3>
             <p className="text-sm text-[var(--muted)]">
-              Voce sera redirecionado para o ambiente seguro do PagBank para concluir o pagamento.
+              Aqui voce confere itens, entrega e total. O pagamento e concluido no ambiente seguro do PagBank, mas
+              o pedido continua amarrado ao seu historico na 10PILA.
             </p>
           </div>
 
@@ -546,6 +571,9 @@ export function CheckoutForm({
                 <p className="font-bold">{values.recipient}</p>
                 <p className="text-sm text-[var(--muted)]">{values.phone}</p>
                 <p className="mt-2 text-sm text-[var(--muted)]">{summariseAddress(values)}</p>
+                <p className="mt-3 text-xs text-[var(--muted)]">
+                  Se algo estiver torto, volta um passo e ajusta antes de seguir.
+                </p>
               </div>
 
               <div className="rounded-lg border border-[var(--line)] bg-black/20 p-4">
@@ -571,7 +599,9 @@ export function CheckoutForm({
               <div className="mt-3 grid gap-2 text-sm">
                 <p className="flex justify-between text-[var(--muted)]">
                   <span>Itens</span>
-                  <strong className="text-[var(--foreground)]">{items.length}</strong>
+                  <strong className="text-[var(--foreground)]">
+                    {items.length} produto(s) / {totalUnits} unidade(s)
+                  </strong>
                 </p>
                 <p className="flex justify-between">
                   <span>Subtotal</span>
@@ -593,8 +623,8 @@ export function CheckoutForm({
                   <span>Frete</span>
                   <strong>{freight}</strong>
                 </p>
-                <p className="flex justify-between text-base font-black text-[var(--accent)]">
-                  <span>Total</span>
+                <p className="mt-1 flex justify-between border-t border-[var(--line)] pt-3 text-base font-black text-[var(--accent)]">
+                  <span>Total final</span>
                   <span>{total}</span>
                 </p>
               </div>
@@ -606,12 +636,17 @@ export function CheckoutForm({
                 <span className="chip w-fit bg-black/50">pedido volta para sua conta</span>
               </div>
               <div className="mt-4 rounded-lg border border-[var(--line)] bg-[rgba(10,15,20,0.85)] p-3 text-sm text-[var(--muted)]">
-                Pagamento seguro via PagBank hospedado. O fechamento acontece fora da 10PILA, mas o pedido segue ligado a esta conta.
+                Voce sera redirecionado para o PagBank para concluir o pagamento em ambiente seguro. Depois, o
+                acompanhamento do pedido continua aqui na 10PILA.
               </div>
             </aside>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="grid gap-3">
+            <p className="text-sm text-[var(--muted)]">
+              Proximo passo: abrir o ambiente seguro do PagBank para concluir o pagamento sem perder o rastro do pedido.
+            </p>
+            <div className="flex flex-wrap gap-3">
             <button
               className="btn secondary"
               disabled={loading}
@@ -623,6 +658,7 @@ export function CheckoutForm({
             <button className="btn shine" disabled={loading} type="submit">
               {loading ? "Preparando..." : "Ir para pagamento seguro"}
             </button>
+            </div>
           </div>
         </section>
       ) : null}

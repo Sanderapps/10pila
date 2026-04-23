@@ -8,15 +8,15 @@ type BrandLogoProps = {
 
 const LOGO_ASSETS = {
   horizontal: {
-    src: "/brand/10pila-wordmark-horizontal.png",
-    width: 2000,
-    height: 560,
+    src: "/brand/10pila-wordmark-horizontal-v2.webp",
+    width: 1599,
+    height: 429,
     alt: "10PILA"
   },
   compact: {
-    src: "/brand/10pila-wordmark-horizontal.png",
-    width: 2000,
-    height: 560,
+    src: "/brand/10pila-wordmark-horizontal-v2.webp",
+    width: 1599,
+    height: 429,
     alt: "10PILA"
   },
   symbol: {

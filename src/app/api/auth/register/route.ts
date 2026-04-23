@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { attachReferralToNewUser } from "@/lib/commerce/referrals";
 import { prisma } from "@/lib/db/prisma";
+import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
 
 const registerSchema = z.object({
   name: z.string().trim().min(2, "Informe seu nome com pelo menos 2 caracteres."),
@@ -19,6 +20,9 @@ export async function POST(request: Request) {
   const parsed = registerSchema.safeParse(await request.json());
 
   if (!parsed.success) {
+    logWarn("auth.register.invalid_payload", {
+      issueCount: parsed.error.issues.length
+    });
     const fieldErrors = Object.fromEntries(
       parsed.error.issues.map((issue) => [issue.path.join("."), issue.message])
     );
@@ -34,6 +38,7 @@ export async function POST(request: Request) {
   const existing = await prisma.user.findUnique({ where: { email } });
 
   if (existing) {
+    logWarn("auth.register.email_conflict", { email });
     return NextResponse.json(
       { error: "Este email ja esta em uso. Entre com senha ou use Google.", fieldErrors: { email: "Este email ja tem cadastro." } },
       { status: 409 }
@@ -47,6 +52,10 @@ export async function POST(request: Request) {
     });
 
     if (!referrer || referrer.email === email) {
+      logWarn("auth.register.invalid_referral", {
+        email,
+        referralCode
+      });
       return NextResponse.json(
         {
           error: "Codigo de indicacao invalido.",
@@ -57,20 +66,39 @@ export async function POST(request: Request) {
     }
   }
 
-  const user = await prisma.user.create({
-    data: {
-      name: parsed.data.name,
+  try {
+    const user = await prisma.user.create({
+      data: {
+        name: parsed.data.name,
+        email,
+        passwordHash: await bcrypt.hash(parsed.data.password, 12)
+      },
+      select: { id: true, email: true, name: true }
+    });
+
+    const referral = await attachReferralToNewUser({
+      userId: user.id,
+      email: user.email,
+      referralCode
+    });
+
+    logInfo("auth.register.created", {
+      userId: user.id,
+      hasReferralCode: Boolean(referralCode),
+      referralAttached: Boolean(referral)
+    });
+
+    return NextResponse.json({ user }, { status: 201 });
+  } catch (error) {
+    logError("auth.register.failed", {
       email,
-      passwordHash: await bcrypt.hash(parsed.data.password, 12)
-    },
-    select: { id: true, email: true, name: true }
-  });
+      hasReferralCode: Boolean(referralCode),
+      message: error instanceof Error ? error.message : "unknown"
+    });
 
-  await attachReferralToNewUser({
-    userId: user.id,
-    email: user.email,
-    referralCode
-  });
-
-  return NextResponse.json({ user }, { status: 201 });
+    return NextResponse.json(
+      { error: "Nao deu para criar a conta agora. Tenta de novo em instantes." },
+      { status: 500 }
+    );
+  }
 }

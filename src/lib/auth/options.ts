@@ -5,6 +5,7 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
+import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
 
 const providers: NextAuthOptions["providers"] = [
   CredentialsProvider({
@@ -18,20 +19,31 @@ const providers: NextAuthOptions["providers"] = [
       const password = credentials?.password;
 
       if (!email || !password) {
+        logWarn("auth.credentials.missing_fields");
         return null;
       }
 
       const user = await prisma.user.findUnique({ where: { email } });
 
       if (!user?.passwordHash) {
+        logWarn("auth.credentials.user_missing_or_social_only", { email });
         return null;
       }
 
       const isValid = await bcrypt.compare(password, user.passwordHash);
 
       if (!isValid) {
+        logWarn("auth.credentials.invalid_password", {
+          userId: user.id,
+          email
+        });
         return null;
       }
+
+      logInfo("auth.credentials.authorized", {
+        userId: user.id,
+        role: user.role
+      });
 
       return {
         id: user.id,
@@ -104,6 +116,26 @@ export const authOptions: NextAuthOptions = {
       }
 
       return session;
+    }
+  },
+  events: {
+    async signIn(message) {
+      logInfo("auth.sign_in", {
+        userId: message.user.id,
+        provider: message.account?.provider ?? "unknown",
+        isNewUser: message.isNewUser
+      });
+    }
+  },
+  logger: {
+    error(code, metadata) {
+      logError("auth.nextauth.error", { code, metadata });
+    },
+    warn(code) {
+      logWarn("auth.nextauth.warn", { code });
+    },
+    debug(code, metadata) {
+      logInfo("auth.nextauth.debug", { code, metadata });
     }
   },
   secret: process.env.AUTH_SECRET

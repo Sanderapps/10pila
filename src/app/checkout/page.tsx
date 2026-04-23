@@ -58,13 +58,23 @@ export default async function CheckoutPage({
         ? "O pagamento nao fechou. Voce pode revisar o pedido e tentar novamente."
         : paymentStatus === "CANCELED"
           ? "Fluxo cancelado. O pedido segue salvo para voce decidir o proximo passo."
-          : "O pagamento ainda esta em analise ou aguardando acao no gateway.";
+        : "O pagamento ainda esta em analise ou aguardando acao no gateway.";
+  const statusTone =
+    paymentStatus === "APPROVED"
+      ? "text-[var(--accent)]"
+      : paymentStatus === "REJECTED" || paymentStatus === "CANCELED"
+        ? "text-[var(--danger)]"
+        : "text-[var(--accent-2)]";
 
   return (
     <main className="container grid gap-8 py-10">
       <div>
         <p className="font-bold text-[var(--accent)]">checkout</p>
         <h1 className="text-4xl font-black">Fechar pedido</h1>
+        <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
+          Revise entrega, itens e total aqui dentro da 10PILA. O pagamento final acontece em ambiente seguro do
+          PagBank, e depois o pedido volta para acompanhamento normal na sua conta.
+        </p>
       </div>
 
       {recentOrder ? (
@@ -78,7 +88,7 @@ export default async function CheckoutPage({
                 {status ? ` Evento de retorno: ${status}.` : ""}
               </p>
             </div>
-            <span className="chip text-[var(--accent)]">{recentOrder.status}</span>
+            <span className={`chip ${statusTone}`}>{recentOrder.status}</span>
           </div>
           <div className="flex flex-wrap gap-2 text-sm">
             <span className="chip bg-black/40">pedido {recentOrder.id.slice(0, 8)}</span>
@@ -119,7 +129,8 @@ export default async function CheckoutPage({
                 Proximo passo: <strong className="text-[var(--foreground)]">{paymentNextStep}</strong>
               </p>
               <p>
-                A 10PILA te recebe de volta aqui para continuar o fluxo sem cara de saida seca do site. Pedido, pagamento e proximos passos ficam no mesmo trilho.
+                A 10PILA te recebe de volta aqui para continuar o fluxo sem cara de saida seca do site. Pedido,
+                pagamento e proximos passos ficam no mesmo trilho.
               </p>
             </div>
           </div>
@@ -198,7 +209,10 @@ export default async function CheckoutPage({
             total={centsToBRL(total)}
           />
           <aside className="panel grid h-fit gap-3 p-5">
-            <p className="text-sm text-[var(--muted)]">Resumo</p>
+            <p className="text-sm font-bold text-[var(--accent)]">Resumo do fechamento</p>
+            <p className="text-sm text-[var(--muted)]">
+              Pedido revisavel antes do pagamento. Nada e cobrado aqui dentro dessa etapa.
+            </p>
             <div className="grid gap-2 text-sm">
               <p className="flex justify-between">
                 <span>Produtos</span>
@@ -221,9 +235,16 @@ export default async function CheckoutPage({
                 <strong>{centsToBRL(effectiveFreight)}</strong>
               </p>
             </div>
-            <p className="text-3xl font-black text-[var(--accent)]">
-              {centsToBRL(total)}
-            </p>
+            <div className="rounded-lg border border-[var(--line)] bg-black/20 p-4">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--muted)]">Total final</p>
+              <p className="mt-1 text-3xl font-black text-[var(--accent)]">{centsToBRL(total)}</p>
+            </div>
+            <div className="grid gap-2 text-sm text-[var(--muted)]">
+              <span className="chip">estoque validado</span>
+              <span className="chip">pedido revisavel antes do redirect</span>
+              <span className="chip">pagamento seguro via PagBank</span>
+              <span className="chip">retorno para acompanhar na 10PILA</span>
+            </div>
           </aside>
         </div>
       ) : null}

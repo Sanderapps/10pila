@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import type { Prisma } from "@prisma/client";
 import { markOrderPaidAndReduceStock } from "@/lib/inventory/stock";
+import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
 
 function isApprovedStatus(status: unknown) {
   return ["PAID", "APPROVED", "AUTHORIZED", "PAYMENT_RECEIVED", "COMPLETED"].includes(
@@ -102,6 +103,7 @@ export async function POST(request: Request) {
   try {
     payload = JSON.parse(rawBody || "{}") as Record<string, unknown>;
   } catch {
+    logWarn("payments.pagbank.webhook.invalid_payload");
     return NextResponse.json({ error: "Payload PagBank invalido." }, { status: 400 });
   }
   const webhookSecret = process.env.PAGBANK_WEBHOOK_SECRET;
@@ -111,16 +113,25 @@ export async function POST(request: Request) {
     request.headers.get("x-signature");
 
   if (webhookSecret && (!signature || !hasValidSignature(rawBody, signature, webhookSecret))) {
+    logWarn("payments.pagbank.webhook.unauthorized");
     return NextResponse.json({ error: "Webhook PagBank nao autorizado." }, { status: 401 });
   }
 
   const orderId = orderIdFromPayload(payload, request.url);
 
   if (!orderId) {
+    logWarn("payments.pagbank.webhook.missing_order");
     return NextResponse.json({ ok: true, ignored: "missing-order" });
   }
 
-  if (isApprovedStatus(statusFromPayload(payload))) {
+  const providerStatus = statusFromPayload(payload);
+
+  logInfo("payments.pagbank.webhook.received", {
+    orderId: String(orderId),
+    providerStatus: providerStatus ? String(providerStatus) : null
+  });
+
+  if (isApprovedStatus(providerStatus)) {
     try {
       await markOrderPaidAndReduceStock(String(orderId), {
         providerPaymentId: providerPaymentIdFromPayload(payload)
@@ -128,7 +139,14 @@ export async function POST(request: Request) {
           : undefined,
         raw: payload as Prisma.InputJsonValue
       });
+      logInfo("payments.pagbank.webhook.approved_processed", {
+        orderId: String(orderId)
+      });
     } catch (error) {
+      logError("payments.pagbank.webhook.process_failed", {
+        orderId: String(orderId),
+        message: error instanceof Error ? error.message : "unknown"
+      });
       return NextResponse.json(
         {
           error:

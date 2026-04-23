@@ -1,4 +1,5 @@
 import type { Order, OrderItem, Payment } from "@prisma/client";
+import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
 
 type CheckoutInput = {
   order: Order & { items: OrderItem[]; payment: Payment | null };
@@ -24,6 +25,9 @@ export async function createPagBankCheckout({ order }: CheckoutInput) {
   const apiUrl = process.env.PAGBANK_API_URL ?? "https://sandbox.api.pagseguro.com";
 
   if (!token) {
+    logWarn("payments.pagbank.token_missing", {
+      orderId: order.id
+    });
     return {
       checkoutId: `local-${order.id}`,
       checkoutUrl: null,
@@ -69,6 +73,10 @@ export async function createPagBankCheckout({ order }: CheckoutInput) {
 
     if (!response.ok) {
       const body = await response.text();
+      logWarn("payments.pagbank.checkout_rejected", {
+        orderId: order.id,
+        status: response.status
+      });
       return {
         checkoutId: `pagbank-error-${order.id}`,
         checkoutUrl: null,
@@ -91,6 +99,12 @@ export async function createPagBankCheckout({ order }: CheckoutInput) {
       data.links?.find((link) => link.href?.includes("pagseguro"))?.href ??
       null;
 
+    logInfo("payments.pagbank.checkout_created", {
+      orderId: order.id,
+      checkoutId: data.id ?? `pagbank-${order.id}`,
+      hasCheckoutUrl: Boolean(checkoutUrl)
+    });
+
     return {
       checkoutId: data.id ?? `pagbank-${order.id}`,
       checkoutUrl,
@@ -104,6 +118,10 @@ export async function createPagBankCheckout({ order }: CheckoutInput) {
           }
     };
   } catch (error) {
+    logError("payments.pagbank.network_error", {
+      orderId: order.id,
+      message: error instanceof Error ? error.message : "unknown"
+    });
     return {
       checkoutId: `pagbank-network-${order.id}`,
       checkoutUrl: null,

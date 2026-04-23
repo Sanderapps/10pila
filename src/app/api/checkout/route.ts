@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { computeCoupon } from "@/lib/commerce/coupons";
 import { prisma } from "@/lib/db/prisma";
 import { createPagBankCheckout } from "@/lib/payments/pagbank";
+import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
 import { freightCents } from "@/lib/utils/money";
 
 const addressSchema = z.object({
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
   const user = await getCurrentUser();
 
   if (!user?.email) {
+    logWarn("checkout.auth_required");
     return NextResponse.json({ error: "Login obrigatorio." }, { status: 401 });
   }
 
@@ -32,6 +34,10 @@ export async function POST(request: Request) {
   const parsed = addressSchema.safeParse(payload);
 
   if (!parsed.success) {
+    logWarn("checkout.invalid_payload", {
+      userId: user.id,
+      issueCount: parsed.error.issues.length
+    });
     const fieldErrors = Object.fromEntries(
       parsed.error.issues.map((issue) => [issue.path.join("."), issue.message])
     );
@@ -48,11 +54,19 @@ export async function POST(request: Request) {
   });
 
   if (cartItems.length === 0) {
+    logWarn("checkout.cart_empty", { userId: user.id });
     return NextResponse.json({ error: "Carrinho vazio." }, { status: 400 });
   }
 
   for (const item of cartItems) {
     if (!item.product.active || item.product.stock < item.quantity) {
+      logWarn("checkout.stock_conflict", {
+        userId: user.id,
+        productId: item.productId,
+        productName: item.product.name,
+        requestedQuantity: item.quantity,
+        availableStock: item.product.stock
+      });
       return NextResponse.json(
         { error: `Estoque indisponivel para ${item.product.name}.` },
         { status: 400 }
@@ -218,6 +232,10 @@ export async function POST(request: Request) {
       return savedOrder;
     });
   } catch (error) {
+    logError("checkout.order_transaction_failed", {
+      userId: user.id,
+      message: error instanceof Error ? error.message : "unknown"
+    });
     return NextResponse.json(
       {
         error:
@@ -228,6 +246,22 @@ export async function POST(request: Request) {
   }
 
   const checkout = await createPagBankCheckout({ order });
+
+  logInfo("checkout.order_created", {
+    userId: user.id,
+    orderId: order.id,
+    subtotalCents,
+    totalCents,
+    couponCode:
+      couponApplication && couponResult?.valid ? couponApplication.coupon.code : null,
+    productDiscountCents,
+    freightDiscountCents,
+    checkoutMode:
+      checkout.raw && typeof checkout.raw === "object" && "mode" in checkout.raw
+        ? String(checkout.raw.mode)
+        : "provider",
+    hasCheckoutUrl: Boolean(checkout.checkoutUrl)
+  });
 
   await prisma.payment.update({
     where: { orderId: order.id },

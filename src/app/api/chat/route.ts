@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/session";
 import { answerFromStoreData } from "@/lib/chat/assistant";
 import { prisma } from "@/lib/db/prisma";
+import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
 
 const chatSchema = z.object({
   sessionId: z.string().nullable().optional(),
@@ -15,6 +16,9 @@ export async function POST(request: Request) {
   const parsed = chatSchema.safeParse(await request.json());
 
   if (!parsed.success) {
+    logWarn("chat.request.invalid_payload", {
+      issueCount: parsed.error.issues.length
+    });
     return NextResponse.json({ error: "Mensagem invalida." }, { status: 400 });
   }
 
@@ -30,6 +34,10 @@ export async function POST(request: Request) {
       : await prisma.chatSession.create({ data: { userId: user?.id } });
 
   if (!session) {
+    logWarn("chat.session.invalid", {
+      sessionId: parsed.data.sessionId ?? null,
+      userId: user?.id ?? null
+    });
     return NextResponse.json({ error: "Sessao de chat invalida." }, { status: 404 });
   }
 
@@ -59,6 +67,15 @@ export async function POST(request: Request) {
       }))
     });
 
+    logInfo("chat.answer.generated", {
+      sessionId: session.id,
+      userId: user?.id ?? null,
+      pathname: parsed.data.pathname ?? "/",
+      source: answer.source,
+      fallbackReason: answer.fallbackReason ?? null,
+      productCount: answer.products.length
+    });
+
     await prisma.chatMessage.create({
       data: {
         sessionId: session.id,
@@ -69,7 +86,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ sessionId: session.id, ...answer });
   } catch (error) {
-    console.error("[chat] route failed", {
+    logError("chat.route.failed", {
+      sessionId: session.id,
+      userId: user?.id ?? null,
+      pathname: parsed.data.pathname ?? "/",
       message: error instanceof Error ? error.message : "unknown"
     });
 

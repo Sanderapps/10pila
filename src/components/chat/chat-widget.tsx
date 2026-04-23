@@ -150,8 +150,15 @@ export function ChatWidget() {
 
     if (pathname.startsWith("/carrinho")) {
       return {
-        quick: ["ir para o carrinho", "fechar pedido", "ver promocoes"],
-        hints: ["Quer fechar esse pedido?", "Posso revisar esse carrinho", "Partiu checkout?"]
+        quick: ["revisar o carrinho", "tirar duvida de frete", "aplicar cupom", "fechar pedido"],
+        hints: ["Posso revisar esse carrinho", "Quer ajuda com frete ou cupom?", "Fechamos isso sem drama?"]
+      };
+    }
+
+    if (pathname.startsWith("/checkout")) {
+      return {
+        quick: ["tirar duvida de entrega", "revisar pedido", "acompanhar pedido"],
+        hints: ["Se pintar duvida de entrega, eu ajudo.", "Posso revisar esse fechamento sem enrolar."]
       };
     }
 
@@ -177,6 +184,8 @@ export function ChatWidget() {
   }, [pathname]);
   const quickActions =
     serverQuickActions?.pathname === pathname ? serverQuickActions.actions : context.quick;
+  const suppressPurchaseOverlay =
+    isPurchasePage && open && (isKeyboardOpen || composerFocused || isLandscapeMobile);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -531,6 +540,11 @@ export function ChatWidget() {
       return;
     }
 
+    if (action === "revisar o carrinho") {
+      router.push("/carrinho");
+      return;
+    }
+
     void sendMessage(action);
   }
 
@@ -548,6 +562,7 @@ export function ChatWidget() {
     >
       <AnimatePresence>
         {open ? (
+          !suppressPurchaseOverlay ? (
           <>
           <motion.button
             animate={{ opacity: 1 }}
@@ -563,9 +578,9 @@ export function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             className={`chat-shell pointer-events-auto mr-4 grid grid-rows-[auto_1fr_auto] overflow-hidden rounded-[8px] border border-[var(--line)] bg-[rgba(10,12,15,0.95)] shadow-[0_30px_90px_rgba(0,0,0,0.45)] backdrop-blur-xl ${
               isPurchasePage
-                ? "h-[min(480px,calc(100vh-190px))] w-[min(390px,calc(100vw-18px))]"
+                ? "h-[min(450px,calc(100vh-210px))] w-[min(360px,calc(100vw-18px))]"
                 : "h-[min(560px,calc(100vh-110px))] w-[min(410px,calc(100vw-24px))]"
-            } ${isLandscapeMobile ? "max-h-[calc(100vh-18px)] w-[min(420px,calc(100vw-12px))] mr-1" : "max-sm:mr-2 max-sm:h-[min(72vh,calc(100vh-92px))] max-sm:w-[min(390px,calc(100vw-12px))]"}`}
+            } ${isLandscapeMobile ? "max-h-[calc(100vh-18px)] w-[min(360px,calc(100vw-10px))] mr-1" : "max-sm:mr-2 max-sm:h-[min(72vh,calc(100vh-92px))] max-sm:w-[min(390px,calc(100vw-12px))]"}`}
             exit={{ opacity: 0, y: 14, scale: 0.98 }}
             initial={{ opacity: 0, y: 14, scale: 0.98 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
@@ -580,7 +595,9 @@ export function ChatWidget() {
                     <BrandLogo variant="symbol" className="w-8" />
                     <div>
                       <p className="text-sm font-black">PilaBot</p>
-                      <p className="text-xs text-[var(--muted)]">vendedor tech</p>
+                      <p className="text-xs text-[var(--muted)]">
+                        {isPurchasePage ? "assistente de fechamento" : "vendedor tech"}
+                      </p>
                     </div>
                   </div>
                   <div className="mt-1 flex flex-wrap items-center gap-2">
@@ -618,7 +635,9 @@ export function ChatWidget() {
                       assistente 10PILA
                     </p>
                     <p className="text-sm text-[var(--muted)]">
-                      Tamo on. Posso tirar duvida, achar o link certo, comparar sem drama ou te ajudar a garimpar alguma utilidade barata.
+                      {isPurchasePage
+                        ? "Tamo on. Aqui eu foco em duvida de entrega, cupom, carrinho e fechamento sem atrapalhar teu pedido."
+                        : "Tamo on. Posso tirar duvida, achar o link certo, comparar sem drama ou te ajudar a garimpar alguma utilidade barata."}
                     </p>
                   </div>
                 </div>
@@ -729,12 +748,15 @@ export function ChatWidget() {
             </div>
           </motion.section>
           </>
+          ) : null
         ) : null}
       </AnimatePresence>
 
       <div
         className={`pointer-events-auto relative overflow-hidden ${
-          isPurchasePage && !open ? "mr-0 h-20 w-[82px]" : "mr-1 h-28 w-[118px] max-sm:mr-0 max-sm:w-[108px]"
+          isPurchasePage && !open
+            ? "mr-0 h-16 w-[68px] opacity-92"
+            : "mr-1 h-28 w-[118px] max-sm:mr-0 max-sm:w-[108px]"
         } ${isKeyboardOpen || composerFocused ? "opacity-0 pointer-events-none" : ""}`}
       >
         <AnimatePresence>
@@ -767,9 +789,9 @@ export function ChatWidget() {
           key={nudgeTick}
           transition={{ duration: 0.72, ease: "easeInOut" }}
         >
-          <div className="relative">
+            <div className="relative">
             <div className="absolute inset-x-10 bottom-3 h-8 rounded-full bg-[rgba(61,245,165,0.12)] blur-2xl" />
-            <div className={`${isPurchasePage && !open ? "translate-x-5 translate-y-6 scale-[0.72]" : "translate-x-1 translate-y-1"}`}>
+            <div className={`${isPurchasePage && !open ? "translate-x-4 translate-y-5 scale-[0.56]" : "translate-x-1 translate-y-1"}`}>
               <AssistantMascot onClick={toggleChat} open={open} />
             </div>
           </div>
