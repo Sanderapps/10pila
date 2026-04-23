@@ -944,8 +944,17 @@ select {
 }
 
 .chat-bubble-user {
-  color: #06110d;
-  box-shadow: 0 14px 34px rgba(61, 245, 165, 0.14);
+  color: var(--foreground);
+  background:
+    linear-gradient(180deg, rgba(61, 245, 165, 0.18), rgba(61, 245, 165, 0.04)),
+    rgba(18, 64, 49, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 14px 34px rgba(0, 0, 0, 0.32);
+}
+
+.chat-bubble-user :where(p, span, strong) {
+  color: inherit;
 }
 
 .chat-product-card {

@@ -646,7 +646,7 @@ export function ChatWidget() {
                 <div
                   className={
                     message.role === "user"
-                      ? "chat-bubble-user ml-8 rounded-lg bg-[var(--accent)] p-3 text-[#06110d]"
+                      ? "chat-bubble-user ml-8 rounded-lg border border-[rgba(61,245,165,0.38)] bg-[rgba(18,64,49,0.96)] p-3 text-[#f7fbff] shadow-[0_12px_34px_rgba(0,0,0,0.32)]"
                       : "chat-bubble-assistant mr-8 rounded-lg border border-[rgba(85,200,255,0.34)] bg-[rgba(17,28,40,0.96)] p-3 text-[#f7fbff] shadow-[0_12px_34px_rgba(0,0,0,0.38)]"
                   }
                   key={`${message.role}-${index}`}
