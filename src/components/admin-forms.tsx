@@ -197,6 +197,9 @@ export function StockAdjustForm({ product }: { product: Product }) {
 
   return (
     <form className="grid gap-2" onSubmit={onSubmit}>
+      <p className="text-xs text-[var(--muted)]">
+        Use positivo para entrada e negativo para baixa manual.
+      </p>
       <div className="flex gap-2">
         <input className="input" name="quantity" placeholder="+5 ou -2" type="number" required />
         <button className="btn secondary" disabled={loading} type="submit">

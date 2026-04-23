@@ -40,8 +40,8 @@ export default function TermsPage() {
           <BoltIcon className="size-5 text-[var(--accent)]" />
           <h2 className="text-2xl font-bold">Pagamento</h2>
           <p className="text-[var(--muted)]">
-            O pagamento usa checkout hospedado do PagBank. No sandbox, o fluxo serve para validar a
-            integracao tecnica antes do uso comercial real.
+            O pagamento usa checkout hospedado do PagBank. O fluxo pode evoluir, mas a ideia atual e
+            manter a conclusao do pagamento em ambiente seguro e separado da vitrine da loja.
           </p>
         </article>
 

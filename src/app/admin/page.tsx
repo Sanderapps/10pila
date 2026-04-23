@@ -10,6 +10,25 @@ import { centsToBRL } from "@/lib/utils/money";
 
 export const dynamic = "force-dynamic";
 
+function statusLabel(status: string) {
+  switch (status) {
+    case "DELIVERED":
+      return "Entregue";
+    case "SHIPPED":
+      return "Enviado";
+    case "PROCESSING":
+      return "Processando";
+    case "PAID":
+      return "Pago";
+    case "AWAITING_PAYMENT":
+      return "Aguardando pagamento";
+    case "CANCELED":
+      return "Cancelado";
+    default:
+      return "Pendente";
+  }
+}
+
 export default async function AdminPage() {
   await requireAdmin();
   const [products, orders, lowStock, assistantConfig] = await Promise.all([
@@ -65,28 +84,39 @@ export default async function AdminPage() {
         </Link>
       </section>
 
-      <section className="panel grid gap-3 p-5">
+      <section className="commerce-flow-card panel grid gap-3 p-5">
         <h2 className="text-2xl font-bold">Pedidos por status</h2>
         <div className="flex flex-wrap gap-2">
           {statusGroups.map((group) => (
             <span className="chip" key={group.status}>
-              {group.status}: {group._count}
+              {statusLabel(group.status)}: {group._count}
             </span>
           ))}
         </div>
+        <Link className="btn secondary w-fit" href="/admin/pedidos">
+          Abrir operacao de pedidos
+        </Link>
       </section>
 
-      <section className="panel grid gap-3 p-5">
+      <section className="commerce-flow-card panel grid gap-3 p-5">
         <h2 className="flex items-center gap-2 text-2xl font-bold">
           <BoltIcon className="size-5 text-[var(--warning)]" />
           Estoque baixo
         </h2>
         {lowStock.length > 0 ? (
-          lowStock.map((product) => (
-            <p className="text-sm text-[var(--muted)]" key={product.id}>
-              {product.name}: {product.stock} unidades
-            </p>
-          ))
+          <div className="grid gap-2">
+            {lowStock.map((product) => (
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-[var(--line)] bg-black/20 px-3 py-3" key={product.id}>
+                <div className="grid gap-1">
+                  <strong>{product.name}</strong>
+                  <span className="text-sm text-[var(--muted)]">{product.stock} unidade(s) no radar</span>
+                </div>
+                <Link className="btn secondary min-h-9 px-3" href="/admin/produtos?stock=low">
+                  Ajustar
+                </Link>
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="grid justify-items-start gap-3 text-sm text-[var(--muted)]">
             <AdminConsoleIllustration className="size-20" />

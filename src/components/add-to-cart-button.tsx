@@ -154,7 +154,7 @@ export function AddToCartButton({
       ) : null}
       {showFeedback ? (
         <div className="surface fixed bottom-4 right-4 z-50 grid w-[min(420px,calc(100vw-32px))] gap-3 border border-[var(--line-strong)] p-4 shadow-2xl">
-          <p className="text-xs font-black uppercase tracking-normal text-[var(--accent)]">add to cart</p>
+          <p className="text-xs font-black uppercase tracking-normal text-[var(--accent)]">carrinho atualizado</p>
           <p className="font-bold">Produto adicionado. Carrinho ganhou mais um achado.</p>
           <p className="text-sm text-[var(--muted)]">{successMessage}</p>
           <div className="flex flex-wrap gap-2">
