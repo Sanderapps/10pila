@@ -41,16 +41,16 @@ export default async function ProductPage({
           </p>
           <h1 className="text-4xl font-black">{product.name}</h1>
           <p className="max-w-2xl text-sm text-[var(--muted)]">
-            Achado com estoque real, preco direto e fechamento pelo mesmo trilho do carrinho e checkout.
+            Produto com estoque real, preco direto e fechamento no mesmo trilho do carrinho e checkout.
           </p>
         </div>
         <div className="grid gap-2 text-sm text-[var(--muted)] md:min-w-[240px]">
-          <span className="chip bg-black/40">produto do catalogo 10PILA</span>
-          <span className="chip bg-black/40">pagamento seguro via PagBank</span>
+          <span className="chip bg-black/40">estoque real</span>
+          <span className="chip bg-black/40">pagamento seguro</span>
         </div>
       </section>
 
-      <section className="grid gap-8 md:grid-cols-[1fr_0.9fr]">
+      <section className="grid gap-8 md:grid-cols-[1fr_0.92fr]">
       <div
         className="panel shine catalog-media-shell relative aspect-[4/3] overflow-hidden bg-black p-2"
         style={
@@ -80,38 +80,55 @@ export default async function ProductPage({
       </div>
       <section className="grid content-start gap-5">
         <p className="text-lg text-[var(--muted)]">{product.description}</p>
-        <div className="commerce-flow-card surface interactive-panel grid gap-2 p-4">
-          {product.promotionalCents ? (
-            <p className="text-[var(--muted)] line-through">{centsToBRL(product.priceCents)}</p>
-          ) : null}
-          <p className="text-4xl font-black text-[var(--accent)]">{centsToBRL(price)}</p>
-          <p className="text-sm text-[var(--muted)]">Pix, cartao e boleto no ambiente seguro do PagBank.</p>
+        <div className="commerce-flow-card surface grid gap-4 p-5">
+          <div className="grid gap-2">
+            {product.promotionalCents ? (
+              <p className="text-[var(--muted)] line-through">{centsToBRL(product.priceCents)}</p>
+            ) : null}
+            <p className="text-4xl font-black text-[var(--accent)]">{centsToBRL(price)}</p>
+            <p className="text-sm text-[var(--muted)]">Pix, cartao e boleto no ambiente seguro do PagBank.</p>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <span className="chip">
+              <ShieldIcon />
+              {product.stock > 0 ? `${product.stock} disponiveis` : "sem estoque"}
+            </span>
+            <span className="chip">
+              <TruckIcon />
+              frete no trilho
+            </span>
+            <span className="chip">
+              <BoltIcon />
+              achado validado
+            </span>
+          </div>
+          <div className="grid gap-3">
+            {product.stock > 0 ? (
+              <AddToCartButton maxQuantity={product.stock} productId={product.id} />
+            ) : (
+              <button className="btn secondary" disabled>
+                Indisponivel
+              </button>
+            )}
+            <p className="text-sm text-[var(--muted)]">
+              Fecha no mesmo fluxo do carrinho e checkout, sem perder o contexto do produto.
+            </p>
+          </div>
         </div>
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="grid gap-2 sm:grid-cols-3 text-sm text-[var(--muted)]">
           <span className="chip">
-            <ShieldIcon />
-            {product.stock > 0 ? `${product.stock} disponiveis` : "sem estoque"}
+            produto do catalogo 10PILA
           </span>
           <span className="chip">
-            <TruckIcon />
-            frete no trilho
+            link rastreavel no chat
           </span>
           <span className="chip">
-            <BoltIcon />
-            achado validado
+            sem variacao no MVP
           </span>
         </div>
-        {product.stock > 0 ? (
-          <AddToCartButton maxQuantity={product.stock} productId={product.id} />
-        ) : (
-          <button className="btn secondary" disabled>
-            Indisponivel
-          </button>
-        )}
-        <div className="commerce-flow-card panel interactive-panel grid gap-2 p-4 text-sm text-[var(--muted)]">
+        <div className="surface grid gap-2 p-4 text-sm text-[var(--muted)]">
           <p className="font-bold text-[var(--foreground)]">Ficha rapida</p>
-          <p>Sem variacoes no MVP. Quantidade limitada ao estoque real.</p>
-          <p>Chat IA consulta esse produto pelo banco e manda o link certo.</p>
+          <p>Quantidade limitada ao estoque real e sem variacoes nessa etapa.</p>
           {specifications.length > 0 ? (
             <dl className="mt-2 grid gap-2 border-t border-[var(--line)] pt-3">
               {specifications.map(([key, value]) => (

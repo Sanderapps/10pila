@@ -3,6 +3,8 @@ import { Header } from "@/components/header";
 import { ChatWidgetShell } from "@/components/chat/chat-widget-shell";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "10PILA",
   description: "Importados tech com estoque proprio e checkout sem enrolacao.",

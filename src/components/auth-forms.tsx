@@ -296,12 +296,10 @@ export function LoginForm() {
   }
 
   return (
-    <form className="panel grid gap-4 p-5" noValidate onSubmit={onSubmit}>
-      <SocialProviders mode="login" />
-      <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
-        <span className="h-px flex-1 bg-[var(--line)]" />
-        ou entra com email
-        <span className="h-px flex-1 bg-[var(--line)]" />
+    <form className="panel grid gap-5 p-5 md:p-6" noValidate onSubmit={onSubmit}>
+      <div className="grid gap-1">
+        <p className="text-sm font-bold text-[var(--foreground)]">Entrar com email</p>
+        <p className="text-sm text-[var(--muted)]">Usa teu login para acompanhar pedido, carrinho e indicacao no mesmo lugar.</p>
       </div>
       <label className="label">
         Email
@@ -336,6 +334,10 @@ export function LoginForm() {
       <button className="btn min-h-11" disabled={loading} type="submit">
         {loading ? "Validando acesso..." : "Entrar"}
       </button>
+      <div className="grid gap-3 border-t border-[var(--line)] pt-4">
+        <p className="text-xs font-bold uppercase text-[var(--muted)]">Ou usa acesso rapido</p>
+        <SocialProviders mode="login" />
+      </div>
     </form>
   );
 }

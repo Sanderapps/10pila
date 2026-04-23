@@ -257,6 +257,12 @@ select {
   padding-top: 0.35rem;
 }
 
+.commerce-metric-band {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+    rgba(8, 10, 12, 0.72);
+}
+
 .hero-cta-row {
   padding-top: 0.15rem;
 }
@@ -663,6 +669,24 @@ select {
   background:
     radial-gradient(circle at 14% 14%, rgba(61, 245, 165, 0.12), transparent 11rem),
     radial-gradient(circle at 88% 12%, rgba(85, 200, 255, 0.14), transparent 10rem);
+}
+
+.promo-guide-card {
+  align-content: start;
+}
+
+.promo-guide-link {
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.promo-guide-link:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent-2) 34%, var(--line));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.26);
 }
 
 .chat-shell {

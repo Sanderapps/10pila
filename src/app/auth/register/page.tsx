@@ -11,11 +11,14 @@ export default async function RegisterPage({
   const initialReferralCode = resolvedSearchParams.ref?.trim().toUpperCase() ?? "";
 
   return (
-    <main className="container grid max-w-lg gap-5 py-12">
-      <div>
-        <BrandLogo animated variant="compact" className="mb-4 w-fit" />
-        <p className="font-bold text-[var(--accent)]">cadastro</p>
+    <main className="container grid max-w-lg gap-5 py-12 md:py-16">
+      <div className="commerce-hero-panel panel grid gap-3 p-5 md:p-6">
+        <BrandLogo animated variant="symbol" className="w-fit" />
+        <p className="eyebrow">cadastro</p>
         <h1 className="text-4xl font-black">Cria tua conta</h1>
+        <p className="max-w-md text-sm text-[var(--muted)]">
+          Salva teus pedidos, usa indicacao, volta pro carrinho sem perder o fio e acompanha tudo num lugar so.
+        </p>
       </div>
       <RegisterForm initialReferralCode={initialReferralCode} />
       <p className="text-sm text-[var(--muted)]">

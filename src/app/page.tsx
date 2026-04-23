@@ -78,7 +78,7 @@ function HomePromoVisual({
 
 export default async function HomePage() {
   const user = await getCurrentUser();
-  const [featured, underTen, underTwenty, deskFinds, phoneFinds, activeProductsCount] = await Promise.all([
+  const [featured, underTen, underTwenty, deskFinds, phoneFinds] = await Promise.all([
     prisma.product.findMany({
       where: { active: true },
       orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],
@@ -109,9 +109,6 @@ export default async function HomePage() {
       where: { active: true, category: "Acessórios de Celular" },
       orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],
       take: 4
-    }),
-    prisma.product.count({
-      where: { active: true }
     })
   ]);
 
@@ -165,11 +162,11 @@ export default async function HomePage() {
             achados baratos com estoque real
           </p>
           <h1 className="max-w-3xl text-5xl font-black leading-tight md:text-7xl">
-            Achados tech ate R$ 19,90. Coisa util, preco honesto, papo reto.
+            Achados tech ate R$ 19,90. Utilidade pequena, clique facil.
           </h1>
           <p className="max-w-xl text-lg text-[var(--muted)]">
-            A 10PILA puxa cabo esperto, acessorio de celular, luz USB e bugiganga que resolve
-            coisa pequena sem doer no bolso. Compra de impulso, mas com estoque na mao.
+            Cabo, acessorio de celular, luz USB e organizacao esperta pra resolver coisa pequena sem
+            pesar no bolso. Estoque real, compra rapida e sem rodeio.
           </p>
           <div className="hero-cta-row flex flex-wrap gap-3">
             <Link className="btn shine" href="/produtos">
@@ -193,20 +190,6 @@ export default async function HomePage() {
               compra rapida
             </span>
           </div>
-          <div className="grid gap-3 pt-2 sm:grid-cols-3">
-            <div className="surface grid gap-1 p-4">
-              <strong className="text-2xl font-black text-[var(--accent)]">{activeProductsCount}</strong>
-              <span className="text-sm text-[var(--muted)]">achados ativos no catalogo</span>
-            </div>
-            <div className="surface grid gap-1 p-4">
-              <strong className="text-2xl font-black text-[var(--accent-2)]">R$ 9,90</strong>
-              <span className="text-sm text-[var(--muted)]">faixa de entrada pra clique rapido</span>
-            </div>
-            <div className="surface grid gap-1 p-4">
-              <strong className="text-2xl font-black text-[var(--accent-3)]">R$ 19,90</strong>
-              <span className="text-sm text-[var(--muted)]">onde mora boa parte do impulso honesto</span>
-            </div>
-          </div>
         </div>
 
         <div className="hero-card panel shine relative overflow-hidden p-5 md:p-6">
@@ -224,56 +207,58 @@ export default async function HomePage() {
             <p className="text-2xl font-black">{spotlight?.name ?? "Achado pronto pra rodar"}</p>
             <p className="text-sm text-[var(--muted)]">
               {spotlight
-                ? `${centsToBRL(productPrice(spotlight))} com estoque ativo. Coisa simples, util e facil de levar.`
+                ? `${centsToBRL(productPrice(spotlight))} com estoque ativo. Item direto, facil de levar e bom de encaixar no carrinho.`
                 : "Produto com foto, estoque e preco vindo direto do banco."}
             </p>
             <div className="flex flex-wrap gap-2 pt-2 text-xs text-[var(--muted)]">
-              <span className="chip brand-badge">bugiganga util</span>
+              <span className="chip brand-badge">utilidade leve</span>
               <span className="chip brand-badge">preco redondo</span>
-              <span className="chip brand-badge">pode levar sem drama</span>
+              <span className="chip brand-badge">entra facil no pedido</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="container grid gap-4 pb-8 md:grid-cols-3">
-        <article className="promo-strip-card panel grid gap-2 p-5">
+      <section className="container grid gap-4 pb-8 md:grid-cols-[1.15fr_0.85fr]">
+        <article className="promo-strip-card panel grid gap-3 p-5 md:p-6">
           <p className="eyebrow">
             <BoltIcon />
-            preco rapido
+            comece pelo preco
           </p>
-          <h2 className="text-2xl font-black">Achados ate R$ 9,90</h2>
-          <p className="text-sm text-[var(--muted)]">
-            Cabo, clip, limpeza e organizacao que resolvem sem virar boleto serio.
+          <h2 className="text-3xl font-black">Achados de entrada, sem girar demais</h2>
+          <p className="max-w-2xl text-sm text-[var(--muted)]">
+            Se a ideia e clicar rapido, entra primeiro nos itens de ate R$ 9,90. Cabo, clip, limpeza e organizacao
+            que resolvem o pequeno caos sem transformar compra simples em conta grande.
           </p>
-          <Link className="btn secondary w-fit" href="/produtos">
-            Puxar os mais baratos
-          </Link>
+          <div className="flex flex-wrap gap-2 text-sm text-[var(--muted)]">
+            <span className="chip">cabos</span>
+            <span className="chip">mesa</span>
+            <span className="chip">limpeza tech</span>
+            <span className="chip">celular</span>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link className="btn" href="/produtos?sort=price-asc">
+              Puxar os mais baratos
+            </Link>
+            <Link className="btn secondary" href="/produtos">
+              Ver catalogo inteiro
+            </Link>
+          </div>
         </article>
 
-        <article className="promo-strip-card panel grid gap-2 p-5">
-          <p className="eyebrow">
-            <SparkIcon />
-            compra de impulso
-          </p>
-          <h2 className="text-2xl font-black">Achados ate R$ 19,90</h2>
-          <p className="text-sm text-[var(--muted)]">
-            Itens pequenos, curiosos e vendaveis pra mesa, mochila, celular e rotina sem tralha cara.
-          </p>
-          <Link className="btn secondary w-fit" href="/produtos">
-            Ver vitrine honesta
-          </Link>
-        </article>
-
-        <article className="promo-strip-card panel grid gap-2 p-5">
+        <article className="promo-strip-card panel grid gap-3 p-5 md:p-6">
           <p className="eyebrow">
             <GiftIcon />
             primeira compra
           </p>
           <h2 className="text-2xl font-black">BEMVINDO10</h2>
           <p className="text-sm text-[var(--muted)]">
-            Cupom de boas-vindas para empurrar o primeiro pedido sem DLC escondida.
+            Cupom de boas-vindas pra deixar a primeira compra mais leve.
           </p>
+          <div className="grid gap-2 text-sm text-[var(--muted)]">
+            <span className="chip">primeiro pedido</span>
+            <span className="chip">entrada simples</span>
+          </div>
           <Link className="btn secondary w-fit" href="/carrinho">
             Testar no carrinho
           </Link>
@@ -281,7 +266,7 @@ export default async function HomePage() {
       </section>
 
       {heroPoster ? (
-        <section className="container grid gap-4 pb-12 lg:grid-cols-[1.15fr_0.85fr]">
+        <section className="container grid gap-4 pb-12 lg:grid-cols-[1.2fr_0.8fr]">
           <HomePromoVisual
             accentLabel="drop da semana"
             description="Mesa, cabo, celular e utilidade pequena numa vitrine que parece loja girando de verdade, nao pagina parada."
@@ -290,26 +275,33 @@ export default async function HomePage() {
             mediaSrc={promoPosterWeekly ?? heroPoster}
             title="Bugigangas uteis que valem o clique"
           />
-          <div className="grid gap-4">
-            <HomePromoVisual
-              accentLabel="ate R$ 9,90"
-              compact
-              description="Coisa pequena pra resolver rapido sem transformar compra simples em projeto."
-              eyebrow="entrada facil"
-              href="/produtos?sort=price-asc"
-              mediaSrc={promoPosterCheap ?? heroPoster}
-              title="Achados baratos de verdade"
-            />
-            <HomePromoVisual
-              accentLabel="drops e novidades"
-              compact
-              description="Acessorio util, reposicao e garimpo esperto com cara de loja que roda toda semana."
-              eyebrow="energia comercial"
-              href={socialLinks[0]?.href ?? "/produtos"}
-              mediaSrc={promoPosterSocial ?? heroPoster}
-              title="Segue os achados e pega o drop cedo"
-            />
-          </div>
+          <aside className="panel promo-guide-card grid gap-4 p-5 md:p-6">
+            <div className="grid gap-2">
+              <p className="eyebrow">atalho certo</p>
+              <h2 className="text-3xl font-black">Entra por uso, nao por rolagem infinita</h2>
+              <p className="text-sm text-[var(--muted)]">
+                O bloco principal abre a vitrine. Aqui do lado a ideia e cortar caminho: preco baixo, reposicao rapida
+                e novidade entrando cedo.
+              </p>
+            </div>
+            <div className="grid gap-3">
+              <Link className="surface promo-guide-link grid gap-1 p-4" href="/produtos?sort=price-asc">
+                <strong>Achados ate R$ 9,90</strong>
+                <span className="text-sm text-[var(--muted)]">Entrada facil pra clicar sem pensar demais.</span>
+              </Link>
+              <Link className="surface promo-guide-link grid gap-1 p-4" href="/produtos?q=celular">
+                <strong>Celular sem gambiarra</strong>
+                <span className="text-sm text-[var(--muted)]">Suporte, audio e adaptador com recorte mais certeiro.</span>
+              </Link>
+              <Link
+                className="surface promo-guide-link grid gap-1 p-4"
+                href={socialLinks[0]?.href ?? "/produtos"}
+              >
+                <strong>Drops e novidades</strong>
+                <span className="text-sm text-[var(--muted)]">Pra ver reposicao e achado novo mais cedo.</span>
+              </Link>
+            </div>
+          </aside>
         </section>
       ) : null}
 
@@ -330,37 +322,38 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container grid gap-4 pb-12 md:grid-cols-3">
-        <article className="panel promo-micro-card grid gap-3 p-5">
-          <p className="eyebrow">pra mesa</p>
-          <h2 className="text-2xl font-black">Arruma fio, limpa tela e some com a bagunca</h2>
+      <section className="container grid gap-5 pb-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <article className="panel promo-micro-card grid gap-3 p-5 md:p-6">
+          <p className="eyebrow">compra guiada</p>
+          <h2 className="text-3xl font-black">Escolhe pelo que resolve, nao pelo excesso de card</h2>
           <p className="text-sm text-[var(--muted)]">
-            O lado mais forte da loja e resolver caos pequeno com item barato e util.
+            A 10PILA funciona melhor quando voce entra por contexto. Mesa pra arrumar, celular pra resolver rapido,
+            mochila pra nao esquecer o util.
           </p>
-          <Link className="btn secondary w-fit" href="/produtos?q=organizador">
-            Ver itens de mesa
-          </Link>
         </article>
-        <article className="panel promo-micro-card grid gap-3 p-5">
-          <p className="eyebrow">pra celular</p>
-          <h2 className="text-2xl font-black">Suporte, audio e adaptador sem gambiarra</h2>
-          <p className="text-sm text-[var(--muted)]">
-            Acessorio rapido que resolve uso diario e ainda cabe no pedido sem culpa.
-          </p>
-          <Link className="btn secondary w-fit" href="/produtos?q=celular">
-            Ver acessorios
-          </Link>
-        </article>
-        <article className="panel promo-micro-card grid gap-3 p-5">
-          <p className="eyebrow">pra mochila</p>
-          <h2 className="text-2xl font-black">Miudeza boa pra levar e nao esquecer</h2>
-          <p className="text-sm text-[var(--muted)]">
-            Cabo, case, clip e utilidade compacta pra rotina, viagem e trampo leve.
-          </p>
-          <Link className="btn secondary w-fit" href="/produtos?q=mochila">
-            Garimpar compactos
-          </Link>
-        </article>
+        <div className="grid gap-4 md:grid-cols-3">
+          <article className="panel promo-micro-card grid gap-3 p-5">
+            <p className="eyebrow">pra mesa</p>
+            <h2 className="text-2xl font-black">Arruma fio e limpa o caos pequeno</h2>
+            <Link className="btn secondary w-fit" href="/produtos?q=organizador">
+              Ver itens de mesa
+            </Link>
+          </article>
+          <article className="panel promo-micro-card grid gap-3 p-5">
+            <p className="eyebrow">pra celular</p>
+            <h2 className="text-2xl font-black">Suporte, audio e adaptador sem trambolho</h2>
+            <Link className="btn secondary w-fit" href="/produtos?q=celular">
+              Ver acessorios
+            </Link>
+          </article>
+          <article className="panel promo-micro-card grid gap-3 p-5">
+            <p className="eyebrow">pra mochila</p>
+            <h2 className="text-2xl font-black">Miudeza boa pra levar e lembrar</h2>
+            <Link className="btn secondary w-fit" href="/produtos?q=mochila">
+              Garimpar compactos
+            </Link>
+          </article>
+        </div>
       </section>
 
       <section className="container grid gap-8 pb-12 lg:grid-cols-[1fr_1fr]">
@@ -408,7 +401,7 @@ export default async function HomePage() {
           <h2 className="text-3xl font-black">Indique um amigo e ganhe R$ 10</h2>
           <p className="max-w-2xl text-[var(--muted)]">
             Seu amigo compra acima de R$ 50 e voce recebe um cupom unico de R$ 10. Simples, direto
-            e sem programa de pontos fazendo malabarismo.
+            e sem programa de pontos enrolando o caminho.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link className="btn" href={user ? "/indicacoes" : "/auth/register"}>
@@ -440,8 +433,8 @@ export default async function HomePage() {
             </p>
             <h2 className="text-3xl font-black">Combo leve sem enrolacao</h2>
             <p className="text-[var(--muted)]">
-              Pega 3 itens uteis de ate R$ 19,90 e monta um pedido que realmente parece achado, nao
-              carrinho de luxo perdido.
+              Junta 3 itens uteis de ate R$ 19,90 e monta um pedido com cara de compra esperta, nao
+              de carrinho perdido.
             </p>
             <div className="grid gap-2 text-sm text-[var(--muted)]">
               <span className="chip">mesa</span>
@@ -475,8 +468,8 @@ export default async function HomePage() {
               <h2 className="text-3xl font-black">Acompanha os drops e novidades</h2>
             </div>
             <p className="max-w-2xl text-[var(--muted)]">
-              Quando tiver canal social ativo, esse e o ponto pra puxar novidade, video curto,
-              reposicao e promo. A ideia e manter a 10PILA com energia de achado que gira toda hora.
+              Esse bloco e pra puxar novidade, reposicao e promo sem depender so da home. A ideia e
+              manter a 10PILA com cara de loja que gira de verdade.
             </p>
             {socialLinks.length > 0 ? (
               <div className="grid gap-3 md:grid-cols-3">
