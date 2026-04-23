@@ -97,7 +97,7 @@ function MessageContent({ content }: { content: string }) {
   return (
     <>
       {content.split("\n").map((line, lineIndex) => (
-        <span className="block break-words" key={`${line}-${lineIndex}`}>
+        <span className="chat-message-line block break-words" key={`${line}-${lineIndex}`}>
           {renderInlineContent(line)}
         </span>
       ))}
@@ -598,7 +598,7 @@ export function ChatWidget() {
                     <BrandLogo variant="symbol" className="w-8" />
                     <div>
                       <p className="text-sm font-black">PilaBot</p>
-                      <p className="text-xs text-[var(--muted)]">
+                      <p className="chat-head-subtitle text-xs text-[var(--muted)]">
                         {isPurchasePage ? "assistente de fechamento" : "vendedor tech"}
                       </p>
                     </div>

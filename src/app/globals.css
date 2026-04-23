@@ -782,10 +782,14 @@ select {
 }
 
 .chat-shell-mobile {
-  width: calc(100vw - 16px) !important;
-  height: min(74dvh, calc(100dvh - 104px)) !important;
-  max-height: calc(100dvh - 88px) !important;
-  margin-right: 8px !important;
+  position: fixed !important;
+  right: 8px !important;
+  bottom: max(92px, calc(env(safe-area-inset-bottom) + 84px)) !important;
+  left: 8px !important;
+  width: auto !important;
+  height: min(68dvh, calc(100dvh - 142px)) !important;
+  max-height: calc(100dvh - 120px) !important;
+  margin-right: 0 !important;
 }
 
 .chat-shell-landscape-mobile {
@@ -1120,6 +1124,13 @@ select {
 
 .chat-head [class*="text-[var(--muted)]"] {
   color: #d6e0eb !important;
+}
+
+.chat-head-subtitle,
+.chat-message-line {
+  color: #f7fbff !important;
+  opacity: 1 !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.24);
 }
 
 .chat-bubble-assistant {
