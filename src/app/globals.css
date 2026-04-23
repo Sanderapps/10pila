@@ -750,6 +750,48 @@ select {
   will-change: transform, opacity;
 }
 
+.chat-shell :where(p, span, strong, h1, h2, h3, h4, label) {
+  color: #f7fbff;
+}
+
+.chat-shell [class*="text-[var(--muted)]"] {
+  color: #d6e0eb !important;
+}
+
+.chat-shell .input {
+  color: #f7fbff;
+  background: rgba(3, 6, 10, 0.92);
+  border-color: rgba(214, 224, 235, 0.18);
+}
+
+.chat-shell .input::placeholder {
+  color: #b8c4d1;
+  opacity: 1;
+}
+
+.chat-shell .quick-chip {
+  color: #eef6ff;
+  background: rgba(12, 18, 26, 0.92);
+  border-color: rgba(214, 224, 235, 0.18);
+}
+
+.chat-shell .btn.secondary {
+  color: #f7fbff;
+  background: rgba(14, 20, 28, 0.92);
+  border-color: rgba(214, 224, 235, 0.2);
+}
+
+.chat-shell-mobile {
+  width: calc(100vw - 16px) !important;
+  height: min(74dvh, calc(100dvh - 104px)) !important;
+  max-height: calc(100dvh - 88px) !important;
+  margin-right: 8px !important;
+}
+
+.chat-shell-landscape-mobile {
+  height: calc(100dvh - 18px) !important;
+}
+
 .chat-product-card {
   transition:
     transform 160ms ease,
@@ -1067,7 +1109,17 @@ select {
 .chat-head {
   position: relative;
   color: var(--foreground);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent),
+    rgba(8, 12, 18, 0.72);
+}
+
+.chat-head :where(p, span, strong) {
+  color: #f7fbff;
+}
+
+.chat-head [class*="text-[var(--muted)]"] {
+  color: #d6e0eb !important;
 }
 
 .chat-bubble-assistant {

@@ -129,6 +129,7 @@ export function ChatWidget() {
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [composerFocused, setComposerFocused] = useState(false);
   const [isLandscapeMobile, setIsLandscapeMobile] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const nextHintAtRef = useRef(0);
   const lastScrollAtRef = useRef(0);
   const endRef = useRef<HTMLDivElement | null>(null);
@@ -220,9 +221,11 @@ export function ChatWidget() {
       const viewport = window.visualViewport;
       const width = viewport?.width ?? window.innerWidth;
       const height = viewport?.height ?? window.innerHeight;
+      const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
       const keyboardLikelyOpen = Boolean(viewport && window.innerHeight - viewport.height > 140);
       setIsKeyboardOpen(keyboardLikelyOpen);
       setIsLandscapeMobile(width <= 940 && width > height);
+      setIsMobileViewport(width <= 760 || (coarsePointer && width <= 1100));
     };
 
     updateViewportState();
@@ -580,7 +583,7 @@ export function ChatWidget() {
               isPurchasePage
                 ? "h-[min(450px,calc(100vh-210px))] w-[min(360px,calc(100vw-18px))]"
                 : "h-[min(560px,calc(100vh-110px))] w-[min(410px,calc(100vw-24px))]"
-            } ${isLandscapeMobile ? "max-h-[calc(100vh-18px)] w-[min(360px,calc(100vw-10px))] mr-1" : "max-sm:mr-2 max-sm:h-[min(72vh,calc(100vh-92px))] max-sm:w-[min(390px,calc(100vw-12px))]"}`}
+            } ${isMobileViewport ? "chat-shell-mobile" : ""} ${isLandscapeMobile ? "chat-shell-landscape-mobile max-h-[calc(100vh-18px)] w-[min(360px,calc(100vw-10px))] mr-1" : "max-sm:mr-2 max-sm:h-[min(72vh,calc(100vh-92px))] max-sm:w-[min(390px,calc(100vw-12px))]"}`}
             exit={{ opacity: 0, y: 14, scale: 0.98 }}
             initial={{ opacity: 0, y: 14, scale: 0.98 }}
             transition={{ duration: 0.22, ease: "easeOut" }}
