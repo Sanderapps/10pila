@@ -282,8 +282,8 @@ export function CheckoutForm({
   }
 
   return (
-    <form className="panel grid gap-4 p-5" noValidate onSubmit={onSubmit}>
-      <section className="grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
+    <form className="checkout-form-shell panel grid gap-4 p-5" noValidate onSubmit={onSubmit}>
+      <section className="checkout-step-panel grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
         <div className="grid gap-1">
           <p className="text-sm font-bold text-[var(--accent)]">Etapa final</p>
           <h2 className="text-2xl font-black">Revise o pedido antes do pagamento</h2>
@@ -301,7 +301,7 @@ export function CheckoutForm({
       </section>
 
       {savedAddresses.length > 0 ? (
-        <section className="grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
+        <section className="checkout-step-panel grid gap-3 rounded-lg border border-[var(--line)] bg-black/20 p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-sm font-bold text-[var(--accent)]">Entrega</p>
@@ -346,7 +346,7 @@ export function CheckoutForm({
           ) : null}
 
           {selectedAddress && !editing ? (
-            <div className="grid gap-2 rounded-lg border border-[var(--line)] bg-[rgba(9,12,16,0.75)] p-4">
+            <div className="checkout-address-card grid gap-2 rounded-lg border border-[var(--line)] bg-[rgba(9,12,16,0.75)] p-4">
               <p className="font-bold">{selectedAddress.recipient}</p>
               <p className="text-sm text-[var(--muted)]">{selectedAddress.phone}</p>
               <p className="text-sm text-[var(--muted)]">{summariseAddress(selectedAddress)}</p>
@@ -517,7 +517,7 @@ export function CheckoutForm({
           </label>
           {zipStatus ? <p className="text-sm text-[var(--accent-2)]">{zipStatus}</p> : null}
           <div className="flex flex-wrap gap-2">
-            <button className="btn" disabled={loading} onClick={openReview} type="button">
+            <button className="btn checkout-primary-action" disabled={loading} onClick={openReview} type="button">
               Continuar para revisao
             </button>
             {savedAddresses.length > 0 ? (
@@ -655,7 +655,7 @@ export function CheckoutForm({
             >
               Voltar e revisar
             </button>
-            <button className="btn shine" disabled={loading} type="submit">
+            <button className={`btn shine checkout-primary-action ${loading ? "is-loading" : ""}`} disabled={loading} type="submit">
               {loading ? "Preparando..." : "Ir para pagamento seguro"}
             </button>
             </div>

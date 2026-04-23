@@ -115,8 +115,6 @@ export default async function HomePage() {
   const spotlight = featured[0] ?? underTwenty[0] ?? deskFinds[0] ?? phoneFinds[0];
   const heroPoster = resolveHomePosterPath("hero-achados-tech") ?? spotlight?.imageUrl ?? null;
   const heroVideo = resolveHomeVideoPath("hero-achados-tech") ?? undefined;
-  const promoPosterCheap =
-    resolveHomePosterPath("promo-ate-9-90") ?? underTen[0]?.imageUrl ?? featured[1]?.imageUrl ?? heroPoster;
   const promoPosterUseful =
     resolveHomePosterPath("bugigangas-uteis") ?? deskFinds[0]?.imageUrl ?? featured[2]?.imageUrl ?? heroPoster;
   const promoPosterSocial =

@@ -117,6 +117,14 @@ export function AddToCartButton({
     setErrorMessage("");
   }
 
+  const addButtonClassName = [
+    "btn min-h-11 add-to-cart-cta",
+    loading ? "is-loading" : "",
+    showFeedback ? "is-success" : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div className="grid gap-2">
       <div className="surface flex w-fit items-center gap-2 p-2">
@@ -146,7 +154,7 @@ export function AddToCartButton({
           +
         </button>
       </div>
-      <button className="btn min-h-11" disabled={loading} onClick={addToCart}>
+      <button className={addButtonClassName} disabled={loading} onClick={addToCart}>
         {loading ? "Guardando no carrinho..." : "Adicionar ao carrinho"}
       </button>
       {errorMessage ? (

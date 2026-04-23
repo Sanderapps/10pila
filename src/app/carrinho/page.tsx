@@ -75,7 +75,7 @@ export default async function CartPage() {
             {items.map((item) => {
               const price = item.product.promotionalCents ?? item.product.priceCents;
               return (
-                <article className="commerce-flow-card panel grid gap-4 p-4 md:grid-cols-[120px_1fr]" key={item.id}>
+                <article className="cart-item-card commerce-flow-card panel grid gap-4 p-4 md:grid-cols-[120px_1fr]" key={item.id}>
                   <div className="relative aspect-square overflow-hidden rounded-lg bg-black">
                     <Image
                       src={item.product.imageUrl}

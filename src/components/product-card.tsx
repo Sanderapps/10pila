@@ -40,7 +40,7 @@ export function ProductCard({ product }: { product: Product }) {
             alt={product.name}
             fill
             sizes="(max-width: 768px) 100vw, 320px"
-            className="object-cover transition duration-500 group-hover:scale-[1.04]"
+            className="catalog-card-image object-cover transition duration-500 group-hover:scale-[1.04]"
           />
         </div>
       </Link>
@@ -70,7 +70,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.stock > 0 ? `${product.stock} em estoque` : "sem estoque"}
           </span>
         </div>
-        <Link className="btn secondary min-h-10 gap-2" href={`/produtos/${product.slug}`}>
+        <Link className="btn secondary catalog-card-cta min-h-10 gap-2" href={`/produtos/${product.slug}`}>
           <CartIcon />
           Ver produto
         </Link>

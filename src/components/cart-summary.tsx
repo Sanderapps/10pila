@@ -86,7 +86,7 @@ export function CartSummary({
 
   return (
     <>
-      <aside className="cart-summary-card commerce-flow-card panel sticky top-24 hidden h-fit gap-4 p-5 lg:grid">
+      <aside className={`cart-summary-card commerce-flow-card panel sticky top-24 hidden h-fit gap-4 p-5 lg:grid ${couponCode ? "has-coupon" : ""}`}>
         <p className="text-sm text-[var(--muted)]">Resumo</p>
         <div className="grid gap-2 text-sm">
           <p className="flex justify-between">
@@ -120,7 +120,7 @@ export function CartSummary({
         <form className="grid gap-2" onSubmit={handleCouponSubmit}>
           <label className="label">
             Tem cupom?
-            <div className="flex gap-2">
+            <div className={`coupon-input-shell flex gap-2 ${loading ? "is-loading" : ""}`}>
               <input
                 className="input"
                 disabled={loading}
@@ -139,7 +139,7 @@ export function CartSummary({
             </div>
           </label>
           {couponCode ? (
-            <div className="flex items-center justify-between gap-2 rounded-lg border border-[var(--line)] bg-black/20 px-3 py-2 text-sm">
+            <div className="coupon-active-card flex items-center justify-between gap-2 rounded-lg border border-[var(--line)] bg-black/20 px-3 py-2 text-sm">
               <span>
                 Cupom ativo: <strong>{couponCode}</strong>
               </span>
@@ -161,7 +161,7 @@ export function CartSummary({
         </Link>
       </aside>
 
-      <div className="cart-sticky-bar commerce-flow-card surface fixed inset-x-3 bottom-3 z-40 grid gap-2 border border-[var(--line)] p-3 lg:hidden">
+      <div className={`cart-sticky-bar commerce-flow-card surface fixed inset-x-3 bottom-3 z-40 grid gap-2 border border-[var(--line)] p-3 lg:hidden ${couponCode ? "has-coupon" : ""}`}>
         <div className="flex items-start justify-between gap-3">
           <div className="grid gap-1">
             <p className="text-xs font-black uppercase text-[var(--accent-2)]">Total {total}</p>
@@ -173,7 +173,7 @@ export function CartSummary({
             Fechar pedido com seguranca
           </Link>
         </div>
-        <form className="flex gap-2" onSubmit={handleCouponSubmit}>
+        <form className={`coupon-input-shell flex gap-2 ${loading ? "is-loading" : ""}`} onSubmit={handleCouponSubmit}>
           <input
             className="input"
             disabled={loading}

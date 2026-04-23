@@ -556,7 +556,7 @@ export function ChatWidget() {
           isKeyboardOpen || composerFocused
             ? "max(8px, calc(env(safe-area-inset-bottom) + 4px))"
             : isPurchasePage
-              ? "max(74px, calc(env(safe-area-inset-bottom) + 58px))"
+              ? "max(146px, calc(env(safe-area-inset-bottom) + 126px))"
               : "max(16px, calc(env(safe-area-inset-bottom) + 12px))"
       }}
     >
@@ -662,10 +662,15 @@ export function ChatWidget() {
                   <MessageContent content={message.content} />
                   {message.products?.length ? (
                     <div className="mt-3 grid gap-2">
-                      {message.products.slice(0, 3).map((product) => (
-                        <article
+                      {message.products.slice(0, 3).map((product, productIndex) => (
+                        <motion.article
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
                           className="chat-product-card grid gap-2 rounded-lg border border-[var(--line)] bg-black/30 p-2"
+                          initial={{ opacity: 0, y: 8, scale: 0.98 }}
                           key={product.id}
+                          transition={{ delay: productIndex * 0.04, duration: 0.18, ease: "easeOut" }}
+                          whileHover={{ y: -2 }}
+                          whileTap={{ scale: 0.985 }}
                         >
                           <div className="flex gap-2">
                             <Image
@@ -695,7 +700,7 @@ export function ChatWidget() {
                               {cartLoadingId === product.id ? "..." : "Adicionar 1"}
                             </button>
                           </div>
-                        </article>
+                        </motion.article>
                       ))}
                     </div>
                   ) : null}

@@ -52,10 +52,10 @@ export function CartActions({
   }
 
   return (
-    <div className="grid gap-2">
+    <div className={`cart-actions-shell grid gap-2 ${loading ? "is-loading" : ""}`}>
       <div className="flex flex-wrap items-center gap-2">
         <button
-          className="btn secondary"
+          className="btn secondary cart-qty-button"
           disabled={loading || quantity <= 1}
           onClick={() => update(quantity - 1)}
         >
@@ -63,13 +63,13 @@ export function CartActions({
         </button>
         <span className="min-w-8 text-center font-bold">{quantity}</span>
         <button
-          className="btn secondary"
+          className="btn secondary cart-qty-button"
           disabled={loading || quantity >= maxQuantity}
           onClick={() => update(quantity + 1)}
         >
           +
         </button>
-        <button className="btn danger" disabled={loading} onClick={remove}>
+        <button className="btn danger cart-remove-button" disabled={loading} onClick={remove}>
           Remover
         </button>
       </div>

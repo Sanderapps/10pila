@@ -207,7 +207,7 @@ export default async function CheckoutPage({
             freight={centsToBRL(effectiveFreight)}
             total={centsToBRL(total)}
           />
-          <aside className="panel grid h-fit gap-3 p-5">
+          <aside className="checkout-summary-card panel grid h-fit gap-3 p-5">
             <p className="text-sm font-bold text-[var(--accent)]">Resumo do fechamento</p>
             <p className="text-sm text-[var(--muted)]">
               Voce ainda pode revisar tudo antes de seguir para o pagamento.
