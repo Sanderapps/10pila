@@ -30,13 +30,22 @@ export default async function CartPage() {
 
   return (
     <main className="container grid gap-8 py-10 pb-32 lg:pb-10">
-      <div>
-        <p className="eyebrow">
-          <CartIcon />
-          carrinho
-        </p>
-        <h1 className="text-4xl font-black">Achado quase fechado</h1>
-      </div>
+      <section className="commerce-hero-panel panel grid gap-4 overflow-hidden p-5 md:grid-cols-[1fr_auto] md:items-center md:p-6">
+        <div className="grid gap-2">
+          <p className="eyebrow">
+            <CartIcon />
+            carrinho
+          </p>
+          <h1 className="text-4xl font-black">Achado quase fechado</h1>
+          <p className="max-w-2xl text-sm text-[var(--muted)]">
+            Revise quantidade, cupom, frete e total antes de seguir para o checkout. O bot fica discreto aqui para nao disputar foco.
+          </p>
+        </div>
+        <div className="grid gap-2 text-sm text-[var(--muted)] md:min-w-[230px]">
+          <span className="chip bg-black/40">{items.length} item(ns) no carrinho</span>
+          <span className="chip bg-black/40">total parcial {centsToBRL(total)}</span>
+        </div>
+      </section>
 
       {items.length === 0 ? (
         <EmptyState
@@ -66,7 +75,7 @@ export default async function CartPage() {
             {items.map((item) => {
               const price = item.product.promotionalCents ?? item.product.priceCents;
               return (
-                <article className="panel grid gap-4 p-4 md:grid-cols-[120px_1fr]" key={item.id}>
+                <article className="commerce-flow-card panel grid gap-4 p-4 md:grid-cols-[120px_1fr]" key={item.id}>
                   <div className="relative aspect-square overflow-hidden rounded-lg bg-black">
                     <Image
                       src={item.product.imageUrl}
@@ -78,7 +87,10 @@ export default async function CartPage() {
                   </div>
                   <div className="grid gap-3">
                     <div>
-                      <h2 className="text-xl font-bold">{item.product.name}</h2>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="text-xl font-bold">{item.product.name}</h2>
+                        {item.product.category ? <span className="chip bg-black/40">{item.product.category}</span> : null}
+                      </div>
                       <p className="text-sm text-[var(--muted)]">{centsToBRL(price)} cada</p>
                       <p className="mt-1 text-sm font-bold text-[var(--accent)]">
                         {centsToBRL(price * item.quantity)} no item

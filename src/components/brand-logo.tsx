@@ -20,7 +20,7 @@ const LOGO_ASSETS = {
     alt: "10PILA"
   },
   symbol: {
-    src: "/brand/10pila-mark-compact.png",
+    src: "/brand/10pila-mark-compact-v2.webp",
     width: 1024,
     height: 1024,
     alt: "10PILA"

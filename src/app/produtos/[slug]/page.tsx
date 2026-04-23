@@ -32,7 +32,25 @@ export default async function ProductPage({
       : [];
 
   return (
-    <main className="container grid gap-8 py-10 md:grid-cols-[1fr_0.9fr]">
+    <main className="container grid gap-8 py-10">
+      <section className="commerce-hero-panel panel grid gap-4 overflow-hidden p-5 md:grid-cols-[1fr_auto] md:items-center md:p-6">
+        <div className="grid gap-2">
+          <p className="eyebrow">
+            <SparkIcon />
+            {product.category ?? "produto"}
+          </p>
+          <h1 className="text-4xl font-black">{product.name}</h1>
+          <p className="max-w-2xl text-sm text-[var(--muted)]">
+            Achado com estoque real, preco direto e fechamento pelo mesmo trilho do carrinho e checkout.
+          </p>
+        </div>
+        <div className="grid gap-2 text-sm text-[var(--muted)] md:min-w-[240px]">
+          <span className="chip bg-black/40">produto do catalogo 10PILA</span>
+          <span className="chip bg-black/40">pagamento seguro via PagBank</span>
+        </div>
+      </section>
+
+      <section className="grid gap-8 md:grid-cols-[1fr_0.9fr]">
       <div
         className="panel shine catalog-media-shell relative aspect-[4/3] overflow-hidden bg-black p-2"
         style={
@@ -61,18 +79,13 @@ export default async function ProductPage({
         />
       </div>
       <section className="grid content-start gap-5">
-        <p className="eyebrow">
-          <SparkIcon />
-          {product.category ?? "produto"}
-        </p>
-        <h1 className="text-4xl font-black">{product.name}</h1>
         <p className="text-lg text-[var(--muted)]">{product.description}</p>
-        <div className="surface interactive-panel grid gap-2 p-4">
+        <div className="commerce-flow-card surface interactive-panel grid gap-2 p-4">
           {product.promotionalCents ? (
             <p className="text-[var(--muted)] line-through">{centsToBRL(product.priceCents)}</p>
           ) : null}
           <p className="text-4xl font-black text-[var(--accent)]">{centsToBRL(price)}</p>
-          <p className="text-sm text-[var(--muted)]">Pix, cartao e boleto no PagBank sandbox.</p>
+          <p className="text-sm text-[var(--muted)]">Pix, cartao e boleto no ambiente seguro do PagBank.</p>
         </div>
         <div className="grid gap-2 sm:grid-cols-3">
           <span className="chip">
@@ -95,7 +108,7 @@ export default async function ProductPage({
             Indisponivel
           </button>
         )}
-        <div className="panel interactive-panel grid gap-2 p-4 text-sm text-[var(--muted)]">
+        <div className="commerce-flow-card panel interactive-panel grid gap-2 p-4 text-sm text-[var(--muted)]">
           <p className="font-bold text-[var(--foreground)]">Ficha rapida</p>
           <p>Sem variacoes no MVP. Quantidade limitada ao estoque real.</p>
           <p>Chat IA consulta esse produto pelo banco e manda o link certo.</p>
@@ -110,6 +123,7 @@ export default async function ProductPage({
             </dl>
           ) : null}
         </div>
+      </section>
       </section>
     </main>
   );

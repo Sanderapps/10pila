@@ -8,6 +8,40 @@ import { centsToBRL } from "@/lib/utils/money";
 
 export const dynamic = "force-dynamic";
 
+function statusMeta(status: string) {
+  switch (status) {
+    case "DELIVERED":
+      return { label: "Entregue", tone: "text-[var(--accent)]" };
+    case "SHIPPED":
+      return { label: "Enviado", tone: "text-[var(--accent-2)]" };
+    case "PROCESSING":
+      return { label: "Processando", tone: "text-[var(--accent-2)]" };
+    case "PAID":
+      return { label: "Pago", tone: "text-[var(--accent)]" };
+    case "AWAITING_PAYMENT":
+      return { label: "Aguardando pagamento", tone: "text-[var(--warning)]" };
+    case "CANCELED":
+      return { label: "Cancelado", tone: "text-[var(--danger)]" };
+    default:
+      return { label: "Pendente", tone: "text-[var(--muted)]" };
+  }
+}
+
+function paymentMeta(status?: string | null) {
+  switch (status) {
+    case "APPROVED":
+      return { label: "Aprovado", tone: "text-[var(--accent)]" };
+    case "REJECTED":
+      return { label: "Recusado", tone: "text-[var(--danger)]" };
+    case "CANCELED":
+      return { label: "Cancelado", tone: "text-[var(--danger)]" };
+    case "REFUNDED":
+      return { label: "Estornado", tone: "text-[var(--warning)]" };
+    default:
+      return { label: "Pendente", tone: "text-[var(--accent-2)]" };
+  }
+}
+
 export default async function AdminOrderDetailPage({
   params
 }: {
@@ -30,10 +64,12 @@ export default async function AdminOrderDetailPage({
   }
 
   const shippingAddress = order.shippingAddress as Record<string, string> | null;
+  const status = statusMeta(order.status);
+  const payment = paymentMeta(order.payment?.status);
 
   return (
     <main className="container grid gap-8 py-10">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="commerce-hero-panel panel flex flex-wrap items-end justify-between gap-4 overflow-hidden p-5 md:p-6">
         <div>
           <p className="eyebrow">admin</p>
           <h1 className="text-balance text-4xl font-black md:text-5xl">
@@ -42,6 +78,11 @@ export default async function AdminOrderDetailPage({
           <p className="mt-2 text-[var(--muted)]">
             Criado em {order.createdAt.toLocaleString("pt-BR")} por {order.customerEmail}.
           </p>
+          <div className="mt-3 flex flex-wrap gap-2 text-sm">
+            <span className={`chip ${status.tone}`}>{status.label}</span>
+            <span className={`chip ${payment.tone}`}>pagamento {payment.label.toLowerCase()}</span>
+            <span className="chip bg-black/40">{order.items.length} item(ns)</span>
+          </div>
         </div>
         <Link className="btn secondary" href="/admin/pedidos">
           Voltar
@@ -50,13 +91,13 @@ export default async function AdminOrderDetailPage({
 
       <section className="grid gap-4 lg:grid-cols-[1fr_320px]">
         <div className="grid gap-4">
-          <article className="panel grid gap-4 p-5">
+          <article className="commerce-flow-card panel grid gap-4 p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm text-[var(--muted)]">Itens</p>
                 <h2 className="text-2xl font-bold">Resumo do pedido</h2>
               </div>
-              <span className="chip">{order.status}</span>
+              <span className={`chip ${status.tone}`}>{status.label}</span>
             </div>
 
             <div className="grid gap-3">
@@ -117,7 +158,7 @@ export default async function AdminOrderDetailPage({
             </div>
           </article>
 
-          <article className="panel grid gap-3 p-5">
+          <article className="commerce-flow-card panel grid gap-3 p-5">
             <TruckIcon className="size-5 text-[var(--accent)]" />
             <h2 className="text-2xl font-bold">Entrega</h2>
             <div className="grid gap-1 text-sm text-[var(--muted)]">
@@ -136,13 +177,17 @@ export default async function AdminOrderDetailPage({
         </div>
 
         <aside className="grid h-fit gap-4">
-          <article className="panel grid gap-3 p-5">
+          <article className="commerce-flow-card panel grid gap-3 p-5">
             <ShieldIcon className="size-5 text-[var(--accent-2)]" />
             <h2 className="text-xl font-bold">Status operacional</h2>
+            <div className="grid gap-2 text-sm text-[var(--muted)]">
+              <span className={`chip ${status.tone}`}>pedido {status.label.toLowerCase()}</span>
+              <span className={`chip ${payment.tone}`}>pagamento {payment.label.toLowerCase()}</span>
+            </div>
             <OrderStatusForm orderId={order.id} status={order.status} />
           </article>
 
-          <article className="panel grid gap-2 p-5 text-sm">
+          <article className="commerce-flow-card panel grid gap-2 p-5 text-sm">
             <h2 className="text-xl font-bold">Pagamento</h2>
             <p className="flex justify-between">
               <span className="text-[var(--muted)]">Gateway</span>
@@ -150,7 +195,7 @@ export default async function AdminOrderDetailPage({
             </p>
             <p className="flex justify-between">
               <span className="text-[var(--muted)]">Status</span>
-              <strong>{order.payment?.status ?? "sem pagamento"}</strong>
+              <strong className={payment.tone}>{payment.label}</strong>
             </p>
             <p className="flex justify-between">
               <span className="text-[var(--muted)]">Valor</span>

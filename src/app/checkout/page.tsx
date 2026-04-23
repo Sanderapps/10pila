@@ -68,7 +68,7 @@ export default async function CheckoutPage({
 
   return (
     <main className="container grid gap-8 py-10">
-      <div>
+      <div className="commerce-hero-panel panel grid gap-2 overflow-hidden p-5 md:p-6">
         <p className="font-bold text-[var(--accent)]">checkout</p>
         <h1 className="text-4xl font-black">Fechar pedido</h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">

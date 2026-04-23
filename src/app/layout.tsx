@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   title: "10PILA",
   description: "Importados tech com estoque proprio e checkout sem enrolacao.",
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg"
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/apple-touch-icon.png"
   }
 };
 

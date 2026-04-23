@@ -86,7 +86,7 @@ export function CartSummary({
 
   return (
     <>
-      <aside className="cart-summary-card panel sticky top-24 hidden h-fit gap-4 p-5 lg:grid">
+      <aside className="cart-summary-card commerce-flow-card panel sticky top-24 hidden h-fit gap-4 p-5 lg:grid">
         <p className="text-sm text-[var(--muted)]">Resumo</p>
         <div className="grid gap-2 text-sm">
           <p className="flex justify-between">
@@ -161,7 +161,7 @@ export function CartSummary({
         </Link>
       </aside>
 
-      <div className="cart-sticky-bar surface fixed inset-x-3 bottom-3 z-40 grid gap-2 border border-[var(--line)] p-3 lg:hidden">
+      <div className="cart-sticky-bar commerce-flow-card surface fixed inset-x-3 bottom-3 z-40 grid gap-2 border border-[var(--line)] p-3 lg:hidden">
         <div className="flex items-start justify-between gap-3">
           <div className="grid gap-1">
             <p className="text-xs font-black uppercase text-[var(--accent-2)]">Total {total}</p>

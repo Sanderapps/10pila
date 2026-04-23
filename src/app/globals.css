@@ -163,6 +163,38 @@ select {
   pointer-events: none;
 }
 
+.commerce-hero-panel,
+.commerce-flow-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.commerce-hero-panel::before,
+.commerce-flow-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(61, 245, 165, 0.12), transparent 14rem),
+    radial-gradient(circle at 88% 10%, rgba(85, 200, 255, 0.12), transparent 13rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 42%);
+  pointer-events: none;
+}
+
+.commerce-hero-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.22), transparent 72%);
+  pointer-events: none;
+}
+
 .product-loading-backdrop {
   background:
     radial-gradient(circle at 22% 24%, rgba(61, 245, 165, 0.14), transparent 22rem),
@@ -260,6 +292,8 @@ select {
   width: 44px;
   height: 44px;
   max-width: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(85, 200, 255, 0.18);
 }
 
 .brand-logo-raster-animated {
@@ -945,6 +979,7 @@ select {
   .brand-logo-symbol .brand-logo-image {
     width: 42px;
     height: 42px;
+    border-radius: 11px;
   }
 
   .eyebrow,

@@ -239,13 +239,13 @@ export function OrderStatusForm({ orderId, status }: { orderId: string; status: 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const statuses = [
-    "PENDING",
-    "AWAITING_PAYMENT",
-    "PAID",
-    "PROCESSING",
-    "SHIPPED",
-    "DELIVERED",
-    "CANCELED"
+    { value: "PENDING", label: "Pendente" },
+    { value: "AWAITING_PAYMENT", label: "Aguardando pagamento" },
+    { value: "PAID", label: "Pago" },
+    { value: "PROCESSING", label: "Processando" },
+    { value: "SHIPPED", label: "Enviado" },
+    { value: "DELIVERED", label: "Entregue" },
+    { value: "CANCELED", label: "Cancelado" }
   ];
 
   async function onChange(nextStatus: string) {
@@ -270,9 +270,9 @@ export function OrderStatusForm({ orderId, status }: { orderId: string; status: 
   return (
     <div className="grid gap-2">
       <select className="input" defaultValue={status} disabled={loading} onChange={(event) => onChange(event.target.value)}>
-        {statuses.map((value) => (
-          <option key={value} value={value}>
-            {value}
+        {statuses.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
           </option>
         ))}
       </select>
