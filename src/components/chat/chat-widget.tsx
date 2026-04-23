@@ -115,7 +115,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Opa, eu sou o PilaBot. Posso tirar duvida, achar o link certo ou te ajudar a garimpar alguma utilidade barata sem pressa."
+      content: "Oi, eu sou o PilaBot. Posso te ajudar a encontrar um produto, tirar uma duvida ou revisar uma compra."
     }
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -142,8 +142,8 @@ export function ChatWidget() {
         quick: ["comparar esse produto", "ver detalhes", "adicionar ao carrinho"],
         hints: [
           "Quer comparar esse produto?",
-          "Posso ver se esse compensa",
-          "Quer levar 1 sem drama?"
+          "Posso te ajudar a decidir",
+          "Quer colocar esse no carrinho?"
         ]
       };
     }
@@ -151,7 +151,7 @@ export function ChatWidget() {
     if (pathname.startsWith("/carrinho")) {
       return {
         quick: ["revisar o carrinho", "tirar duvida de frete", "aplicar cupom", "fechar pedido"],
-        hints: ["Posso revisar esse carrinho", "Quer ajuda com frete ou cupom?", "Fechamos isso sem drama?"]
+        hints: ["Posso revisar esse carrinho", "Quer ajuda com frete ou cupom?", "Quer conferir antes de fechar?"]
       };
     }
 
@@ -168,7 +168,7 @@ export function ChatWidget() {
         hints: [
           "Te ajudo a achar o mais barato",
           "Tem promo no radar",
-          "Quer filtrar o melhor custo-beneficio?"
+          "Quer filtrar pelo melhor custo-beneficio?"
         ]
       };
     }
@@ -177,8 +177,8 @@ export function ChatWidget() {
       quick: ["ver promocoes", "mais barato", "ver detalhes"],
       hints: [
         "Posso te ajudar a escolher",
-        "Tem promo hoje no radar",
-        "Quer achar algo util e baratinho?"
+        "Quer ver as promocoes?",
+        "Quer encontrar algo util e barato?"
       ]
     };
   }, [pathname]);
@@ -636,8 +636,8 @@ export function ChatWidget() {
                     </p>
                     <p className="text-sm text-[var(--muted)]">
                       {isPurchasePage
-                        ? "Tamo on. Aqui eu foco em duvida de entrega, cupom, carrinho e fechamento sem atrapalhar teu pedido."
-                        : "Tamo on. Posso tirar duvida, achar o link certo, comparar sem drama ou te ajudar a garimpar alguma utilidade barata."}
+                        ? "Estou aqui para ajudar com entrega, cupom, carrinho e fechamento do pedido."
+                        : "Posso tirar duvida, encontrar um link, comparar produtos ou te ajudar a escolher algo util."}
                     </p>
                   </div>
                 </div>

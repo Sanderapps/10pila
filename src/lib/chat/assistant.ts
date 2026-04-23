@@ -262,19 +262,19 @@ function quickActionsFor(
 
 function conversationalReply(message: string) {
   if (isGreeting(message)) {
-    return "Opa, PilaBot na area. Tudo certo por aqui. Tu ta so dando um role ou quer ajuda com algum achado especifico?";
+    return "Oi. Posso te ajudar a encontrar um produto, comparar opcoes ou tirar uma duvida sobre a compra.";
   }
 
   if (isJustBrowsing(message)) {
-    return "Justo. Fase de namoro com o carrinho. Fica a vontade. Se pintar curiosidade por algo útil ou barato, eu entro sem forcar vitrine.";
+    return "Tudo certo. Fica a vontade. Se quiser, eu posso separar os mais baratos ou mostrar algo por tipo de uso.";
   }
 
   if (wantsChat(message)) {
-    return "Fechou. Da pra trocar ideia sem eu virar panfleto com LED. Se pintar vontade de garimpar alguma utilidade barata, eu entro no modo útil na hora.";
+    return "Claro. Posso conversar e tambem ajudar com produto, pedido ou carrinho quando voce precisar.";
   }
 
   if (wantsRecommendation(message)) {
-    return "Posso sim, mas me da teu estilo: tu quer praticidade, organizacao, coisa curiosa de mesa ou custo-beneficio honesto?";
+    return "Posso sim. Voce quer algo para celular, mesa, organizacao, limpeza ou algo mais barato?";
   }
 
   return null;
@@ -503,6 +503,17 @@ export async function answerFromStoreData({
   ]);
   const cards = products.map(cardFromProduct);
   const cardsAllowed = shouldShowCards(message, pathname);
+  const smallTalk = conversationalReply(message);
+
+  if (smallTalk) {
+    return {
+      reply: smallTalk,
+      products: [],
+      quickActions: quickActionsFor(message, false, pathname),
+      source: "fallback",
+      fallbackReason: "deterministic"
+    };
+  }
 
   if (wantsOrders(message) && !userId) {
     return {
