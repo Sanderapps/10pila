@@ -24,7 +24,9 @@ export function AssistantMascot({
   const neonId = `${id}-neon`;
   const shadowId = `${id}-shadow`;
   const Wrapper = onClick ? motion.button : motion.div;
-  const sizeClass = compact ? "h-14 w-14" : "h-28 w-28 drop-shadow-[0_24px_44px_rgba(0,0,0,0.48)]";
+  const sizeClass = compact
+    ? "assistant-mascot-svg h-14 w-14"
+    : "assistant-mascot-svg h-28 w-28 drop-shadow-[0_24px_44px_rgba(0,0,0,0.48)]";
 
   return (
     <Wrapper
@@ -39,7 +41,7 @@ export function AssistantMascot({
       aria-label={onClick ? (open ? "Fechar chat da IA 10PILA" : "Abrir chat da IA 10PILA") : undefined}
       className={
         onClick
-          ? "group relative block h-24 w-24 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-2)]"
+          ? "assistant-mascot-trigger group relative block h-24 w-24 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-2)]"
           : "relative block"
       }
       onClick={onClick}
@@ -63,9 +65,9 @@ export function AssistantMascot({
       >
         <defs>
           <linearGradient id={shellId} x1="34" x2="138" y1="24" y2="134">
-            <stop offset="0" stopColor="#242b33" />
-            <stop offset="0.56" stopColor="#13171d" />
-            <stop offset="1" stopColor="#0a0d12" />
+            <stop offset="0" stopColor="#3d4652" />
+            <stop offset="0.56" stopColor="#202832" />
+            <stop offset="1" stopColor="#111820" />
           </linearGradient>
           <linearGradient id={screenId} x1="56" x2="124" y1="42" y2="96">
             <stop offset="0" stopColor="#04141a" />
@@ -119,7 +121,7 @@ export function AssistantMascot({
             fill={`url(#${shellId})`}
             height="34"
             rx="15"
-            stroke="#313946"
+            stroke="#6d7b8d"
             strokeWidth="2"
             width="56"
             x="62"
@@ -138,25 +140,25 @@ export function AssistantMascot({
 
           <path
             d="M70 118c-7 3-13 8-17 16"
-            stroke="#46505d"
+            stroke="#6d7b8d"
             strokeLinecap="round"
             strokeWidth="4"
           />
           <path
             d="M110 118c7 3 13 8 17 16"
-            stroke="#46505d"
+            stroke="#6d7b8d"
             strokeLinecap="round"
             strokeWidth="4"
           />
-          <circle cx="49" cy="137" fill="#1d242d" r="6.5" stroke="#46505d" strokeWidth="2" />
-          <circle cx="131" cy="137" fill="#1d242d" r="6.5" stroke="#46505d" strokeWidth="2" />
+          <circle cx="49" cy="137" fill="#26313d" r="6.5" stroke="#6d7b8d" strokeWidth="2" />
+          <circle cx="131" cy="137" fill="#26313d" r="6.5" stroke="#6d7b8d" strokeWidth="2" />
 
           <rect
             fill={`url(#${shellId})`}
             height="94"
             rx="34"
-            stroke="#39424d"
-            strokeWidth="2.5"
+            stroke="#7f8ea1"
+            strokeWidth="3"
             width="104"
             x="38"
             y="24"
@@ -165,14 +167,14 @@ export function AssistantMascot({
             fill={`url(#${screenId})`}
             height="52"
             rx="20"
-            stroke="rgba(85,200,255,0.18)"
+            stroke="rgba(85,200,255,0.48)"
             strokeWidth="2"
             width="72"
             x="54"
             y="45"
           />
 
-          <path d="M90 16v12" stroke="#4a5563" strokeLinecap="round" strokeWidth="3" />
+          <path d="M90 16v12" stroke="#8191a5" strokeLinecap="round" strokeWidth="3" />
           <motion.circle
             animate={thinking ? { opacity: [0.35, 1, 0.35] } : { opacity: [0.45, 0.9, 0.45] }}
             cx="90"
