@@ -261,3 +261,70 @@ export function BotSignalIllustration({ className }: IllustrationProps) {
     </BaseFrame>
   );
 }
+
+export function CommerceSignalIllustration({ className }: IllustrationProps) {
+  const id = useId();
+  const strokeId = `${id}-commerce-stroke`;
+  const glowId = `${id}-commerce-glow`;
+
+  return (
+    <svg
+      aria-hidden="true"
+      className={className ?? "commerce-signal-illustration"}
+      fill="none"
+      viewBox="0 0 220 120"
+    >
+      <defs>
+        <linearGradient id={strokeId} x1="18" x2="202" y1="16" y2="104">
+          <stop offset="0" stopColor="#3df5a5" />
+          <stop offset="0.5" stopColor="#55c8ff" />
+          <stop offset="1" stopColor="#ff4f9a" />
+        </linearGradient>
+        <filter id={glowId} x="-30%" y="-50%" width="160%" height="200%">
+          <feGaussianBlur result="blur" stdDeviation="3" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <path
+        className="commerce-signal-path commerce-signal-path-a"
+        d="M14 36h42l18 18h44l16-16h72"
+        stroke={`url(#${strokeId})`}
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+      <path
+        className="commerce-signal-path commerce-signal-path-b"
+        d="M22 82h34l14-16h34l20 20h74"
+        stroke={`url(#${strokeId})`}
+        strokeLinecap="round"
+        strokeWidth="3"
+      />
+      <g filter={`url(#${glowId})`}>
+        <circle className="commerce-signal-dot commerce-signal-dot-a" cx="56" cy="36" fill="#3df5a5" r="4" />
+        <circle className="commerce-signal-dot commerce-signal-dot-b" cx="118" cy="54" fill="#55c8ff" r="4" />
+        <circle className="commerce-signal-dot commerce-signal-dot-c" cx="198" cy="38" fill="#ff4f9a" r="4" />
+        <circle className="commerce-signal-dot commerce-signal-dot-d" cx="124" cy="86" fill="#3df5a5" r="4" />
+      </g>
+      <rect
+        className="commerce-signal-core"
+        fill="rgba(7,10,14,0.82)"
+        height="34"
+        rx="10"
+        stroke={`url(#${strokeId})`}
+        strokeOpacity="0.58"
+        width="54"
+        x="82"
+        y="43"
+      />
+      <path
+        className="commerce-signal-zap"
+        d="M109 50l-9 16h11l-6 14 18-21h-11l8-9h-11Z"
+        fill="#3df5a5"
+        filter={`url(#${glowId})`}
+      />
+    </svg>
+  );
+}

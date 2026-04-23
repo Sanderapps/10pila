@@ -104,6 +104,64 @@ export function AssistantMascot({
           </filter>
         </defs>
 
+        {!compact ? (
+          <motion.g
+            animate={{ rotate: open ? 360 : 0 }}
+            opacity="0.86"
+            style={{ originX: "50%", originY: "50%" }}
+            transition={{ duration: open ? 12 : 18, repeat: Infinity, ease: "linear" }}
+          >
+            <motion.circle
+              animate={{ opacity: [0.16, 0.48, 0.16], scale: [0.96, 1.02, 0.96] }}
+              cx="90"
+              cy="86"
+              fill="none"
+              r="68"
+              stroke="#3df5a5"
+              strokeDasharray="10 16"
+              strokeLinecap="round"
+              strokeWidth="2"
+              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.circle
+              animate={{ opacity: [0.12, 0.36, 0.12], scale: [1.02, 0.98, 1.02] }}
+              cx="90"
+              cy="86"
+              fill="none"
+              r="78"
+              stroke="#55c8ff"
+              strokeDasharray="3 20"
+              strokeLinecap="round"
+              strokeWidth="2"
+              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: 0.35 }}
+            />
+          </motion.g>
+        ) : null}
+
+        {!compact ? (
+          <motion.g
+            filter={`url(#${neonId})`}
+            opacity="0.88"
+          >
+            {[
+              { cx: 36, cy: 48, color: "#3df5a5", delay: 0 },
+              { cx: 146, cy: 58, color: "#55c8ff", delay: 0.24 },
+              { cx: 40, cy: 114, color: "#55c8ff", delay: 0.48 },
+              { cx: 140, cy: 126, color: "#3df5a5", delay: 0.72 }
+            ].map((spark) => (
+              <motion.circle
+                animate={{ opacity: [0.18, 1, 0.18], r: [1.6, 3.8, 1.6] }}
+                cx={spark.cx}
+                cy={spark.cy}
+                fill={spark.color}
+                key={`${spark.cx}-${spark.cy}`}
+                r="2"
+                transition={{ delay: spark.delay, duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+              />
+            ))}
+          </motion.g>
+        ) : null}
+
         <motion.g
           animate={compact ? undefined : { y: [0, -1.5, 0], rotate: [0, -2.4, 0, 1.6, 0] }}
           filter={`url(#${shadowId})`}
@@ -183,8 +241,30 @@ export function AssistantMascot({
             x="54"
             y="45"
           />
+          <motion.rect
+            animate={compact ? undefined : { y: [48, 88, 48], opacity: [0, 0.72, 0] }}
+            fill={`url(#${glowId})`}
+            height="3"
+            rx="2"
+            width="58"
+            x="61"
+            y="48"
+            transition={{ duration: thinking ? 0.9 : 2.8, repeat: Infinity, ease: "easeInOut" }}
+          />
 
           <path d="M90 16v12" stroke="#8191a5" strokeLinecap="round" strokeWidth="3" />
+          {!compact ? (
+            <motion.g
+              animate={{ opacity: [0.2, 0.9, 0.2], scale: [0.94, 1.04, 0.94] }}
+              fill="none"
+              filter={`url(#${neonId})`}
+              style={{ originX: "50%", originY: "12%" }}
+              transition={{ duration: thinking ? 0.8 : 2.4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <path d="M78 18c7-7 17-7 24 0" stroke="#3df5a5" strokeLinecap="round" strokeWidth="2" />
+              <path d="M70 10c12-12 28-12 40 0" stroke="#55c8ff" strokeLinecap="round" strokeWidth="2" opacity="0.72" />
+            </motion.g>
+          ) : null}
           <motion.circle
             animate={
               thinking
@@ -272,6 +352,27 @@ export function AssistantMascot({
             opacity="0.28"
             transition={{ duration: thinking ? 1 : 2.8, repeat: Infinity, ease: "easeInOut" }}
           />
+
+          {!compact ? (
+            <motion.g
+              animate={{ opacity: [0.35, 0.9, 0.35] }}
+              filter={`url(#${neonId})`}
+              transition={{ duration: thinking ? 0.75 : 2.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {[0, 1, 2, 3].map((bar) => (
+                <motion.rect
+                  animate={{ height: [4, 10 + bar * 2, 4], y: [124, 118 - bar, 124] }}
+                  fill={bar % 2 === 0 ? "#3df5a5" : "#55c8ff"}
+                  key={bar}
+                  rx="1.5"
+                  width="4"
+                  x={74 + bar * 10}
+                  y="124"
+                  transition={{ delay: bar * 0.12, duration: thinking ? 0.7 : 1.4, repeat: Infinity, ease: "easeInOut" }}
+                />
+              ))}
+            </motion.g>
+          ) : null}
 
           <motion.path
             animate={compact ? undefined : { opacity: [0.15, 0.34, 0.15] }}

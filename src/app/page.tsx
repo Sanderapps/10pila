@@ -10,6 +10,7 @@ import {
   TruckIcon,
   WhatsAppIcon
 } from "@/components/icons";
+import { CommerceSignalIllustration } from "@/components/brand-illustrations";
 import { HeroMediaStage } from "@/components/hero-media-stage";
 import { ProductCard } from "@/components/product-card";
 import { getCurrentUser } from "@/lib/auth/session";
@@ -274,6 +275,7 @@ export default async function HomePage() {
             title="Bugigangas uteis que valem o clique"
           />
           <aside className="panel promo-guide-card grid gap-4 p-5 md:p-6">
+            <CommerceSignalIllustration className="commerce-signal-illustration h-24 w-full" />
             <div className="grid gap-2">
               <p className="eyebrow">atalho certo</p>
               <h2 className="text-3xl font-black">Entra por uso, nao por rolagem infinita</h2>
@@ -322,6 +324,7 @@ export default async function HomePage() {
 
       <section className="container grid gap-5 pb-12 lg:grid-cols-[0.9fr_1.1fr]">
         <article className="panel promo-micro-card grid gap-3 p-5 md:p-6">
+          <CommerceSignalIllustration className="commerce-signal-illustration h-20 w-full" />
           <p className="eyebrow">compra guiada</p>
           <h2 className="text-3xl font-black">Escolhe pelo que resolve, nao pelo excesso de card</h2>
           <p className="text-sm text-[var(--muted)]">
