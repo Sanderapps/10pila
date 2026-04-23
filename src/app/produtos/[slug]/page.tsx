@@ -41,7 +41,7 @@ export default async function ProductPage({
           </p>
           <h1 className="text-4xl font-black">{product.name}</h1>
           <p className="max-w-2xl text-sm text-[var(--muted)]">
-            Produto com estoque real, preco direto e fechamento no mesmo trilho do carrinho e checkout.
+            Produto com estoque real, preco claro e compra seguindo o mesmo fluxo do carrinho e do checkout.
           </p>
         </div>
         <div className="grid gap-2 text-sm text-[var(--muted)] md:min-w-[240px]">
@@ -111,7 +111,7 @@ export default async function ProductPage({
               </button>
             )}
             <p className="text-sm text-[var(--muted)]">
-              Fecha no mesmo fluxo do carrinho e checkout, sem perder o contexto do produto.
+              Daqui voce segue para o carrinho e fecha tudo no mesmo fluxo, sem perder o contexto do que escolheu.
             </p>
           </div>
         </div>

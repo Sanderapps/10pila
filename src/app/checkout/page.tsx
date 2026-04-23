@@ -55,10 +55,10 @@ export default async function CheckoutPage({
     paymentStatus === "APPROVED"
       ? "Pedido confirmado. Agora o trilho e separacao, embalagem e envio."
       : paymentStatus === "REJECTED"
-        ? "O pagamento nao fechou. Voce pode revisar o pedido e tentar novamente."
+        ? "O pagamento nao passou. Voce pode revisar o pedido e tentar de novo."
         : paymentStatus === "CANCELED"
-          ? "Fluxo cancelado. O pedido segue salvo para voce decidir o proximo passo."
-        : "O pagamento ainda esta em analise ou aguardando acao no gateway.";
+          ? "O pagamento foi cancelado. O pedido continua salvo para voce decidir o que fazer."
+        : "O pagamento ainda esta em analise ou aguardando confirmacao do PagBank.";
   const statusTone =
     paymentStatus === "APPROVED"
       ? "text-[var(--accent)]"
@@ -72,8 +72,8 @@ export default async function CheckoutPage({
         <p className="font-bold text-[var(--accent)]">checkout</p>
         <h1 className="text-4xl font-black">Fechar pedido</h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-          Revise entrega, itens e total aqui dentro da 10PILA. O pagamento final acontece em ambiente seguro do
-          PagBank, e depois o pedido volta para acompanhamento normal na sua conta.
+          Revise entrega, itens e total aqui dentro da 10PILA. O pagamento termina no ambiente seguro do PagBank e,
+          depois disso, o pedido volta para acompanhamento normal na sua conta.
         </p>
       </div>
 
@@ -129,8 +129,7 @@ export default async function CheckoutPage({
                 Proximo passo: <strong className="text-[var(--foreground)]">{paymentNextStep}</strong>
               </p>
               <p>
-                A 10PILA te recebe de volta aqui para continuar o fluxo sem cara de saida seca do site. Pedido,
-                pagamento e proximos passos ficam no mesmo trilho.
+                Pedido, pagamento e proximo passo ficam no mesmo lugar para voce entender rapido em que ponto a compra esta.
               </p>
             </div>
           </div>
@@ -149,7 +148,7 @@ export default async function CheckoutPage({
           ) : (
             <div className="grid gap-3">
               <p className="text-sm text-[var(--muted)]">
-                Checkout PagBank estrutural salvo. O link real de pagamento aparece aqui quando o PagBank devolver a URL do checkout.
+                O pedido foi salvo, mas o link do PagBank ainda nao voltou para esta tela. Assim que ele existir, aparece aqui.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link className="btn secondary w-fit" href={`/pedidos/${recentOrder.id}`}>
@@ -168,8 +167,8 @@ export default async function CheckoutPage({
         <EmptyState
           art={<OrderSignalIllustration className="size-24" />}
           eyebrow="checkout"
-          title="Checkout aguardando itens"
-          description="Sem item no carrinho, nao existe fechamento. Escolhe um produto e volta que o resumo entra no trilho."
+          title="Seu checkout esta vazio"
+          description="Sem item no carrinho nao tem o que fechar. Escolhe um produto e volta que o resumo aparece aqui."
           actions={
             <Link className="btn w-fit" href="/produtos">
               Ver catalogo
@@ -211,7 +210,7 @@ export default async function CheckoutPage({
           <aside className="panel grid h-fit gap-3 p-5">
             <p className="text-sm font-bold text-[var(--accent)]">Resumo do fechamento</p>
             <p className="text-sm text-[var(--muted)]">
-              Pedido revisavel antes do pagamento. Nada e cobrado aqui dentro dessa etapa.
+              Voce ainda pode revisar tudo antes de seguir para o pagamento.
             </p>
             <div className="grid gap-2 text-sm">
               <p className="flex justify-between">
@@ -241,9 +240,9 @@ export default async function CheckoutPage({
             </div>
             <div className="grid gap-2 text-sm text-[var(--muted)]">
               <span className="chip">estoque validado</span>
-              <span className="chip">pedido revisavel antes do redirect</span>
+              <span className="chip">pedido revisavel antes do pagamento</span>
               <span className="chip">pagamento seguro via PagBank</span>
-              <span className="chip">retorno para acompanhar na 10PILA</span>
+              <span className="chip">acompanhamento na 10PILA depois do pagamento</span>
             </div>
           </aside>
         </div>

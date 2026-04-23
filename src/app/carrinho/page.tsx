@@ -36,9 +36,9 @@ export default async function CartPage() {
             <CartIcon />
             carrinho
           </p>
-          <h1 className="text-4xl font-black">Achado quase fechado</h1>
+          <h1 className="text-4xl font-black">Seu carrinho</h1>
           <p className="max-w-2xl text-sm text-[var(--muted)]">
-            Revise quantidade, cupom, frete e total antes de seguir para o checkout. O bot fica discreto aqui para nao disputar foco.
+            Confere os itens, ajusta quantidade se precisar e segue para o checkout quando estiver tudo certo.
           </p>
         </div>
         <div className="grid gap-2 text-sm text-[var(--muted)] md:min-w-[230px]">
@@ -56,8 +56,8 @@ export default async function CartPage() {
               carrinho
             </>
           }
-          title="Seu carrinho ainda esta no modo vitrine"
-          description="Nada caiu no carrinho ainda. Puxa um achado pro radar e a 10PILA fecha o resto daqui."
+          title="Seu carrinho ainda esta vazio"
+          description="Ainda nao entrou nada aqui. Escolhe um produto e volta que o fechamento comeca daqui."
           actions={
             <>
               <Link className="btn" href="/produtos">

@@ -101,8 +101,8 @@ export default async function ProductsPage({
             <h1 className="text-4xl font-black">Garimpo tech do 10PILA</h1>
             <p className="mt-2 max-w-xl text-[var(--muted)]">
               {query
-                ? `Resultado direto para "${query}". Estoque real, preco baixo e caminho curto ate o produto.`
-                : "Nao trata isso como estoque cru. Aqui a vitrine ja entra organizada por preco e por uso."}
+                ? `Resultado para "${query}". Estoque real, preco claro e caminho direto ate o produto.`
+                : "Aqui voce nao precisa sair caçando no escuro. A vitrine ja entra separada por preco e por tipo de uso."}
             </p>
           </div>
           <span className="chip">{products.length} item(ns)</span>
@@ -155,8 +155,8 @@ export default async function ProductsPage({
                     </p>
                     <h2 className="text-3xl font-black">Comeca pelos achados de ate R$ 9,90</h2>
                     <p className="max-w-2xl text-sm text-[var(--muted)]">
-                      Esse e o recorte mais forte para clique rapido: cabo, suporte, limpeza e utilidade pequena que
-                      resolve sem transformar compra simples em busca longa.
+                      Esse e o melhor ponto de entrada pra compra rapida. Tem cabo, suporte, limpeza e utilidade pequena
+                      com preco baixo e pouca chance de arrependimento.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 text-sm text-[var(--muted)]">
@@ -181,15 +181,15 @@ export default async function ProductsPage({
                   <div className="grid gap-3">
                     <Link className="surface promo-guide-link grid gap-1 p-4" href="/produtos?q=celular">
                       <strong>Celular sem gambiarra</strong>
-                      <span className="text-sm text-[var(--muted)]">Suporte, cabo, audio e adaptador sem trambolho.</span>
+                      <span className="text-sm text-[var(--muted)]">Suporte, cabo, audio e adaptador pra resolver rapido.</span>
                     </Link>
                     <Link className="surface promo-guide-link grid gap-1 p-4" href="/produtos?q=organizador">
                       <strong>Mesa mais limpa</strong>
-                      <span className="text-sm text-[var(--muted)]">Organizacao, clip e utilidade pequena para rotina.</span>
+                      <span className="text-sm text-[var(--muted)]">Organizacao, clip e miudeza util pra rotina.</span>
                     </Link>
                     <Link className="surface promo-guide-link grid gap-1 p-4" href="/produtos?q=mochila">
                       <strong>Mochila e viagem</strong>
-                      <span className="text-sm text-[var(--muted)]">Miudeza util que cabe no corre do dia a dia.</span>
+                      <span className="text-sm text-[var(--muted)]">Coisa pequena que ajuda e cabe no corre do dia a dia.</span>
                     </Link>
                   </div>
                 </aside>
@@ -219,7 +219,8 @@ export default async function ProductsPage({
                       <p className="eyebrow">recorte comercial</p>
                       <h2 className="text-3xl font-black">Celular, mesa e setup leve</h2>
                       <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-                        Depois do preco de entrada, esse e o recorte mais forte para resolver rotina sem complicar a compra.
+                        Depois da faixa mais barata, esse e o recorte que mais resolve coisa do dia a dia sem deixar a
+                        compra mais pesada.
                       </p>
                     </div>
                   </div>
@@ -234,8 +235,8 @@ export default async function ProductsPage({
                   <p className="eyebrow">guia rapido</p>
                   <h2 className="text-2xl font-black">O resto entra como apoio</h2>
                   <p className="text-sm text-[var(--muted)]">
-                    Preco baixo puxa o clique. Uso ajuda a decidir. O catalogo completo fica no final para quem quer
-                    rodar o inventario inteiro.
+                    Primeiro entra o preco. Depois entra o uso. O catalogo inteiro fica no final pra quem quer olhar
+                    tudo com calma.
                   </p>
                   <div className="grid gap-2 text-sm text-[var(--muted)]">
                     <span className="chip">preco primeiro</span>
@@ -251,7 +252,7 @@ export default async function ProductsPage({
                     <p className="eyebrow">rotina rapida</p>
                     <h2 className="text-3xl font-black">Ate R$ 19,90 e uteis de mochila</h2>
                   <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-                    Esse bloco entra como repertorio complementar, nao como a primeira decisao da pagina.
+                    Esse bloco entra como complemento. Serve mais pra ampliar a busca do que pra abrir a pagina.
                   </p>
                   </div>
                 </div>
@@ -268,8 +269,8 @@ export default async function ProductsPage({
                     <p className="eyebrow">catalogo inteiro</p>
                     <h2 className="text-3xl font-black">Todos os achados</h2>
                   <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-                    Aqui entra o inventario completo. Antes dele, a loja ja te entrega atalhos para chegar mais rapido
-                    no que faz sentido.
+                    Aqui fica tudo. Antes disso, a loja tenta te levar mais rapido para o que tem mais chance de fazer
+                    sentido pra voce.
                   </p>
                   </div>
                 </div>
@@ -287,8 +288,7 @@ export default async function ProductsPage({
                   <p className="eyebrow">resultado</p>
                   <h2 className="text-3xl font-black">Achados para &quot;{query}&quot;</h2>
                   <p className="mt-2 max-w-2xl text-sm text-[var(--muted)]">
-                    Busca direta no estoque ativo. Se nao era bem isso, limpa o termo e volta para os recortes da
-                    vitrine principal.
+                    Busca direta no estoque ativo. Se nao era isso, limpa o termo e volta para a vitrine principal.
                   </p>
                 </div>
                 <Link className="btn secondary" href="/produtos">

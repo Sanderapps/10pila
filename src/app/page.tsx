@@ -162,11 +162,11 @@ export default async function HomePage() {
             achados baratos com estoque real
           </p>
           <h1 className="max-w-3xl text-5xl font-black leading-tight md:text-7xl">
-            Achados tech ate R$ 19,90. Utilidade pequena, clique facil.
+            Coisa util, tech e barata. Do tipo que voce abre, olha e leva.
           </h1>
           <p className="max-w-xl text-lg text-[var(--muted)]">
-            Cabo, acessorio de celular, luz USB e organizacao esperta pra resolver coisa pequena sem
-            pesar no bolso. Estoque real, compra rapida e sem rodeio.
+            Cabo, acessorio de celular, luz USB, suporte e organizacao pra resolver as pequenas chatices do dia a dia
+            sem gastar demais. Tudo com estoque real e caminho simples ate o checkout.
           </p>
           <div className="hero-cta-row flex flex-wrap gap-3">
             <Link className="btn shine" href="/produtos">
@@ -207,13 +207,13 @@ export default async function HomePage() {
             <p className="text-2xl font-black">{spotlight?.name ?? "Achado pronto pra rodar"}</p>
             <p className="text-sm text-[var(--muted)]">
               {spotlight
-                ? `${centsToBRL(productPrice(spotlight))} com estoque ativo. Item direto, facil de levar e bom de encaixar no carrinho.`
+                ? `${centsToBRL(productPrice(spotlight))} e pronto pra sair do estoque. Um item simples, util e facil de encaixar no pedido.`
                 : "Produto com foto, estoque e preco vindo direto do banco."}
             </p>
             <div className="flex flex-wrap gap-2 pt-2 text-xs text-[var(--muted)]">
-              <span className="chip brand-badge">utilidade leve</span>
+              <span className="chip brand-badge">utilidade real</span>
               <span className="chip brand-badge">preco redondo</span>
-              <span className="chip brand-badge">entra facil no pedido</span>
+              <span className="chip brand-badge">compra facil</span>
             </div>
           </div>
         </div>
@@ -227,8 +227,8 @@ export default async function HomePage() {
           </p>
           <h2 className="text-3xl font-black">Achados de entrada, sem girar demais</h2>
           <p className="max-w-2xl text-sm text-[var(--muted)]">
-            Se a ideia e clicar rapido, entra primeiro nos itens de ate R$ 9,90. Cabo, clip, limpeza e organizacao
-            que resolvem o pequeno caos sem transformar compra simples em conta grande.
+            Se voce so quer encontrar uma coisinha util e seguir a vida, comeca por aqui. Tem cabo, clip, limpeza e
+            organizacao com preco de item que entra no carrinho sem briga.
           </p>
           <div className="flex flex-wrap gap-2 text-sm text-[var(--muted)]">
             <span className="chip">cabos</span>
@@ -253,7 +253,7 @@ export default async function HomePage() {
           </p>
           <h2 className="text-2xl font-black">BEMVINDO10</h2>
           <p className="text-sm text-[var(--muted)]">
-            Cupom de boas-vindas pra deixar a primeira compra mais leve.
+            Cupom de boas-vindas pra primeira compra ficar mais gostosa de fechar.
           </p>
           <div className="grid gap-2 text-sm text-[var(--muted)]">
             <span className="chip">primeiro pedido</span>
@@ -280,8 +280,8 @@ export default async function HomePage() {
               <p className="eyebrow">atalho certo</p>
               <h2 className="text-3xl font-black">Entra por uso, nao por rolagem infinita</h2>
               <p className="text-sm text-[var(--muted)]">
-                O bloco principal abre a vitrine. Aqui do lado a ideia e cortar caminho: preco baixo, reposicao rapida
-                e novidade entrando cedo.
+                A vitrine principal mostra o clima da loja. Aqui do lado ficam os atalhos pra quem ja quer ir direto ao
+                ponto sem rolar a pagina inteira.
               </p>
             </div>
             <div className="grid gap-3">
@@ -400,8 +400,8 @@ export default async function HomePage() {
           </p>
           <h2 className="text-3xl font-black">Indique um amigo e ganhe R$ 10</h2>
           <p className="max-w-2xl text-[var(--muted)]">
-            Seu amigo compra acima de R$ 50 e voce recebe um cupom unico de R$ 10. Simples, direto
-            e sem programa de pontos enrolando o caminho.
+            Se um amigo fizer a primeira compra acima de R$ 50, voce ganha R$ 10 em cupom. Simples de entender e bom
+            de usar.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link className="btn" href={user ? "/indicacoes" : "/auth/register"}>
@@ -433,8 +433,8 @@ export default async function HomePage() {
             </p>
             <h2 className="text-3xl font-black">Combo leve sem enrolacao</h2>
             <p className="text-[var(--muted)]">
-              Junta 3 itens uteis de ate R$ 19,90 e monta um pedido com cara de compra esperta, nao
-              de carrinho perdido.
+              Junta 3 itens uteis de ate R$ 19,90 e monta um pedido que faz sentido de verdade: um pouco de mesa, um
+              pouco de celular, um pouco de organizacao.
             </p>
             <div className="grid gap-2 text-sm text-[var(--muted)]">
               <span className="chip">mesa</span>
@@ -468,8 +468,8 @@ export default async function HomePage() {
               <h2 className="text-3xl font-black">Acompanha os drops e novidades</h2>
             </div>
             <p className="max-w-2xl text-[var(--muted)]">
-              Esse bloco e pra puxar novidade, reposicao e promo sem depender so da home. A ideia e
-              manter a 10PILA com cara de loja que gira de verdade.
+              Aqui entra novidade, reposicao e promocao. A ideia e fazer a 10PILA parecer uma loja que esta sempre
+              girando, nao uma vitrine parada.
             </p>
             {socialLinks.length > 0 ? (
               <div className="grid gap-3 md:grid-cols-3">

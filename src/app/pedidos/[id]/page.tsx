@@ -33,50 +33,50 @@ function orderStatusMeta(status: string) {
       return {
         label: "Entregue",
         tone: "text-[var(--accent)]",
-        summary: "Pedido entregue. Fluxo fechado do jeito certo.",
-        nextStep: "Se quiser repetir o achado, o caminho agora e montar o proximo carrinho."
+        summary: "Pedido entregue.",
+        nextStep: "Se quiser comprar de novo, o caminho agora e montar o proximo carrinho."
       };
     case "SHIPPED":
       return {
         label: "Em envio",
         tone: "text-[var(--accent-2)]",
-        summary: "Pedido despachado. Agora e trilho de entrega.",
-        nextStep: "Acompanha por aqui e segura a proxima compra para quando esse pacote bater na porta."
+        summary: "Pedido despachado e seguindo para entrega.",
+        nextStep: "Agora vale acompanhar por aqui ate o pacote chegar."
       };
     case "PROCESSING":
       return {
         label: "Separando pedido",
         tone: "text-[var(--accent-2)]",
-        summary: "Pagamento passou e o pedido entrou em separacao.",
-        nextStep: "Agora a loja prepara o envio. O proximo salto e status de despacho."
+        summary: "Pagamento aprovado e pedido em separacao.",
+        nextStep: "Agora a loja prepara o envio. O proximo status deve ser despacho."
       };
     case "PAID":
       return {
         label: "Pago",
         tone: "text-[var(--accent)]",
-        summary: "Pedido pago. Confirmacao feita e trilho destravado.",
-        nextStep: "O proximo passo e a loja puxar separacao e atualizar para processamento."
+        summary: "Pagamento confirmado.",
+        nextStep: "O proximo passo e a loja atualizar o pedido para separacao."
       };
     case "CANCELED":
       return {
         label: "Cancelado",
         tone: "text-[var(--danger)]",
-        summary: "Pedido cancelado. O historico fica salvo sem perder o rastro.",
-        nextStep: "Se ainda quiser os itens, vale montar o pedido de novo com o carrinho revisado."
+        summary: "Pedido cancelado.",
+        nextStep: "Se ainda quiser os itens, o melhor caminho e montar um novo pedido."
       };
     case "AWAITING_PAYMENT":
       return {
         label: "Aguardando pagamento",
         tone: "text-[var(--warning)]",
-        summary: "Pedido salvo, mas o pagamento ainda nao virou confirmacao.",
-        nextStep: "Abrir o checkout do PagBank e concluir o pagamento e o caminho mais curto."
+        summary: "Pedido salvo, mas o pagamento ainda nao foi concluido.",
+        nextStep: "Abrir o pagamento no PagBank e concluir o pedido e o caminho mais curto."
       };
     default:
       return {
         label: "Pendente",
         tone: "text-[var(--warning)]",
-        summary: "Pedido criado e aguardando o proximo passo do fluxo.",
-        nextStep: "Se houver link de pagamento, conclui ele primeiro para destravar o resto."
+        summary: "Pedido criado e aguardando o proximo passo.",
+        nextStep: "Se houver link de pagamento, conclui ele primeiro."
       };
   }
 }
@@ -105,7 +105,7 @@ function paymentStatusMeta(status: string) {
       return {
         label: "Pagamento estornado",
         tone: "text-[var(--warning)]",
-        summary: "O valor foi estornado e o pedido precisa ser tratado como encerrado."
+        summary: "O valor foi estornado e o pedido deve ser tratado como encerrado."
       };
     default:
       return {
@@ -238,14 +238,14 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             <div className="grid gap-1">
               <p className="text-sm font-black uppercase text-[var(--accent-2)]">pedido em trilho</p>
               <p className="text-sm text-[var(--muted)]">
-                Pagamento, itens, entrega e acompanhamento no mesmo painel.
+                Pagamento, itens, entrega e acompanhamento no mesmo lugar.
               </p>
             </div>
           </div>
           <div className="grid gap-2">
             <h2 className="text-2xl font-bold">Itens do pedido</h2>
             <p className="text-sm text-[var(--muted)]">
-              Aqui fica o resumo fechado do que entrou no pedido, sem depender do carrinho atual.
+              Aqui fica o resumo final do que entrou no pedido, sem depender do carrinho atual.
             </p>
           </div>
           <div className="grid gap-3">
@@ -297,7 +297,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             </div>
             <div className="grid gap-2 text-sm text-[var(--muted)]">
               <span className="chip">pedido salvo no historico</span>
-              <span className="chip">pagamento amarrado ao pedido</span>
+              <span className="chip">pagamento vinculado ao pedido</span>
               <span className="chip">status atualizado por aqui</span>
             </div>
           </article>
