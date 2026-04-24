@@ -152,10 +152,10 @@ export function ChatWidget() {
       return {
         quick: ["comparar esse produto", "ver detalhes", "adicionar ao carrinho"],
         teasers: [
-          "Não precisa abrir tudo nesse aqui, eu vejo.",
-          "Se quiser, eu comparo esse pra você.",
-          "Se for levar, eu agilizo.",
-          "Tá olhando esse há um tempo já, né?"
+          "Tá olhando esse já tem um tempo, né?",
+          "Se quiser, eu resumo esse aqui.",
+          "Quer comparar ou vai nesse mesmo?",
+          "Se for levar, eu agilizo."
         ]
       };
     }
@@ -187,9 +187,10 @@ export function ChatWidget() {
         quick: ["mais barato", "ver promocoes", "comparar", "adicionar ao carrinho"],
         teasers: [
           "Não clica em tudo não, eu filtro.",
-          "Tem coisa demais aí. Eu separo o que presta.",
+          "Tem coisa demais aí. Eu separo.",
           "Se quiser, eu corto caminho pra você.",
-          "Quer os mais baratos? Eu puxo."
+          "Quer os mais baratos? Eu puxo.",
+          "Mais fácil se você falar o que quer."
         ]
       };
     }
@@ -200,6 +201,8 @@ export function ChatWidget() {
         "Não clica aqui não, namoral.",
         "Quero ver quando vão me pagar.",
         "Mais um que veio só olhar.",
+        "Se for só olhar, tudo bem também.",
+        "Manda logo o que você quer.",
         "Se quiser, eu acho mais rápido.",
         "Tô aqui ainda. Infelizmente.",
         "Fala o que você quer que eu vejo."
@@ -841,12 +844,6 @@ export function ChatWidget() {
                 className={`chat-hint ${index === teaserLines.length - 1 ? "chat-hint-primary" : "chat-hint-secondary"}`}
                 key={`${line}-${index}`}
               >
-                {index === 0 ? (
-                  <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-normal text-[var(--accent)]">
-                    <BoltIcon className="size-3" />
-                    assistente 10PILA
-                  </span>
-                ) : null}
                 <span className="block">{line}</span>
               </span>
             ))}
