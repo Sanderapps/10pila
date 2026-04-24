@@ -886,13 +886,13 @@ select {
   position: relative;
   display: block;
   width: max-content;
-  min-width: 168px;
+  min-width: 160px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.98);
   color: #0d1117;
-  padding: 9px 12px;
-  line-height: 1.25;
+  padding: 8px 11px;
+  line-height: 1.2;
   white-space: normal;
   word-break: normal;
   overflow-wrap: break-word;
@@ -904,10 +904,10 @@ select {
 .chat-hint::after {
   content: "";
   position: absolute;
-  right: 18px;
-  bottom: -8px;
-  width: 14px;
-  height: 14px;
+  right: 28px;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   background: rgba(255, 255, 255, 0.98);
@@ -916,14 +916,14 @@ select {
 
 .chat-hint-primary {
   max-width: min(320px, calc(100vw - 112px));
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   font-weight: 600;
 }
 
 .chat-hint-secondary {
   max-width: min(280px, calc(100vw - 128px));
-  margin-right: 14px;
-  font-size: 0.76rem;
+  margin-right: 12px;
+  font-size: 0.7rem;
   font-weight: 500;
   color: rgba(13, 17, 23, 0.82);
   opacity: 0.96;
@@ -931,31 +931,31 @@ select {
 
 @media (max-width: 640px) {
   .chat-hint-stack {
-    max-width: min(248px, calc(100vw - 108px));
+    max-width: min(230px, calc(100vw - 96px));
   }
 
   .chat-hint-primary {
-    max-width: min(248px, calc(100vw - 108px));
-    font-size: 0.76rem;
-  }
-
-  .chat-hint-secondary {
-    max-width: min(220px, calc(100vw - 124px));
-    margin-right: 10px;
+    max-width: min(230px, calc(100vw - 96px));
     font-size: 0.72rem;
   }
 
+  .chat-hint-secondary {
+    max-width: min(204px, calc(100vw - 108px));
+    margin-right: 8px;
+    font-size: 0.68rem;
+  }
+
   .chat-hint {
-    min-width: 132px;
+    min-width: 124px;
     border-radius: 12px;
-    padding: 8px 10px;
-    line-height: 1.2;
+    padding: 7px 9px;
+    line-height: 1.14;
   }
 
   .chat-hint::after {
-    right: 14px;
-    width: 12px;
-    height: 12px;
+    right: 22px;
+    width: 10px;
+    height: 10px;
   }
 }
 
