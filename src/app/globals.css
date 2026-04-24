@@ -878,17 +878,24 @@ select {
 
 .chat-hint-stack {
   will-change: transform, opacity;
+  width: max-content;
+  max-width: min(340px, calc(100vw - 112px));
 }
 
 .chat-hint {
   position: relative;
   display: block;
+  width: max-content;
+  min-width: 168px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.98);
   color: #0d1117;
   padding: 9px 12px;
   line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.22),
     0 0 0 1px rgba(255, 255, 255, 0.4);
@@ -908,13 +915,13 @@ select {
 }
 
 .chat-hint-primary {
-  max-width: 320px;
+  max-width: min(320px, calc(100vw - 112px));
   font-size: 0.82rem;
   font-weight: 600;
 }
 
 .chat-hint-secondary {
-  max-width: 280px;
+  max-width: min(280px, calc(100vw - 128px));
   margin-right: 14px;
   font-size: 0.76rem;
   font-weight: 500;
@@ -923,18 +930,23 @@ select {
 }
 
 @media (max-width: 640px) {
+  .chat-hint-stack {
+    max-width: min(248px, calc(100vw - 108px));
+  }
+
   .chat-hint-primary {
-    max-width: min(270px, calc(100vw - 118px));
+    max-width: min(248px, calc(100vw - 108px));
     font-size: 0.76rem;
   }
 
   .chat-hint-secondary {
-    max-width: min(246px, calc(100vw - 134px));
+    max-width: min(220px, calc(100vw - 124px));
     margin-right: 10px;
     font-size: 0.72rem;
   }
 
   .chat-hint {
+    min-width: 132px;
     border-radius: 12px;
     padding: 8px 10px;
     line-height: 1.2;

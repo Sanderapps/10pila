@@ -832,7 +832,7 @@ export function ChatWidget() {
         {teaserLines.length > 0 && !open && !isPurchasePage && !isKeyboardOpen && !composerFocused ? (
           <motion.button
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="chat-hint-stack pointer-events-auto absolute bottom-20 right-20 grid max-w-[min(260px,calc(100vw-110px))] justify-items-end gap-2 text-left max-sm:right-18 max-sm:bottom-24"
+            className="chat-hint-stack pointer-events-auto absolute bottom-20 right-20 grid justify-items-end gap-2 text-left max-sm:bottom-24"
             exit={{ opacity: 0, y: 10, scale: 0.96 }}
             initial={{ opacity: 0, y: 12, scale: 0.96 }}
             onClick={openChat}
