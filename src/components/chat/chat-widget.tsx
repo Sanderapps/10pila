@@ -38,13 +38,14 @@ type TeaserContext = {
 };
 
 const HINT_STORAGE_KEY = "10pila-chat-next-hint-at-v2";
+const HINT_SESSION_SEEN_KEY = "10pila-chat-teaser-seen-v1";
 const HINT_INITIAL_DELAY_MIN_MS = 5000;
-const HINT_INITIAL_DELAY_SPREAD_MS = 5000;
+const HINT_INITIAL_DELAY_SPREAD_MS = 3000;
 const HOME_TEASER_COOLDOWN_MS = 1000 * 28;
 const BROWSE_TEASER_COOLDOWN_MS = 1000 * 40;
 const POST_CLOSE_COOLDOWN_MS = 1000 * 60 * 8;
 const POST_OPEN_COOLDOWN_MS = 1000 * 60 * 30;
-const TEASER_VISIBLE_MS = 8200;
+const TEASER_VISIBLE_MS = 12000;
 
 function currentProductSlug(pathname: string) {
   const match = pathname.match(/^\/produtos\/([^/]+)/);
@@ -216,9 +217,12 @@ export function ChatWidget() {
     }
 
     lastScrollAtRef.current = Date.now();
+    const sessionSeen = window.sessionStorage.getItem(HINT_SESSION_SEEN_KEY) === "1";
     const saved = Number(window.localStorage.getItem(HINT_STORAGE_KEY) ?? "");
     nextHintAtRef.current =
-      Number.isFinite(saved) && saved > Date.now()
+      !sessionSeen
+        ? Date.now() + HINT_INITIAL_DELAY_MIN_MS + Math.round(Math.random() * HINT_INITIAL_DELAY_SPREAD_MS)
+        : Number.isFinite(saved) && saved > Date.now()
         ? saved
         : Date.now() + HINT_INITIAL_DELAY_MIN_MS + Math.round(Math.random() * HINT_INITIAL_DELAY_SPREAD_MS);
   }, [context.quick]);
@@ -226,7 +230,6 @@ export function ChatWidget() {
   useEffect(() => {
     function onScroll() {
       lastScrollAtRef.current = Date.now();
-      setTeaserLines([]);
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -278,7 +281,7 @@ export function ChatWidget() {
 
     const interval = window.setInterval(() => {
       const now = Date.now();
-      const idleEnough = now - lastScrollAtRef.current > (isHomePage ? 900 : 1800);
+      const idleEnough = now - lastScrollAtRef.current > (isHomePage ? 700 : 1400);
 
       if (idleEnough && now >= nextHintAtRef.current) {
         const firstIndex = Math.floor(Math.random() * context.teasers.length);
@@ -289,6 +292,9 @@ export function ChatWidget() {
           ? [firstLine, availableSecondary[Math.floor(Math.random() * availableSecondary.length)]]
           : [firstLine];
         setTeaserLines(nextLines);
+        if (typeof window !== "undefined") {
+          window.sessionStorage.setItem(HINT_SESSION_SEEN_KEY, "1");
+        }
         setNudgeTick((value) => value + 1);
         const nextWindow = now + (isHomePage ? HOME_TEASER_COOLDOWN_MS : BROWSE_TEASER_COOLDOWN_MS);
         nextHintAtRef.current = nextWindow;
@@ -819,42 +825,42 @@ export function ChatWidget() {
         ) : null}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {teaserLines.length > 0 && !open && !isPurchasePage && !isKeyboardOpen && !composerFocused ? (
+          <motion.button
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            className="chat-hint-stack pointer-events-auto absolute bottom-20 right-20 grid max-w-[min(260px,calc(100vw-110px))] justify-items-end gap-2 text-left max-sm:right-18 max-sm:bottom-24"
+            exit={{ opacity: 0, y: 10, scale: 0.96 }}
+            initial={{ opacity: 0, y: 12, scale: 0.96 }}
+            onClick={openChat}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            type="button"
+          >
+            {teaserLines.map((line, index) => (
+              <span
+                className={`chat-hint ${index === teaserLines.length - 1 ? "chat-hint-primary" : "chat-hint-secondary"}`}
+                key={`${line}-${index}`}
+              >
+                {index === 0 ? (
+                  <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-normal text-[var(--accent)]">
+                    <BoltIcon className="size-3" />
+                    assistente 10PILA
+                  </span>
+                ) : null}
+                <span className="block">{line}</span>
+              </span>
+            ))}
+          </motion.button>
+        ) : null}
+      </AnimatePresence>
+
       <div
-        className={`pointer-events-auto relative overflow-hidden ${
+        className={`pointer-events-auto relative overflow-visible ${
           isPurchasePage && !open
             ? "mr-0 h-16 w-[68px] opacity-92"
             : "mr-1 h-28 w-[118px] max-sm:mr-0 max-sm:w-[108px]"
         } ${isKeyboardOpen || composerFocused ? "opacity-0 pointer-events-none" : ""}`}
       >
-        <AnimatePresence>
-          {teaserLines.length > 0 && !isPurchasePage ? (
-            <motion.button
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="chat-hint-stack absolute bottom-20 right-16 grid max-w-[260px] justify-items-end gap-2 text-left"
-              exit={{ opacity: 0, y: 8, scale: 0.96 }}
-              initial={{ opacity: 0, y: 8, scale: 0.96 }}
-              onClick={openChat}
-              transition={{ duration: 0.18, ease: "easeOut" }}
-              type="button"
-            >
-              {teaserLines.map((line, index) => (
-                <span
-                  className={`chat-hint ${index === teaserLines.length - 1 ? "chat-hint-primary" : "chat-hint-secondary"}`}
-                  key={`${line}-${index}`}
-                >
-                  {index === 0 ? (
-                    <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-normal text-[var(--accent)]">
-                      <BoltIcon className="size-3" />
-                      assistente 10PILA
-                    </span>
-                  ) : null}
-                  <span className="block">{line}</span>
-                </span>
-              ))}
-            </motion.button>
-          ) : null}
-        </AnimatePresence>
-
         <motion.div
           animate={{
             x: [-2, 0, -2],
