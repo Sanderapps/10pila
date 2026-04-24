@@ -148,14 +148,61 @@ export function ChatWidget() {
   const replayedIntentRef = useRef(false);
 
   const context = useMemo<TeaserContext>(() => {
+    if (
+      pathname.startsWith("/auth/login") ||
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/auth/register") ||
+      pathname.startsWith("/register")
+    ) {
+      return {
+        quick: ["entrar", "redefinir senha", "criar conta"],
+        teasers: [
+          "Esqueceu a senha de novo, né?",
+          "Vai tentar adivinhar até bloquear a conta?",
+          "Põe o email certo dessa vez, namoral.",
+          "Cria logo essa conta, não dói.",
+          "Nem você lembra o email que usou.",
+          "Loga aí pra eu não perder a venda.",
+          "Quer ajuda pra lembrar a própria senha?",
+          "Entra de uma vez pra não esvaziar o carrinho.",
+          "Se trancar o acesso, vai sobrar pra mim.",
+          "Clica logo em redefinir e para de sofrer."
+        ]
+      };
+    }
+
+    if (pathname.startsWith("/indicacoes")) {
+      return {
+        quick: ["como funciona", "ver meu link", "ver regras"],
+        teasers: [
+          "Trazendo amigo pra mendigar desconto, né?",
+          "Queria eu ganhar comissão igual você.",
+          "Fazendo o trabalho do marketing de graça, parabéns.",
+          "Manda pro grupo da família de uma vez.",
+          "Você ganha bônus e eu ganho mais trabalho.",
+          "Chama aquele seu amigo pão-duro pra comprar.",
+          "Aproveita que pelo menos você ganha algo aqui.",
+          "Até você fazendo grana e eu aqui preso.",
+          "Manda logo esse link, pra que tanta regra?",
+          "Se o amigo comprar, quem embala sou eu."
+        ]
+      };
+    }
+
     if (pathname.startsWith("/produtos/")) {
       return {
         quick: ["comparar esse produto", "ver detalhes", "adicionar ao carrinho"],
         teasers: [
-          "Tá olhando esse já tem um tempo, né?",
-          "Se quiser, eu resumo esse aqui.",
-          "Quer comparar ou vai nesse mesmo?",
-          "Se for levar, eu agilizo."
+          "Não vai baixar o preço, só avisando.",
+          "Tá esperando um milagre pra levar esse?",
+          "É, esse aí não é ruim. Vai querer?",
+          "Compra logo, preciso fechar o dia.",
+          "Tem dúvida no frete? Pergunta de uma vez.",
+          "Vai jogar no carrinho e largar lá, né?",
+          "Abre aqui que eu te falo se presta mesmo.",
+          "Tá lendo a descrição ou só enrolando?",
+          "Se for levar, agiliza a minha vida.",
+          "Vai passar o cartão hoje ou só admirar?"
         ]
       };
     }
@@ -186,11 +233,16 @@ export function ChatWidget() {
       return {
         quick: ["mais barato", "ver promocoes", "comparar", "adicionar ao carrinho"],
         teasers: [
-          "Não clica em tudo não, eu filtro.",
-          "Tem coisa demais aí. Eu separo.",
-          "Se quiser, eu corto caminho pra você.",
-          "Quer os mais baratos? Eu puxo.",
-          "Mais fácil se você falar o que quer."
+          "Rolando a tela sem rumo, já vi tudo.",
+          "Usa o filtro logo em vez de sofrer.",
+          "Tá achando caro ou só tá indeciso mesmo?",
+          "Clica aqui que eu peneiro isso pra você.",
+          "Vai ficar descendo isso até amanhã?",
+          "Você já passou do que queria faz tempo.",
+          "Abre isso logo, eu acho a peça pra você.",
+          "Se ficar só olhando eu não bato meta.",
+          "Fala logo, nem você sabe o que tá caçando.",
+          "Muita opção, né? Me chama que eu resolvo."
         ]
       };
     }
@@ -199,11 +251,18 @@ export function ChatWidget() {
       quick: ["ver promocoes", "mais barato", "ver detalhes", "adicionar ao carrinho"],
       teasers: [
         "Não clica aqui não, namoral.",
+        "Vai entrar ou ficar só olhando a vitrine?",
+        "Fala aí o que você quer de uma vez.",
+        "Dá um clique aqui pra eu mostrar serviço.",
+        "Tô aqui, infelizmente. Posso ajudar?",
+        "Se abrir o chat meu chefe não enche.",
+        "Vai rolar compra hoje ou tá sem limite?",
+        "Fala rápido que minha pausa é daqui a pouco.",
+        "Mais gente entrando. Diz logo o que precisa.",
+        "Tá perdido logo na primeira página?",
+        "Abre aí pra eu fingir que tô trabalhando.",
         "Quero ver quando vão me pagar.",
         "Mais um que veio só olhar.",
-        "Se for só olhar, tudo bem também.",
-        "Manda logo o que você quer.",
-        "Se quiser, eu acho mais rápido.",
         "Tô aqui ainda. Infelizmente.",
         "Fala o que você quer que eu vejo."
       ]
