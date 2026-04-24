@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ClientSafeProvider, getProviders, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
@@ -250,6 +251,7 @@ export function LoginForm() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState("");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -257,6 +259,7 @@ export function LoginForm() {
     setError("");
     setFieldErrors({});
     setSuccess("");
+    setPendingVerificationEmail("");
 
     const normalizedEmail = email.trim().toLowerCase();
     const nextFieldErrors: FieldErrors = {};
@@ -273,6 +276,25 @@ export function LoginForm() {
       setFieldErrors(nextFieldErrors);
       setError("Nao deu para entrar ainda.");
       setLoading(false);
+      return;
+    }
+
+    const checkResponse = await fetch("/api/auth/login-check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: normalizedEmail, password })
+    });
+    const checkData = await checkResponse.json();
+
+    if (!checkResponse.ok) {
+      setLoading(false);
+      setFieldErrors(checkData.fieldErrors ?? {});
+      setError(checkData.error ?? "Nao deu para entrar ainda.");
+
+      if (checkData.code === "EMAIL_NOT_VERIFIED") {
+        setPendingVerificationEmail(normalizedEmail);
+      }
+
       return;
     }
 
@@ -330,6 +352,15 @@ export function LoginForm() {
         title={error ? "Acesso travado" : undefined}
         variant="error"
       />
+      {pendingVerificationEmail ? (
+        <div className="grid gap-2 rounded-lg border border-[rgba(61,245,165,0.28)] bg-[rgba(61,245,165,0.08)] p-4 text-sm">
+          <p className="font-bold text-[var(--foreground)]">Falta confirmar o email.</p>
+          <p className="text-[var(--muted)]">Abra o link que mandamos ou reenvie a confirmacao agora.</p>
+          <Link className="text-[var(--accent)]" href={`/auth/verify-email?email=${encodeURIComponent(pendingVerificationEmail)}`}>
+            Abrir tela de confirmacao
+          </Link>
+        </div>
+      ) : null}
       <StatusMessage message={success} variant="success" />
       <button className="btn min-h-11" disabled={loading} type="submit">
         {loading ? "Validando acesso..." : "Entrar"}
@@ -418,16 +449,11 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
       return;
     }
 
-    setSuccess("Conta criada. Entrando no 10PILA...");
-    await signIn("credentials", {
-      email: normalizedEmail,
-      password,
-      redirect: false,
-      callbackUrl: callbackUrl()
-    });
-
+    setSuccess("Conta criada. Agora confirme seu email para liberar o login.");
     setLoading(false);
-    router.push(callbackUrl());
+    router.push(
+      `/auth/verify-email?email=${encodeURIComponent(normalizedEmail)}${data.verificationEmail === "failed" ? "&delivery=failed" : ""}`
+    );
     router.refresh();
   }
 
@@ -551,7 +577,7 @@ export function RegisterForm({ initialReferralCode = "" }: { initialReferralCode
         </label>
       </div>
       <p className="text-xs text-[var(--muted)]">
-        Use um email que voce consiga acessar. Ele sera usado para identificar sua conta e seus pedidos.
+        Use um email que voce consiga acessar. O login por senha so libera depois da confirmacao por email.
       </p>
       <StatusMessage
         fieldErrors={fieldErrors}

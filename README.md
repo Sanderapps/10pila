@@ -34,6 +34,7 @@ Variaveis obrigatorias para operar localmente:
 - `AUTH_SECRET`: segredo forte para NextAuth.
 - `NEXT_PUBLIC_APP_URL`: URL publica da aplicacao, normalmente `http://localhost:3000`.
 - `NEXTAUTH_URL`: URL base do NextAuth, normalmente `http://localhost:3000`.
+- `APP_URL`: URL canonica usada nos links enviados por email.
 - `FREIGHT_FIXED_PRICE`: frete fixo em reais, por exemplo `19.90`.
 - `ADMIN_SEED_EMAIL`: email do admin criado no seed.
 - `ADMIN_SEED_PASSWORD`: senha do admin criado no seed.
@@ -44,6 +45,10 @@ Variaveis opcionais no MVP:
 - `GOOGLE_CLIENT_SECRET`: segredo OAuth do Google.
 - `AUTH_FACEBOOK_ID`: ativa login com Facebook quando preenchido.
 - `AUTH_FACEBOOK_SECRET`: segredo OAuth do Facebook.
+- `RESEND_API_KEY`: ativa envio real de confirmacao de email.
+- `RESEND_FROM`: remetente verificado no Resend, por exemplo `10PILA <noreply@send.loja.sanderlab.shop>`.
+- `RESEND_REPLY_TO`: reply-to opcional para suporte.
+- `EMAIL_VERIFICATION_TTL_HOURS`: expira o link de confirmacao, por padrao `24`.
 - `PAGBANK_ACCESS_TOKEN`: cria checkout real do PagBank quando preenchido.
 - `PAGBANK_WEBHOOK_SECRET`: segredo simples para validar webhook estrutural.
 - `PAGBANK_API_URL`: base da API PagBank, por padrao `https://sandbox.api.pagseguro.com`.
@@ -65,6 +70,7 @@ Obrigatorias agora no Railway:
 - `AUTH_SECRET`: segredo das sessoes/auth.
 - `NEXT_PUBLIC_APP_URL`: URL publica usada em links e redirecionamentos.
 - `NEXTAUTH_URL`: URL canonica do Auth.js em producao.
+- `APP_URL`: URL usada nos links absolutos de confirmacao de email.
 - `FREIGHT_FIXED_PRICE`: valor do frete fixo do MVP.
 - `ADMIN_SEED_EMAIL`: email do admin usado no seed.
 - `ADMIN_SEED_PASSWORD`: senha do admin usada no seed.
@@ -93,6 +99,17 @@ Obrigatorias quando voce ativar Facebook login:
 
 - `AUTH_FACEBOOK_ID`: App ID do Meta.
 - `AUTH_FACEBOOK_SECRET`: App Secret do Meta.
+
+Obrigatorias quando voce ativar confirmacao de email:
+
+- `RESEND_API_KEY`: token da API Resend.
+- `RESEND_FROM`: remetente verificado no Resend.
+- `APP_URL`: base publica da loja usada no link do email.
+
+Opcionais quando voce quiser ajustar a entrega do email:
+
+- `RESEND_REPLY_TO`: email de resposta.
+- `EMAIL_VERIFICATION_TTL_HOURS`: validade do link em horas.
 
 Variaveis de plataforma que o Railway injeta automaticamente, mas o projeto nao depende diretamente como configuracao manual:
 
@@ -159,7 +176,7 @@ https://10pila-app-production.up.railway.app/api/auth/callback/facebook
 
 Sem essas credenciais, os botoes sociais aparecem desativados e o login por email/senha segue funcionando.
 
-O MVP valida formato de email e senha, mas ainda nao envia verificacao real por email. A base tem `emailVerified` e `VerificationToken` no Prisma para evoluir essa etapa depois com um servico de email.
+O cadastro por email e senha agora envia confirmacao real por email. O login por credenciais so libera depois que `emailVerified` for preenchido. O projeto reutiliza `VerificationToken` do Prisma para os links de confirmacao e usa Resend para a entrega.
 
 ## Pagamentos
 

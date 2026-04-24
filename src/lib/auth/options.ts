@@ -3,7 +3,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
-import bcrypt from "bcryptjs";
+import { validateCredentialLogin } from "@/lib/auth/credentials";
 import { prisma } from "@/lib/db/prisma";
 import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
 
@@ -23,33 +23,17 @@ const providers: NextAuthOptions["providers"] = [
         return null;
       }
 
-      const user = await prisma.user.findUnique({ where: { email } });
+      const result = await validateCredentialLogin(email, password);
 
-      if (!user?.passwordHash) {
-        logWarn("auth.credentials.user_missing_or_social_only", { email });
+      if (!result.ok) {
         return null;
       }
-
-      const isValid = await bcrypt.compare(password, user.passwordHash);
-
-      if (!isValid) {
-        logWarn("auth.credentials.invalid_password", {
-          userId: user.id,
-          email
-        });
-        return null;
-      }
-
-      logInfo("auth.credentials.authorized", {
-        userId: user.id,
-        role: user.role
-      });
 
       return {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
+        id: result.user.id,
+        name: result.user.name,
+        email: result.user.email,
+        role: result.user.role
       };
     }
   })
@@ -85,6 +69,18 @@ export const authOptions: NextAuthOptions = {
   },
   providers,
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider && account.provider !== "credentials" && user.email) {
+        await prisma.user.update({
+          where: { email: user.email },
+          data: {
+            emailVerified: new Date()
+          }
+        });
+      }
+
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         const userRole = (user as { role?: "USER" | "ADMIN" }).role;

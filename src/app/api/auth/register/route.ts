@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { emailVerificationConfigured, issueEmailVerification } from "@/lib/auth/email-verification";
 import { attachReferralToNewUser } from "@/lib/commerce/referrals";
 import { prisma } from "@/lib/db/prisma";
 import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
@@ -17,6 +18,13 @@ const registerSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  if (!emailVerificationConfigured()) {
+    return NextResponse.json(
+      { error: "A confirmacao de email ainda nao esta configurada. Tenta novamente quando o envio estiver ativo." },
+      { status: 503 }
+    );
+  }
+
   const parsed = registerSchema.safeParse(await request.json());
 
   if (!parsed.success) {
@@ -82,13 +90,26 @@ export async function POST(request: Request) {
       referralCode
     });
 
+    let deliveryStatus: "sent" | "failed" = "sent";
+
+    try {
+      await issueEmailVerification({
+        email: user.email,
+        name: user.name,
+        request
+      });
+    } catch {
+      deliveryStatus = "failed";
+    }
+
     logInfo("auth.register.created", {
       userId: user.id,
       hasReferralCode: Boolean(referralCode),
-      referralAttached: Boolean(referral)
+      referralAttached: Boolean(referral),
+      verificationEmail: deliveryStatus
     });
 
-    return NextResponse.json({ user }, { status: 201 });
+    return NextResponse.json({ user, verificationEmail: deliveryStatus }, { status: 201 });
   } catch (error) {
     logError("auth.register.failed", {
       email,
