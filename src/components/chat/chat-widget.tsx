@@ -32,6 +32,18 @@ type Message = {
   note?: string;
 };
 
+type ChatApiResponse = {
+  sessionId?: string;
+  reply?: string;
+  replyChunks?: string[];
+  products?: ChatProductCard[];
+  quickActions?: string[];
+  source?: "ai" | "fallback";
+  fallbackReason?: string;
+  typingStatus?: string;
+  error?: string;
+};
+
 type TeaserContext = {
   quick: string[];
   teasers: string[];
@@ -46,6 +58,14 @@ const BROWSE_TEASER_COOLDOWN_MS = 1000 * 40;
 const POST_CLOSE_COOLDOWN_MS = 1000 * 60 * 8;
 const POST_OPEN_COOLDOWN_MS = 1000 * 60 * 30;
 const TEASER_VISIBLE_MS = 12000;
+const CHUNK_PAUSE_MIN_MS = 900;
+const CHUNK_PAUSE_MAX_MS = 1800;
+const MESSAGE_DEBOUNCE_MS = 650;
+const FLOOD_THRESHOLD_MS = 1600;
+
+function interactionNow() {
+  return typeof performance !== "undefined" ? performance.now() : 0;
+}
 
 function currentProductSlug(pathname: string) {
   const match = pathname.match(/^\/produtos\/([^/]+)/);
@@ -134,6 +154,7 @@ export function ChatWidget() {
     actions: string[];
   } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingLabel, setLoadingLabel] = useState("vendo no sistema");
   const [cartLoadingId, setCartLoadingId] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
@@ -146,6 +167,10 @@ export function ChatWidget() {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const shouldStickToBottomRef = useRef(true);
   const replayedIntentRef = useRef(false);
+  const requestAbortRef = useRef<AbortController | null>(null);
+  const sendDebounceRef = useRef<number | null>(null);
+  const pendingMessageRef = useRef<string | null>(null);
+  const lastUserMessageAtRef = useRef(0);
 
   const context = useMemo<TeaserContext>(() => {
     if (
@@ -516,18 +541,59 @@ export function ChatWidget() {
     })();
   }, [pathname, router]);
 
-  async function sendMessage(content: string) {
-    const trimmed = content.trim();
+  function chunkDelayMs(chunk: string, index: number) {
+    const base = Math.min(CHUNK_PAUSE_MAX_MS, CHUNK_PAUSE_MIN_MS + chunk.length * 12);
+    return Math.max(CHUNK_PAUSE_MIN_MS, base + index * 120);
+  }
 
-    if (!trimmed || loading) {
+  async function playAssistantChunks(input: {
+    chunks: string[];
+    products: ChatProductCard[];
+    source: "ai" | "fallback";
+    fallbackReason?: string;
+    note?: string;
+  }) {
+    const chunks = input.chunks.filter((chunk) => chunk.trim().length > 0);
+
+    if (chunks.length === 0) {
       return;
     }
 
-    setMessages((current) => [...current, { role: "user", content: trimmed }]);
+    for (const [index, chunk] of chunks.entries()) {
+      await new Promise((resolve) => window.setTimeout(resolve, chunkDelayMs(chunk, index)));
+      setMessages((current) => [
+        ...current,
+        {
+          role: "assistant",
+          content: chunk,
+          products: index === chunks.length - 1 ? input.products : [],
+          source: input.source,
+          fallbackReason: input.fallbackReason,
+          note: index === chunks.length - 1 ? input.note : undefined
+        }
+      ]);
+    }
+  }
+
+  async function runSendMessage(content: string, options?: { skipUserEcho?: boolean }) {
+    const trimmed = content.trim();
+
+    if (!trimmed) {
+      return;
+    }
+
+    const now = interactionNow();
+    lastUserMessageAtRef.current = now;
+    if (!options?.skipUserEcho) {
+      setMessages((current) => [...current, { role: "user", content: trimmed }]);
+    }
     setLoading(true);
+    setLoadingLabel("vendo no sistema");
 
     let response: Response;
-    let data: Record<string, unknown>;
+    let data: ChatApiResponse;
+    const controller = new AbortController();
+    requestAbortRef.current = controller;
 
     try {
       response = await fetch("/api/chat", {
@@ -538,10 +604,14 @@ export function ChatWidget() {
           message: trimmed,
           currentProductSlug: currentProductSlug(pathname),
           pathname
-        })
+        }),
+        signal: controller.signal
       });
-      data = await response.json();
-    } catch {
+      data = (await response.json()) as ChatApiResponse;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
       setLoading(false);
       setMessages((current) => [
         ...current,
@@ -555,8 +625,7 @@ export function ChatWidget() {
       ]);
       return;
     }
-
-    setLoading(false);
+    requestAbortRef.current = null;
 
     if (data.sessionId) {
       setSessionId(String(data.sessionId));
@@ -568,6 +637,9 @@ export function ChatWidget() {
 
     const fallbackReason = typeof data.fallbackReason === "string" ? data.fallbackReason : undefined;
     const source = data.source === "ai" ? "ai" : "fallback";
+    if (typeof data.typingStatus === "string" && data.typingStatus.trim().length > 0) {
+      setLoadingLabel(data.typingStatus);
+    }
     const note =
       !response.ok
         ? "chat com instabilidade"
@@ -583,22 +655,80 @@ export function ChatWidget() {
                   ? "produto nao encontrado"
                   : "resposta da loja";
 
-    setMessages((current) => [
-      ...current,
-      {
-        role: "assistant",
-        content:
-          typeof data.reply === "string"
-            ? data.reply
-            : !response.ok
-              ? "Deu ruim aqui no chat. Tenta de novo em instantes."
-              : "Buguei. Pelo menos nao inventei resposta.",
-        products: Array.isArray(data.products) ? (data.products as ChatProductCard[]) : [],
-        source,
-        fallbackReason,
-        note
+    const products = Array.isArray(data.products) ? (data.products as ChatProductCard[]) : [];
+    const chunks =
+      Array.isArray(data.replyChunks) && data.replyChunks.length > 0
+        ? data.replyChunks.map(String)
+        : [
+            typeof data.reply === "string"
+              ? data.reply
+              : !response.ok
+                ? "Deu ruim aqui no chat. Tenta de novo em instantes."
+                : "Buguei. Pelo menos nao inventei resposta."
+          ];
+
+    await playAssistantChunks({
+      chunks,
+      products,
+      source,
+      fallbackReason,
+      note
+    });
+
+    setLoading(false);
+  }
+
+  function scheduleSend(content: string) {
+    pendingMessageRef.current = content;
+
+    if (sendDebounceRef.current) {
+      window.clearTimeout(sendDebounceRef.current);
+    }
+
+    sendDebounceRef.current = window.setTimeout(() => {
+      const next = pendingMessageRef.current;
+      pendingMessageRef.current = null;
+      sendDebounceRef.current = null;
+
+      if (next) {
+        void runSendMessage(next, { skipUserEcho: true });
       }
-    ]);
+    }, MESSAGE_DEBOUNCE_MS);
+  }
+
+  async function sendMessage(content: string) {
+    const trimmed = content.trim();
+
+    if (!trimmed) {
+      return;
+    }
+
+    const now = interactionNow();
+    const flooding = loading || now - lastUserMessageAtRef.current < FLOOD_THRESHOLD_MS;
+
+    if (flooding) {
+      requestAbortRef.current?.abort();
+      requestAbortRef.current = null;
+      setLoading(false);
+      setMessages((current) => [
+        ...current,
+        { role: "user", content: trimmed },
+        {
+          role: "assistant",
+          content:
+            now - lastUserMessageAtRef.current < FLOOD_THRESHOLD_MS
+              ? "Se ficar mandando mensagem picada eu perco o raciocínio."
+              : "Calma, deixa eu ler uma coisa de cada vez.",
+          source: "fallback",
+          fallbackReason: "deterministic",
+          note: "uma de cada vez"
+        }
+      ]);
+      scheduleSend(trimmed);
+      return;
+    }
+
+    await runSendMessage(trimmed);
   }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -836,7 +966,7 @@ export function ChatWidget() {
                     <span className="chat-loading-dot" />
                     <span className="chat-loading-dot" />
                   </span>
-                  <span>Consultando a loja...</span>
+                  <span>{loadingLabel}</span>
                 </div>
               ) : null}
               <div ref={endRef} />
@@ -876,7 +1006,7 @@ export function ChatWidget() {
                   name="message"
                   placeholder="Fala o que voce quer comprar"
                 />
-                <button className="btn shrink-0" disabled={loading} type="submit">
+                <button className="btn shrink-0" type="submit">
                   Enviar
                 </button>
               </form>

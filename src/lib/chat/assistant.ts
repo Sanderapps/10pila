@@ -21,8 +21,10 @@ export type ChatHistoryMessage = {
 
 export type ChatAnswer = {
   reply: string;
+  replyChunks: string[];
   products: ChatProductCard[];
   quickActions: string[];
+  typingStatus: string;
   source: "ai" | "fallback";
   fallbackReason?:
     | "missing_provider"
@@ -184,6 +186,147 @@ function wantsSpecificItem(message: string) {
   return /quero|preciso|procuro|to buscando|t[oô] buscando|tem algum|me mostra/.test(
     message.toLowerCase()
   );
+}
+
+function wantsExchangePolicy(message: string) {
+  return /troca|devolu|devolver|reembolso|garantia|politica/.test(message.toLowerCase());
+}
+
+function wantsVoltageInfo(message: string) {
+  return /voltag|110|220|bivolt|energia|tomada/.test(message.toLowerCase());
+}
+
+function wantsShippingInfo(message: string) {
+  return /frete|entrega|prazo/.test(message.toLowerCase());
+}
+
+function wantsFloodyTone(history?: ChatHistoryMessage[]) {
+  if (!history || history.length < 3) {
+    return false;
+  }
+
+  const recentUserMessages = history.filter((entry) => entry.role === "user").slice(-3);
+  if (recentUserMessages.length < 3) {
+    return false;
+  }
+
+  return recentUserMessages.every((entry) => entry.content.trim().length <= 14);
+}
+
+function repeatedIntentCount(message: string, history?: ChatHistoryMessage[]) {
+  if (!history || history.length === 0) {
+    return 0;
+  }
+
+  const currentIntent = detectIntent(message);
+  const currentTerms = searchTerms(message).slice(0, 4).join(" ");
+
+  return history
+    .filter((entry) => entry.role === "user")
+    .slice(-5)
+    .reduce((total, entry) => {
+      const sameIntent = detectIntent(entry.content) === currentIntent;
+      const comparedTerms = searchTerms(entry.content).slice(0, 4).join(" ");
+      const sameTerms =
+        (comparedTerms.length > 0 ? comparedTerms : entry.content.trim().toLowerCase()) ===
+        (currentTerms.length > 0 ? currentTerms : message.trim().toLowerCase());
+      return total + Number(sameIntent && sameTerms);
+    }, 0);
+}
+
+function findSpecificationValue(specifications: Product["specifications"] | undefined, keys: string[]) {
+  if (!specifications || typeof specifications !== "object" || Array.isArray(specifications)) {
+    return null;
+  }
+
+  const entries = Object.entries(specifications as Record<string, unknown>);
+
+  for (const [key, value] of entries) {
+    const normalizedKey = key
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    if (keys.some((candidate) => normalizedKey.includes(candidate))) {
+      if (typeof value === "string" || typeof value === "number") {
+        return String(value);
+      }
+    }
+  }
+
+  return null;
+}
+
+function splitReplyIntoChunks(reply: string) {
+  const lines = reply
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (lines.length > 1) {
+    return lines;
+  }
+
+  return reply
+    .split(/(?<=[.!?])\s+/)
+    .map((chunk) => chunk.trim())
+    .filter(Boolean);
+}
+
+function typingStatusFor(intent: ChatIntent, hasProducts: boolean) {
+  if (intent === "compare") {
+    return "comparando os dois";
+  }
+
+  if (intent === "order" || intent === "add_to_cart") {
+    return "vendo no sistema";
+  }
+
+  if (hasProducts || intent === "specific_item" || intent === "details" || intent === "similar") {
+    return "vendo no sistema";
+  }
+
+  if (intent === "chat" || intent === "greeting") {
+    return "aguardando você decidir";
+  }
+
+  return "vendo no sistema";
+}
+
+function buildReplyChunks(
+  reply: string,
+  intent: ChatIntent,
+  hasProducts: boolean
+) {
+  const contentChunks = splitReplyIntoChunks(reply).slice(0, 3);
+
+  if (contentChunks.length <= 1 && reply.length <= 72) {
+    return [reply];
+  }
+
+  if (
+    hasProducts ||
+    intent === "specific_item" ||
+    intent === "compare" ||
+    intent === "details" ||
+    intent === "similar" ||
+    intent === "cheaper" ||
+    intent === "promotion"
+  ) {
+    const lead = hasProducts ? "Pera, tô vendo." : "Pera.";
+    const chunks = [lead, ...contentChunks];
+    return chunks.slice(0, 3);
+  }
+
+  return contentChunks.slice(0, 3);
+}
+
+function withPresentation(answer: Omit<ChatAnswer, "replyChunks" | "typingStatus">, intent: ChatIntent) {
+  return {
+    ...answer,
+    replyChunks: buildReplyChunks(answer.reply, intent, answer.products.length > 0),
+    typingStatus: typingStatusFor(intent, answer.products.length > 0)
+  };
 }
 
 function isCasualConversation(message: string) {
@@ -483,7 +626,9 @@ function fallbackReply(
   cards: ChatProductCard[],
   orderData: Awaited<ReturnType<typeof orderContext>> | null,
   providerStatus: AIReplyStatus,
-  pathname?: string
+  pathname?: string,
+  currentProduct?: Product | null,
+  history?: ChatHistoryMessage[]
 ): ChatAnswer {
   const intent = detectIntent(message);
   const fallbackReason: ChatAnswer["fallbackReason"] =
@@ -496,58 +641,97 @@ function fallbackReply(
   const smallTalk = conversationalReply(message);
 
   if (smallTalk) {
-    return {
+    return withPresentation({
       reply: smallTalk,
       products: [],
       quickActions: quickActionsFor(message, false, pathname),
       source: "fallback",
       fallbackReason
-    };
+    }, intent);
+  }
+
+  if (wantsFloodyTone(history)) {
+    return withPresentation({
+      reply: "Calma. Manda uma coisa de cada vez.",
+      products: [],
+      quickActions: quickActionsFor(message, false, pathname),
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
+  }
+
+  if (wantsExchangePolicy(message)) {
+    return withPresentation({
+      reply: `Regras no rodapé. [Lê lá](${appUrl()}/terms)`,
+      products: [],
+      quickActions: ["ver regras", "ver promocoes"],
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
+  }
+
+  if (wantsVoltageInfo(message) && pathname?.startsWith("/produtos/")) {
+    const voltage = findSpecificationValue(currentProduct?.specifications, ["voltag", "bivolt", "voltage"]);
+    return withPresentation({
+      reply: voltage ? `${voltage}. Tá na ficha técnica.` : "Tá na ficha técnica, embaixo da foto do produto.",
+      products: [],
+      quickActions: ["ver detalhes", "comparar"],
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
+  }
+
+  if (wantsShippingInfo(message) && (pathname?.startsWith("/carrinho") || pathname?.startsWith("/checkout"))) {
+    return withPresentation({
+      reply: "Frete você confere na próxima etapa.",
+      products: [],
+      quickActions: ["tirar duvida de entrega", "fechar pedido"],
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
   }
 
   if (intent === "order" && orderData) {
-    return {
+    return withPresentation({
       reply: orderData.reply,
       products: [],
       quickActions: ["acompanhar pedido", "ver promocoes", "ir para o carrinho"],
       source: "fallback",
       fallbackReason: orderData.context.includes("nao esta logado") ? "auth_required" : "deterministic"
-    };
+    }, intent);
   }
 
   if (products.length === 0) {
-    return {
+    return withPresentation({
       reply:
         "Nao achei nada que bata direito com isso. Fala nome, categoria ou uso real e eu procuro sem palpite torto.",
       products: [],
       quickActions: ["ver promocoes", "mais barato"],
       source: "fallback",
       fallbackReason: "no_product_match"
-    };
+    }, intent);
   }
 
   if (intent === "link") {
     const first = products[0];
-    return {
-      reply: `Link certo: [${first.name}](${productUrl(first.slug)})\n${first.name} | ${centsToBRL(
-        first.promotionalCents ?? first.priceCents
-      )} | ${first.stock} em estoque.\nTa ai. Se quiser comparar com outro, fala logo.`,
+    return withPresentation({
+      reply: `[${first.name}](${productUrl(first.slug)})\n${centsToBRL(first.promotionalCents ?? first.priceCents)} | estoque ${first.stock}.`,
       products: cards.slice(0, 1),
       quickActions: quickActionsFor(message, cards.length > 0, pathname),
       source: "fallback",
       fallbackReason
-    };
+    }, intent);
   }
 
   if (intent === "recommendation" && products.length > 0 && searchTerms(message).length <= 1) {
-    return {
+    return withPresentation({
       reply:
         "Posso recomendar, mas faz tua parte: quer algo util, curioso ou so o menor estrago possivel no preco?",
       products: [],
       quickActions: ["mais barato", "achar algo util", "comparar"],
       source: "fallback",
       fallbackReason
-    };
+    }, intent);
   }
 
   const lines = products.map((product) => {
@@ -557,13 +741,13 @@ function fallbackReply(
     )})`;
   });
 
-  return {
+  return withPresentation({
     reply: `${intent === "cheaper" ? "Ta. Puxei o que menos machuca o bolso no estoque real:" : intent === "promotion" ? "Ta. Separei o que ta com cara mais comercial no estoque atual:" : "Achei isso aqui no estoque real. Nao e bonito, mas vende:"}\n${lines.join("\n")}`,
     products: shouldShowCards(message, pathname) ? cards : [],
     quickActions: quickActionsFor(message, cards.length > 0, pathname),
     source: "fallback",
     fallbackReason
-  };
+  }, intent);
 }
 
 export async function answerFromStoreData({
@@ -584,17 +768,37 @@ export async function answerFromStoreData({
   const smallTalk = conversationalReply(message);
 
   if (smallTalk) {
-    return {
+    return withPresentation({
       reply: smallTalk,
       products: [],
       quickActions: quickActionsFor(message, false, pathname),
       source: "fallback",
       fallbackReason: "deterministic"
-    };
+    }, intent);
+  }
+
+  if (wantsFloodyTone(history)) {
+    return withPresentation({
+      reply: "Calma. Manda uma coisa de cada vez.",
+      products: [],
+      quickActions: quickActionsFor(message, false, pathname),
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
+  }
+
+  if (repeatedIntentCount(message, history) >= 2) {
+    return withPresentation({
+      reply: "Já te mandei isso aí em cima. Dá uma olhada.",
+      products: [],
+      quickActions: quickActionsFor(message, false, pathname),
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
   }
 
   if (intent === "order" && !userId) {
-    return {
+    return withPresentation({
       reply:
         orderData?.reply ??
         "Pra falar de pedido eu preciso que voce esteja logado. Nao vou adivinhar compra alheia.",
@@ -602,7 +806,38 @@ export async function answerFromStoreData({
       quickActions: ["ver promocoes", "mais barato", "ir para o carrinho"],
       source: "fallback",
       fallbackReason: "auth_required"
-    };
+    }, intent);
+  }
+
+  if (wantsExchangePolicy(message)) {
+    return withPresentation({
+      reply: `Regras no rodapé. [Lê lá](${appUrl()}/terms)`,
+      products: [],
+      quickActions: ["ver regras", "ver promocoes"],
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
+  }
+
+  if (wantsVoltageInfo(message) && pathname?.startsWith("/produtos/")) {
+    const voltage = findSpecificationValue(currentProduct?.specifications, ["voltag", "bivolt", "voltage"]);
+    return withPresentation({
+      reply: voltage ? `${voltage}. Tá na ficha técnica.` : "Tá na ficha técnica, embaixo da foto do produto.",
+      products: [],
+      quickActions: ["ver detalhes", "comparar"],
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
+  }
+
+  if (wantsShippingInfo(message) && (pathname?.startsWith("/carrinho") || pathname?.startsWith("/checkout"))) {
+    return withPresentation({
+      reply: "Frete você confere na próxima etapa.",
+      products: [],
+      quickActions: ["tirar duvida de entrega", "fechar pedido"],
+      source: "fallback",
+      fallbackReason: "deterministic"
+    }, intent);
   }
 
   const context = [
@@ -640,13 +875,13 @@ export async function answerFromStoreData({
   });
 
   if (ai.reply) {
-    return {
+    return withPresentation({
       reply: ai.reply,
       products: cardsAllowed ? cards : [],
       quickActions: quickActionsFor(message, cards.length > 0, pathname),
       source: "ai"
-    };
+    }, intent);
   }
 
-  return fallbackReply(message, products, cards, orderData, ai.status, pathname);
+  return fallbackReply(message, products, cards, orderData, ai.status, pathname, currentProduct, history);
 }
