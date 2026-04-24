@@ -876,8 +876,49 @@ select {
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.26);
 }
 
-.chat-hint {
+.chat-hint-stack {
   will-change: transform, opacity;
+}
+
+.chat-hint {
+  position: relative;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent),
+    rgba(8, 10, 14, 0.96);
+  color: var(--foreground);
+  padding: 10px 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.38);
+}
+
+.chat-hint::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: -8px;
+  width: 14px;
+  height: 14px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: rgba(8, 10, 14, 0.96);
+  transform: rotate(45deg);
+}
+
+.chat-hint-primary {
+  max-width: 260px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.chat-hint-secondary {
+  max-width: 220px;
+  margin-right: 16px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--foreground) 88%, transparent);
+  opacity: 0.94;
 }
 
 .assistant-mascot-trigger {
@@ -1310,12 +1351,6 @@ select {
 .chat-welcome-art {
   display: grid;
   justify-items: start;
-}
-
-.chat-hint {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent),
-    rgba(8, 10, 14, 0.96);
 }
 
 .quick-chip {

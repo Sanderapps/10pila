@@ -32,6 +32,11 @@ type Message = {
   note?: string;
 };
 
+type TeaserContext = {
+  quick: string[];
+  teasers: string[];
+};
+
 const HINT_STORAGE_KEY = "10pila-chat-next-hint-at";
 const HINT_DELAY_MIN_MS = 8000;
 const HINT_DELAY_SPREAD_MS = 7000;
@@ -110,7 +115,7 @@ export function ChatWidget() {
   const pathname = usePathname() ?? "/";
   const isPurchasePage = pathname.startsWith("/carrinho") || pathname.startsWith("/checkout");
   const [open, setOpen] = useState(false);
-  const [hint, setHint] = useState("");
+  const [teaserLines, setTeaserLines] = useState<string[]>([]);
   const [nudgeTick, setNudgeTick] = useState(0);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -137,14 +142,15 @@ export function ChatWidget() {
   const shouldStickToBottomRef = useRef(true);
   const replayedIntentRef = useRef(false);
 
-  const context = useMemo(() => {
+  const context = useMemo<TeaserContext>(() => {
     if (pathname.startsWith("/produtos/")) {
       return {
         quick: ["comparar esse produto", "ver detalhes", "adicionar ao carrinho"],
-        hints: [
-          "Quer comparar esse produto?",
-          "Posso te ajudar a decidir",
-          "Quer colocar esse no carrinho?"
+        teasers: [
+          "Quer que eu resuma esse aqui?",
+          "Se quiser, eu comparo pra voce.",
+          "Nao fica abrindo mil coisa, eu vejo esse aqui.",
+          "Se voce quiser levar, eu agilizo."
         ]
       };
     }
@@ -152,34 +158,45 @@ export function ChatWidget() {
     if (pathname.startsWith("/carrinho")) {
       return {
         quick: ["revisar o carrinho", "tirar duvida de frete", "aplicar cupom", "fechar pedido"],
-        hints: ["Posso revisar esse carrinho", "Quer ajuda com frete ou cupom?", "Quer conferir antes de fechar?"]
+        teasers: [
+          "Se travou no carrinho, fala.",
+          "Cupom, frete, quantidade. Eu vejo.",
+          "Dá pra resolver isso sem drama."
+        ]
       };
     }
 
     if (pathname.startsWith("/checkout")) {
       return {
         quick: ["tirar duvida de entrega", "revisar pedido", "acompanhar pedido"],
-        hints: ["Se pintar duvida de entrega, eu ajudo.", "Posso revisar esse fechamento sem enrolar."]
+        teasers: [
+          "Se for entrega ou pagamento, eu confiro.",
+          "Antes de fechar errado, me chama.",
+          "Tô quase saindo, então fala logo."
+        ]
       };
     }
 
     if (pathname.startsWith("/produtos")) {
       return {
         quick: ["mais barato", "ver promocoes", "comparar"],
-        hints: [
-          "Te ajudo a achar o mais barato",
-          "Tem promo no radar",
-          "Quer filtrar pelo melhor custo-beneficio?"
+        teasers: [
+          "Quer os mais baratos? Eu separo.",
+          "Nao clica em tudo nao, eu filtro.",
+          "Se quiser, eu corto caminho pra voce.",
+          "Tem coisa demais ai. Eu organizo."
         ]
       };
     }
 
     return {
       quick: ["ver promocoes", "mais barato", "ver detalhes"],
-      hints: [
-        "Posso te ajudar a escolher",
-        "Quer ver as promocoes?",
-        "Quer encontrar algo util e barato?"
+      teasers: [
+        "Nao clica aqui nao, namoral.",
+        "Fala o que voce quer que eu vejo.",
+        "Se quiser, eu acho mais rapido.",
+        "Tô aqui ainda. Por enquanto.",
+        "Quer que eu te mostre os que valem mais a pena?"
       ]
     };
   }, [pathname]);
@@ -204,7 +221,7 @@ export function ChatWidget() {
   useEffect(() => {
     function onScroll() {
       lastScrollAtRef.current = Date.now();
-      setHint("");
+      setTeaserLines([]);
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -259,8 +276,14 @@ export function ChatWidget() {
       const idleEnough = now - lastScrollAtRef.current > 2600;
 
       if (idleEnough && now >= nextHintAtRef.current) {
-        const nextHint = context.hints[Math.floor(Math.random() * context.hints.length)];
-        setHint(nextHint);
+        const firstIndex = Math.floor(Math.random() * context.teasers.length);
+        const firstLine = context.teasers[firstIndex];
+        const availableSecondary = context.teasers.filter((line, index) => index !== firstIndex);
+        const shouldStack = availableSecondary.length > 0 && Math.random() > 0.52;
+        const nextLines = shouldStack
+          ? [firstLine, availableSecondary[Math.floor(Math.random() * availableSecondary.length)]]
+          : [firstLine];
+        setTeaserLines(nextLines);
         setNudgeTick((value) => value + 1);
         const nextWindow = now + POST_CLOSE_COOLDOWN_MS;
         nextHintAtRef.current = nextWindow;
@@ -269,7 +292,7 @@ export function ChatWidget() {
     }, 1800);
 
     return () => window.clearInterval(interval);
-  }, [context.hints, isPurchasePage, open]);
+  }, [context.teasers, isPurchasePage, open]);
 
   function scrollToBottom(force = false) {
     const scroller = scrollerRef.current;
@@ -510,7 +533,7 @@ export function ChatWidget() {
 
   function openChat() {
     setOpen(true);
-    setHint("");
+    setTeaserLines([]);
     setNextHintCooldown(POST_OPEN_COOLDOWN_MS);
   }
 
@@ -787,21 +810,30 @@ export function ChatWidget() {
         } ${isKeyboardOpen || composerFocused ? "opacity-0 pointer-events-none" : ""}`}
       >
         <AnimatePresence>
-          {hint && !isPurchasePage ? (
+          {teaserLines.length > 0 && !isPurchasePage ? (
             <motion.button
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              className="chat-hint absolute bottom-20 right-16 max-w-[220px] rounded-[8px] border border-[var(--line)] bg-[rgba(8,10,14,0.96)] px-3 py-2 text-left text-sm font-medium text-[var(--foreground)] shadow-[0_16px_40px_rgba(0,0,0,0.38)]"
+              className="chat-hint-stack absolute bottom-20 right-16 grid max-w-[260px] justify-items-end gap-2 text-left"
               exit={{ opacity: 0, y: 8, scale: 0.96 }}
               initial={{ opacity: 0, y: 8, scale: 0.96 }}
               onClick={openChat}
               transition={{ duration: 0.18, ease: "easeOut" }}
               type="button"
             >
-              <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-normal text-[var(--accent)]">
-                <BoltIcon className="size-3" />
-                assistente 10PILA
-              </span>
-              {hint}
+              {teaserLines.map((line, index) => (
+                <span
+                  className={`chat-hint ${index === teaserLines.length - 1 ? "chat-hint-primary" : "chat-hint-secondary"}`}
+                  key={`${line}-${index}`}
+                >
+                  {index === 0 ? (
+                    <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-normal text-[var(--accent)]">
+                      <BoltIcon className="size-3" />
+                      assistente 10PILA
+                    </span>
+                  ) : null}
+                  <span className="block">{line}</span>
+                </span>
+              ))}
             </motion.button>
           ) : null}
         </AnimatePresence>
