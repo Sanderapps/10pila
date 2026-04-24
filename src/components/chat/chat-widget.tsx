@@ -38,10 +38,10 @@ type TeaserContext = {
 };
 
 const HINT_STORAGE_KEY = "10pila-chat-next-hint-at-v2";
-const HINT_INITIAL_DELAY_MIN_MS = 2200;
-const HINT_INITIAL_DELAY_SPREAD_MS = 2600;
-const HOME_TEASER_COOLDOWN_MS = 1000 * 18;
-const BROWSE_TEASER_COOLDOWN_MS = 1000 * 28;
+const HINT_INITIAL_DELAY_MIN_MS = 5000;
+const HINT_INITIAL_DELAY_SPREAD_MS = 5000;
+const HOME_TEASER_COOLDOWN_MS = 1000 * 28;
+const BROWSE_TEASER_COOLDOWN_MS = 1000 * 40;
 const POST_CLOSE_COOLDOWN_MS = 1000 * 60 * 8;
 const POST_OPEN_COOLDOWN_MS = 1000 * 60 * 30;
 const TEASER_VISIBLE_MS = 8200;
@@ -284,7 +284,7 @@ export function ChatWidget() {
         const firstIndex = Math.floor(Math.random() * context.teasers.length);
         const firstLine = context.teasers[firstIndex];
         const availableSecondary = context.teasers.filter((line, index) => index !== firstIndex);
-        const shouldStack = availableSecondary.length > 0 && Math.random() > (isHomePage ? 0.28 : 0.55);
+        const shouldStack = availableSecondary.length > 0 && Math.random() > (isHomePage ? 0.72 : 0.84);
         const nextLines = shouldStack
           ? [firstLine, availableSecondary[Math.floor(Math.random() * availableSecondary.length)]]
           : [firstLine];
