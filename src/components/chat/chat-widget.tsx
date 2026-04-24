@@ -37,11 +37,14 @@ type TeaserContext = {
   teasers: string[];
 };
 
-const HINT_STORAGE_KEY = "10pila-chat-next-hint-at";
-const HINT_DELAY_MIN_MS = 8000;
-const HINT_DELAY_SPREAD_MS = 7000;
-const POST_CLOSE_COOLDOWN_MS = 1000 * 60 * 18;
+const HINT_STORAGE_KEY = "10pila-chat-next-hint-at-v2";
+const HINT_INITIAL_DELAY_MIN_MS = 2200;
+const HINT_INITIAL_DELAY_SPREAD_MS = 2600;
+const HOME_TEASER_COOLDOWN_MS = 1000 * 18;
+const BROWSE_TEASER_COOLDOWN_MS = 1000 * 28;
+const POST_CLOSE_COOLDOWN_MS = 1000 * 60 * 8;
 const POST_OPEN_COOLDOWN_MS = 1000 * 60 * 30;
+const TEASER_VISIBLE_MS = 8200;
 
 function currentProductSlug(pathname: string) {
   const match = pathname.match(/^\/produtos\/([^/]+)/);
@@ -113,6 +116,7 @@ function MessageContent({ content }: { content: string }) {
 export function ChatWidget() {
   const router = useRouter();
   const pathname = usePathname() ?? "/";
+  const isHomePage = pathname === "/";
   const isPurchasePage = pathname.startsWith("/carrinho") || pathname.startsWith("/checkout");
   const [open, setOpen] = useState(false);
   const [teaserLines, setTeaserLines] = useState<string[]>([]);
@@ -147,10 +151,10 @@ export function ChatWidget() {
       return {
         quick: ["comparar esse produto", "ver detalhes", "adicionar ao carrinho"],
         teasers: [
-          "Quer que eu resuma esse aqui?",
-          "Se quiser, eu comparo pra voce.",
-          "Nao fica abrindo mil coisa, eu vejo esse aqui.",
-          "Se voce quiser levar, eu agilizo."
+          "Não precisa abrir tudo nesse aqui, eu vejo.",
+          "Se quiser, eu comparo esse pra você.",
+          "Se for levar, eu agilizo.",
+          "Tá olhando esse há um tempo já, né?"
         ]
       };
     }
@@ -179,24 +183,25 @@ export function ChatWidget() {
 
     if (pathname.startsWith("/produtos")) {
       return {
-        quick: ["mais barato", "ver promocoes", "comparar"],
+        quick: ["mais barato", "ver promocoes", "comparar", "adicionar ao carrinho"],
         teasers: [
-          "Quer os mais baratos? Eu separo.",
-          "Nao clica em tudo nao, eu filtro.",
-          "Se quiser, eu corto caminho pra voce.",
-          "Tem coisa demais ai. Eu organizo."
+          "Não clica em tudo não, eu filtro.",
+          "Tem coisa demais aí. Eu separo o que presta.",
+          "Se quiser, eu corto caminho pra você.",
+          "Quer os mais baratos? Eu puxo."
         ]
       };
     }
 
     return {
-      quick: ["ver promocoes", "mais barato", "ver detalhes"],
+      quick: ["ver promocoes", "mais barato", "ver detalhes", "adicionar ao carrinho"],
       teasers: [
-        "Nao clica aqui nao, namoral.",
-        "Fala o que voce quer que eu vejo.",
-        "Se quiser, eu acho mais rapido.",
-        "Tô aqui ainda. Por enquanto.",
-        "Quer que eu te mostre os que valem mais a pena?"
+        "Não clica aqui não, namoral.",
+        "Quero ver quando vão me pagar.",
+        "Mais um que veio só olhar.",
+        "Se quiser, eu acho mais rápido.",
+        "Tô aqui ainda. Infelizmente.",
+        "Fala o que você quer que eu vejo."
       ]
     };
   }, [pathname]);
@@ -215,7 +220,7 @@ export function ChatWidget() {
     nextHintAtRef.current =
       Number.isFinite(saved) && saved > Date.now()
         ? saved
-        : Date.now() + HINT_DELAY_MIN_MS + Math.round(Math.random() * HINT_DELAY_SPREAD_MS);
+        : Date.now() + HINT_INITIAL_DELAY_MIN_MS + Math.round(Math.random() * HINT_INITIAL_DELAY_SPREAD_MS);
   }, [context.quick]);
 
   useEffect(() => {
@@ -273,26 +278,38 @@ export function ChatWidget() {
 
     const interval = window.setInterval(() => {
       const now = Date.now();
-      const idleEnough = now - lastScrollAtRef.current > 2600;
+      const idleEnough = now - lastScrollAtRef.current > (isHomePage ? 900 : 1800);
 
       if (idleEnough && now >= nextHintAtRef.current) {
         const firstIndex = Math.floor(Math.random() * context.teasers.length);
         const firstLine = context.teasers[firstIndex];
         const availableSecondary = context.teasers.filter((line, index) => index !== firstIndex);
-        const shouldStack = availableSecondary.length > 0 && Math.random() > 0.52;
+        const shouldStack = availableSecondary.length > 0 && Math.random() > (isHomePage ? 0.28 : 0.55);
         const nextLines = shouldStack
           ? [firstLine, availableSecondary[Math.floor(Math.random() * availableSecondary.length)]]
           : [firstLine];
         setTeaserLines(nextLines);
         setNudgeTick((value) => value + 1);
-        const nextWindow = now + POST_CLOSE_COOLDOWN_MS;
+        const nextWindow = now + (isHomePage ? HOME_TEASER_COOLDOWN_MS : BROWSE_TEASER_COOLDOWN_MS);
         nextHintAtRef.current = nextWindow;
         window.localStorage.setItem(HINT_STORAGE_KEY, String(nextWindow));
       }
     }, 1800);
 
     return () => window.clearInterval(interval);
-  }, [context.teasers, isPurchasePage, open]);
+  }, [context.teasers, isHomePage, isPurchasePage, open]);
+
+  useEffect(() => {
+    if (teaserLines.length === 0) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setTeaserLines([]);
+    }, TEASER_VISIBLE_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [teaserLines]);
 
   function scrollToBottom(force = false) {
     const scroller = scrollerRef.current;
