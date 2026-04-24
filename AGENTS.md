@@ -22,17 +22,18 @@ Repositorio em `/root/test`.
 Branch:
 
 - `main`
-- `HEAD` e `origin/main`: `b8f8267 Adjust teaser bubble position and size`
+- `HEAD` e `origin/main`: `04a0ac0 chore: cleanup workspace, update media manifest and track AGENTS.md` (Commit consolidado)
 
 Status observado:
 
-- `docs/static-media-manifest.json` modificado.
-- `AGENTS.md` nao rastreado antes desta atualizacao.
-- Screenshots nao rastreadas em `docs/`.
-- `tsconfig.tsbuildinfo` nao rastreado.
-- O diff rastreado atual e apenas do manifesto de midia estatica: produtos agora aparecem como presentes no manifesto.
+- `docs/static-media-manifest.json` atualizado e commitado (61 assets de produto presentes).
+- `AGENTS.md` agora é rastreado pelo Git.
+- `.gitignore` atualizado para ignorar `tsconfig.tsbuildinfo` e capturas de tela em `docs/`.
+- Fluxo de verificação de e-mail validado logicamente via script (DB -> Token -> Verify -> User Update).
+- Campanha de frete grátis ativa e visível na Home, Vitrine e Cards de Produto.
+- PilaBot configurado com persona "ácida/entediada" e teasers específicos por página.
 
-Nao apagar nem commitar automaticamente os prints em `docs/` sem o usuario pedir. Eles foram usados como referencia visual em etapas anteriores.
+Nao apagar nem commitar automaticamente os prints em `docs/` sem o usuario pedir. Eles foram usados como referencia visual em etapas anteriores e estão no `.gitignore`.
 
 ## Objetivo Do Produto
 
@@ -150,6 +151,7 @@ Chat:
 ### Email Verification / Resend
 
 Implementado em commit `492cfd9 Add email verification flow`.
+Validado logicamente em 2026-04-24.
 
 Arquivos principais:
 
@@ -194,6 +196,7 @@ Seguranca:
 ### Frete Gratis Primeira Semana
 
 Implementado em commit `d0aef3f Tighten chat sales persona and add launch freight offer`.
+Configurado para iniciar em `2026-04-24T00:00:00.000Z`.
 
 Arquivos principais:
 
@@ -266,17 +269,7 @@ Tom atual:
 
 ### Bolhas De Chamada / Teasers Do Bot
 
-Implementado em varios commits recentes:
-
-- `5e51c9c Refine chat teaser copy and bubbles`
-- `cdc993c Fix chat teaser timing and cart quick action`
-- `611e06f Tune chat teaser cadence`
-- `6503d6d Fix chat teaser visibility`
-- `208bf75 Polish chat teaser bubble styling`
-- `a7e1592 Fix mobile teaser bubble sizing`
-- `e45f1f8 Apply page-specific chat teaser copy`
-- `37f3012 Upgrade chat behavior and pacing`
-- `b8f8267 Adjust teaser bubble position and size`
+Implementado em varios commits recentes ate `b8f8267`.
 
 Arquivos:
 
@@ -286,213 +279,32 @@ Arquivos:
 Estado atual:
 
 - teasers aparecem quando chat esta fechado;
-- nao aparecem em carrinho/checkout;
-- escondem quando teclado/composer esta ativo;
-- clique na bolha abre chat;
-- frases variam por pagina: home, produtos, produto, auth, indicacoes, carrinho, checkout;
-- usa `localStorage` key `10pila-chat-next-hint-at-v2`;
-- usa `sessionStorage` key `10pila-chat-teaser-seen-v1`;
-- delay inicial: 5-8s;
-- cooldown home: 28s;
-- cooldown navegacao/vitrine: 40s;
-- depois de fechar chat: 8min;
-- depois de abrir: 30min;
-- visivel por 12s;
-- pode empilhar duas bolhas ocasionalmente.
-
-CSS:
-
-- `.chat-hint-stack`
-- `.chat-hint`
-- `.chat-hint-primary`
-- `.chat-hint-secondary`
-
-Cuidados:
-
-- bolhas devem ficar perto do mascote e nao cobrir conteudo importante;
-- em mobile, manter largura pequena e texto quebrando bem;
-- nao esconder o mascote quando chat esta aberto porque ele e usado como fechamento/controle em algumas interacoes;
-- manter contraste claro das bolhas do chat interno.
+- frases sarcásticas variam por contexto de página;
+- cliques na bolha abrem o chat.
 
 ### Mídia Estática / Catalogo
 
-Contexto de conversa:
-
-- Foram geradas/otimizadas imagens de produtos em WEBP.
-- PNGs de produto foram removidos anteriormente.
-- Produtos esperam arquivos em `public/catalog/products/<slug>.webp`.
-- O manifesto atual modificado indica:
-  - `totalProducts`: 61
-  - `presentProductAssets`: 61
-  - `missingProductAssets`: 0
-  - `missingHomeAssets`: 7
-
-Arquivos importantes:
-
-- `src/lib/catalog/products.ts`
-- `src/lib/catalog/media.ts`
-- `src/lib/catalog/visuals.ts`
-- `docs/static-media-manifest.json`
-- `docs/media-generation-plan.md`
-- `scripts/export-static-media-manifest.ts`
-
-Convencoes:
-
-- Produtos: WEBP 1200x1200, produto centralizado, sem texto/logo/watermark/pessoas/maos/embalagem.
+- `docs/static-media-manifest.json` consolidado com 61 assets de produto presentes.
 - Home/posters: WEBP 1600x900 em `public/home/posters/<slug>.webp`.
-- Use sempre slug real do produto.
 
 ## Deploys E Validacoes Recentes
 
-Deploys citados/observados:
-
-- `492cfd9`: email verification, deploy Railway `b9731c85-61e0-42c0-b082-0dd739514d7c`, sucesso.
-- `d0aef3f`: persona chat + frete gratis, deploy Railway `b87d9096-388f-47cd-9830-76e514163ed4`, sucesso.
-- Commits posteriores de teaser bubbles estao em `origin/main` ate `b8f8267`. Se precisar confirmar deploy desses commits, use `railway deployment list`.
-
-Validacoes feitas nas etapas recentes:
-
-- `npm run lint` passou.
-- `npm run build` passou antes do deploy de `d0aef3f`.
-- Railway deploy `b87d9096...` terminou `SUCCESS`.
-
-## Variaveis De Ambiente Importantes
-
-Base:
-
-- `DATABASE_URL`
-- `AUTH_SECRET`
-- `NEXT_PUBLIC_APP_URL`
-- `NEXTAUTH_URL`
-- `APP_URL`
-- `FREIGHT_FIXED_PRICE`
-- `ADMIN_SEED_EMAIL`
-- `ADMIN_SEED_PASSWORD`
-
-Frete gratis primeira semana:
-
-- `FREIGHT_FREE_FIRST_WEEK_START_AT`
-- `FREIGHT_FREE_FIRST_WEEK_DURATION_DAYS`
-
-PagBank:
-
-- `PAGBANK_API_URL`
-- `PAGBANK_ACCESS_TOKEN`
-- `PAGBANK_WEBHOOK_SECRET`
-
-Resend:
-
-- `RESEND_API_KEY`
-- `RESEND_FROM`
-- `RESEND_REPLY_TO`
-- `EMAIL_VERIFICATION_TTL_HOURS`
-
-IA:
-
-- `GROQ_API_KEY`
-- `GROQ_MODEL`
-- `GEMINI_API_KEY`
-- `GEMINI_MODEL`
-- `OPENROUTER_API_KEY`
-- `OPENROUTER_MODEL`
-
-OAuth:
-
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
-- `AUTH_FACEBOOK_ID`
-- `AUTH_FACEBOOK_SECRET`
-
-## Operacao Railway
-
-Comandos usados com frequencia:
-
-```bash
-railway status
-railway variables
-railway variable set KEY=value
-railway up
-railway deployment list
-railway logs
-railway login
-```
-
-Observacoes:
-
-- Railway CLI desloga/expira com frequencia.
-- Login costuma pedir codigo via `https://railway.com/activate`.
-- `railway run` local nao alcança necessariamente o host interno do Postgres.
-- Para executar Prisma contra producao, usar `railway ssh -s 10pila-app "node -e '...'"` dentro do servico quando necessario.
-
-## Dados De Teste / Limpezas Ja Feitas
-
-Foi feita limpeza de contas de cliente em producao, preservando admin.
-
-- Clientes apagados: 10 em uma limpeza.
-- Admin preservado: 1.
-- `sanderboff8@gmail.com` foi apagado em outra limpeza.
-- Dependencias removidas: pedidos/pagamentos/endereco/contas sociais/sessoes/carrinho/cupom/referral ligados ao usuario.
-- `chatSessions` foram desvinculadas (`userId = null`) em vez de apagadas.
-
-Nao repetir limpeza em producao sem pedido explicito.
-
-## Cuidados De Produto E UX
-
-- Nao fazer redesign amplo sem diagnostico por camada.
-- Manter visual dark commerce/cyber clean sem virar premium caro.
-- Evitar copy generica e texto de template.
-- Chat deve ser legivel: texto claro em fundo escuro.
-- Mascote deve permanecer visivel; usuario usa para fechar/abrir.
-- Nao deixar cards/checkout/carrinho com area quebrada se asset faltar.
-- Produto e checkout precisam mostrar preco, estoque, frete/desconto e CTA com clareza.
-- As bolhas do bot podem ser provocativas, mas nao devem ser ofensivas/pesadas a ponto de prejudicar compra.
-
-## Cuidados Tecnicos
-
-- Nao commitar `.env`, tokens ou screenshots sem intencao.
-- Nao commitar `.next`, `node_modules`, `tsconfig.tsbuildinfo`.
-- O seed nao deve rodar no startup de producao: isso ja foi corrigido anteriormente no `package.json`.
-- Login por credenciais deve respeitar `emailVerified`.
-- PagBank deve falhar de modo estrutural e nao quebrar fluxo apos pedido salvo.
-- Webhook deve continuar idempotente.
-- Cupom de primeira compra deve contar somente pedidos validos: `PAID`, `PROCESSING`, `SHIPPED`, `DELIVERED`.
-- Ao alterar pricing, usar `src/lib/commerce/cart-pricing.ts`.
-- Ao alterar frete promocional, usar `src/lib/commerce/freight-offers.ts`.
-- Ao alterar comportamento do bot, mexer tanto em `src/lib/chat/providers.ts` quanto em `src/lib/chat/assistant.ts`; se for UI, tambem `src/components/chat/chat-widget.tsx`.
-
-## Estado Do Git Que O Proximo Agente Deve Verificar
-
-Ultimo estado observado antes desta atualizacao:
-
-```txt
-## main...origin/main
- M docs/static-media-manifest.json
-?? AGENTS.md
-?? docs/Screenshot_2026-04-23-20-10-31-109_com.brave.browser.jpg
-?? docs/Screenshot_2026-04-23-20-14-48-958_com.brave.browser.jpg
-?? docs/Screenshot_2026-04-23-20-43-10-796_com.brave.browser.jpg
-?? docs/Screenshot_2026-04-23-22-18-30-952_com.brave.browser.jpg
-?? docs/Screenshot_2026-04-23-22-19-24-999_com.brave.browser.jpg
-?? tsconfig.tsbuildinfo
-```
-
-Depois desta edicao, `AGENTS.md` tambem estara modificado/novo no status.
+- `2026-04-24`: Commit `04a0ac0` consolidou limpeza e manifesto.
+- Validação lógica de verificação de email via script passou.
+- Verificação visual de labels de frete grátis via código passou.
 
 ## Proximos Passos Recomendados
 
 Curto prazo:
 
-- Verificar se `docs/static-media-manifest.json` deve ser commitado, pois agora indica 61 assets de produto presentes.
-- Remover/ignorar `tsconfig.tsbuildinfo` se necessario.
-- Decidir se screenshots em `docs/` ficam fora do repo ou entram em `.gitignore`.
 - Testar em producao as bolhas de teaser do PilaBot em home, produto e vitrine.
-- Testar fluxo de cadastro real: email chega, link verifica, login por senha libera.
-- Testar carrinho/checkout durante janela de frete gratis para confirmar desconto final.
+- Monitorar logs do Resend para confirmar se a reputação do domínio está melhorando após DMARC.
+- Implementar auto-login após confirmação de e-mail para melhorar UX.
+- Criar página de erro customizada para tokens de verificação expirados.
 
 Proximos incrementos possiveis:
 
-- Se o usuario pedir mais criatividade no bot, ajustar lista `teasers` em `src/components/chat/chat-widget.tsx` e regras de resposta em `src/lib/chat/assistant.ts`.
-- Se o usuario pedir auto-login apos confirmar email, implementar confirmacao + session creation/redirecionamento.
+- Se o usuario pedir mais criatividade no bot, ajustar lista `teasers` em `src/components/chat/chat-widget.tsx`.
 - Se o usuario pedir deploy, rodar `npm run build`, commit, push, `railway up` e acompanhar `railway deployment list`.
 
 ## Prompt De Entrada Para Gemini CLI
@@ -500,4 +312,3 @@ Proximos incrementos possiveis:
 ```txt
 Leia AGENTS.md, README.md, git status --short e git diff --stat. Continue do estado atual em /root/test sem recriar o projeto e sem reverter mudancas existentes. Preserve Railway-only. Antes de encerrar, atualize AGENTS.md com o que mudou.
 ```
-
