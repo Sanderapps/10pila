@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-16T21:52:26.818Z",
+  "generatedAt": "2026-04-24T21:40:38.257Z",
   "conventions": {
     "productImages": {
       "format": "WEBP",
@@ -14,16 +14,12 @@
   },
   "summary": {
     "totalProducts": 61,
-    "presentProductAssets": 0,
-    "missingProductAssets": 61,
+    "presentProductAssets": 61,
+    "missingProductAssets": 0,
     "presentHomeAssets": 0,
     "missingHomeAssets": 7
   },
   "existingFiles": {
-    "products": [],
-    "home": []
-  },
-  "missingFiles": {
     "products": [
       "public/catalog/products/organizador-magnet-clip.webp",
       "public/catalog/products/protetor-espiral-de-cabo.webp",
@@ -87,6 +83,10 @@
       "public/catalog/products/fone-de-ouvido-zip-p2.webp",
       "public/catalog/products/pirulito-teste-pagamento.webp"
     ],
+    "home": []
+  },
+  "missingFiles": {
+    "products": [],
     "home": [
       "public/home/posters/hero-achados-tech.webp",
       "public/home/posters/promo-ate-9-90.webp",
@@ -107,8 +107,8 @@
       "expectedFile": "organizador-magnet-clip.webp",
       "expectedPublicPath": "/catalog/products/organizador-magnet-clip.webp",
       "expectedFilePath": "public/catalog/products/organizador-magnet-clip.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/organizador-magnet-clip.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Organizador Magnet Clip\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Organizador Magnet Clip, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: mesa, material: silicone, fixacao: adesiva\nConstraints: the product must match this description: Segura cabo na mesa sem drama e evita fio escapando toda hora.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -120,8 +120,8 @@
       "expectedFile": "protetor-espiral-de-cabo.webp",
       "expectedPublicPath": "/catalog/products/protetor-espiral-de-cabo.webp",
       "expectedFilePath": "public/catalog/products/protetor-espiral-de-cabo.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/protetor-espiral-de-cabo.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Protetor Espiral de Cabo\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Protetor Espiral de Cabo, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: carregadores, material: PVC, pacote: kit com 4\nConstraints: the product must match this description: Espiral flexível para salvar cabo de carregador no ponto mais sofrido.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -133,8 +133,8 @@
       "expectedFile": "adaptador-usb-c-pocket.webp",
       "expectedPublicPath": "/catalog/products/adaptador-usb-c-pocket.webp",
       "expectedFilePath": "public/catalog/products/adaptador-usb-c-pocket.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/adaptador-usb-c-pocket.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Adaptador USB-C Pocket\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Adaptador USB-C Pocket, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; conexao: USB-C para USB-A, uso: celular e notebook, porte: compacto\nConstraints: the product must match this description: Transforma porta USB-C em USB-A sem ocupar espaço na mochila.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -146,8 +146,8 @@
       "expectedFile": "adaptador-otg-mini.webp",
       "expectedPublicPath": "/catalog/products/adaptador-otg-mini.webp",
       "expectedFilePath": "public/catalog/products/adaptador-otg-mini.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/adaptador-otg-mini.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Adaptador OTG Mini\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Adaptador OTG Mini, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; conexao: OTG, uso: celular, tamanho: mini\nConstraints: the product must match this description: Puxa pendrive pro celular sem gambiarra nem cabo gigante.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -159,8 +159,8 @@
       "expectedFile": "leitor-sd-nano-box.webp",
       "expectedPublicPath": "/catalog/products/leitor-sd-nano-box.webp",
       "expectedFilePath": "public/catalog/products/leitor-sd-nano-box.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/leitor-sd-nano-box.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Leitor SD Nano Box\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Leitor SD Nano Box, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; compatibilidade: SD e microSD, conexao: USB-A, corpo: compacto\nConstraints: the product must match this description: Leitor de cartão compacto para tirar arquivo da câmera e seguir o baile.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -172,8 +172,8 @@
       "expectedFile": "hub-usb-trio-simples.webp",
       "expectedPublicPath": "/catalog/products/hub-usb-trio-simples.webp",
       "expectedFilePath": "public/catalog/products/hub-usb-trio-simples.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/hub-usb-trio-simples.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Hub USB Trio Simples\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Hub USB Trio Simples, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; portas: 3 USB-A, energia: 5V, uso: mesa\nConstraints: the product must match this description: Multiplica porta USB sem inventar moda e quebra um galho bonito.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -185,8 +185,8 @@
       "expectedFile": "adaptador-p2-usb-c-easy.webp",
       "expectedPublicPath": "/catalog/products/adaptador-p2-usb-c-easy.webp",
       "expectedFilePath": "public/catalog/products/adaptador-p2-usb-c-easy.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/adaptador-p2-usb-c-easy.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Adaptador P2 USB-C Easy\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Adaptador P2 USB-C Easy, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; conexao: USB-C para P2, uso: audio, formato: reto\nConstraints: the product must match this description: Resolve fone com cabo em celular sem P2 por um preço civilizado.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -198,8 +198,8 @@
       "expectedFile": "marcador-de-fio-tag.webp",
       "expectedPublicPath": "/catalog/products/marcador-de-fio-tag.webp",
       "expectedFilePath": "public/catalog/products/marcador-de-fio-tag.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/marcador-de-fio-tag.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Marcador de Fio Tag\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Marcador de Fio Tag, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; pacote: 12 unidades, uso: organizacao, material: PVC\nConstraints: the product must match this description: Etiquetas simples para identificar cabo sem adivinhar na tomada.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -211,8 +211,8 @@
       "expectedFile": "base-adesiva-de-cabo.webp",
       "expectedPublicPath": "/catalog/products/base-adesiva-de-cabo.webp",
       "expectedFilePath": "public/catalog/products/base-adesiva-de-cabo.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/base-adesiva-de-cabo.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Base Adesiva de Cabo\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Base Adesiva de Cabo, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; fixacao: adesiva, pacote: 4 unidades, uso: mesa\nConstraints: the product must match this description: Base pequena pra prender fio de mouse, carregador e headphone na mesa.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -224,8 +224,8 @@
       "expectedFile": "clip-de-mesa-anti-fio.webp",
       "expectedPublicPath": "/catalog/products/clip-de-mesa-anti-fio.webp",
       "expectedFilePath": "public/catalog/products/clip-de-mesa-anti-fio.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/clip-de-mesa-anti-fio.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Clip de Mesa Anti Fio\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Clip de Mesa Anti Fio, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; material: silicone, uso: cabos finos, pacote: kit com 6\nConstraints: the product must match this description: Clip simples pra cabo parar de sumir atrás da bancada.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -237,8 +237,8 @@
       "expectedFile": "mini-caixa-de-cabos-zip.webp",
       "expectedPublicPath": "/catalog/products/mini-caixa-de-cabos-zip.webp",
       "expectedFilePath": "public/catalog/products/mini-caixa-de-cabos-zip.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mini-caixa-de-cabos-zip.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mini Caixa de Cabos Zip\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mini Caixa de Cabos Zip, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: cabos e miudezas, fechamento: zip, porte: mini\nConstraints: the product must match this description: Bolsinha compacta pra cabo, adaptador e cartão SD não virarem bagunça.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -250,8 +250,8 @@
       "expectedFile": "velcro-organiza-tudo.webp",
       "expectedPublicPath": "/catalog/products/velcro-organiza-tudo.webp",
       "expectedFilePath": "public/catalog/products/velcro-organiza-tudo.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/velcro-organiza-tudo.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Velcro Organiza Tudo\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Velcro Organiza Tudo, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; pacote: 10 tiras, uso: cabos, reutilizavel: sim\nConstraints: the product must match this description: Kit de tiras de velcro pra domar fio de mesa, mochila e home office.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -263,8 +263,8 @@
       "expectedFile": "enrolador-de-fio-pocket.webp",
       "expectedPublicPath": "/catalog/products/enrolador-de-fio-pocket.webp",
       "expectedFilePath": "public/catalog/products/enrolador-de-fio-pocket.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/enrolador-de-fio-pocket.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Enrolador de Fio Pocket\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Enrolador de Fio Pocket, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: fone e cabo curto, material: silicone, pacote: 2 unidades\nConstraints: the product must match this description: Enrola fone e cabo curto sem virar ninho de dragão no bolso.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -276,8 +276,8 @@
       "expectedFile": "suporte-dobravel-pop.webp",
       "expectedPublicPath": "/catalog/products/suporte-dobravel-pop.webp",
       "expectedFilePath": "public/catalog/products/suporte-dobravel-pop.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-dobravel-pop.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte Dobrável Pop\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte Dobrável Pop, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; ajuste: dobravel, uso: mesa, material: ABS\nConstraints: the product must match this description: Suporte leve pra celular ficar em pé na mesa sem ocupar quase nada.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -289,8 +289,8 @@
       "expectedFile": "anel-grip-de-celular.webp",
       "expectedPublicPath": "/catalog/products/anel-grip-de-celular.webp",
       "expectedFilePath": "public/catalog/products/anel-grip-de-celular.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/anel-grip-de-celular.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Anel Grip de Celular\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Anel Grip de Celular, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; fixacao: adesiva, uso: pegada e apoio, material: metal\nConstraints: the product must match this description: Argola simples que ajuda na pegada e ainda apoia o celular deitado.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -302,8 +302,8 @@
       "expectedFile": "capa-flex-gel-basic.webp",
       "expectedPublicPath": "/catalog/products/capa-flex-gel-basic.webp",
       "expectedFilePath": "public/catalog/products/capa-flex-gel-basic.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/capa-flex-gel-basic.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Capa Flex Gel Basic\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Capa Flex Gel Basic, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; material: silicone flex, uso: protecao basica, pegada: anti escorregao\nConstraints: the product must match this description: Capa simples de silicone flexível pra segurar risco e escorregão do dia a dia.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -315,8 +315,8 @@
       "expectedFile": "tripe-mini-snap.webp",
       "expectedPublicPath": "/catalog/products/tripe-mini-snap.webp",
       "expectedFilePath": "public/catalog/products/tripe-mini-snap.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/tripe-mini-snap.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Tripé Mini Snap\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Tripé Mini Snap, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: celular, altura: compacta, formato: tripé\nConstraints: the product must match this description: Tripé de bolso pra vídeo rápido, call torta nunca mais.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -328,8 +328,8 @@
       "expectedFile": "suporte-articulado-slim.webp",
       "expectedPublicPath": "/catalog/products/suporte-articulado-slim.webp",
       "expectedFilePath": "public/catalog/products/suporte-articulado-slim.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-articulado-slim.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte Articulado Slim\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte Articulado Slim, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; fixacao: garra, uso: mesa, ajuste: articulado\nConstraints: the product must match this description: Braço simples de mesa pra segurar celular na altura do olho.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -341,8 +341,8 @@
       "expectedFile": "tampa-de-webcam-stealth.webp",
       "expectedPublicPath": "/catalog/products/tampa-de-webcam-stealth.webp",
       "expectedFilePath": "public/catalog/products/tampa-de-webcam-stealth.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/tampa-de-webcam-stealth.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Tampa de Webcam Stealth\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Tampa de Webcam Stealth, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; pacote: 3 unidades, uso: webcam, fixacao: adesiva\nConstraints: the product must match this description: Capinha deslizante pra webcam parar de encarar tua alma o dia inteiro.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -354,8 +354,8 @@
       "expectedFile": "tampa-anti-poeira-port.webp",
       "expectedPublicPath": "/catalog/products/tampa-anti-poeira-port.webp",
       "expectedFilePath": "public/catalog/products/tampa-anti-poeira-port.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/tampa-anti-poeira-port.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Tampa Anti Poeira Port\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Tampa Anti Poeira Port, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; pacote: 8 unidades, uso: portas, material: silicone\nConstraints: the product must match this description: Tampinhas simples pra porta USB e USB-C não virarem depósito de poeira.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -367,8 +367,8 @@
       "expectedFile": "mini-suporte-de-notebook-air.webp",
       "expectedPublicPath": "/catalog/products/mini-suporte-de-notebook-air.webp",
       "expectedFilePath": "public/catalog/products/mini-suporte-de-notebook-air.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mini-suporte-de-notebook-air.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mini Suporte de Notebook Air\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mini Suporte de Notebook Air, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; formato: dobravel, uso: notebook, apoio: base\nConstraints: the product must match this description: Eleva notebook alguns graus e ajuda no respiro sem exagero.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -380,8 +380,8 @@
       "expectedFile": "luz-usb-pocket-led.webp",
       "expectedPublicPath": "/catalog/products/luz-usb-pocket-led.webp",
       "expectedFilePath": "public/catalog/products/luz-usb-pocket-led.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/luz-usb-pocket-led.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Luz USB Pocket LED\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Luz USB Pocket LED, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; alimentacao: USB, uso: leitura e mesa, luz: fria\nConstraints: the product must match this description: Luzinha USB direta pra teclado, notebook ou cabeceira improvisada.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -393,8 +393,8 @@
       "expectedFile": "mini-regua-de-leds-usb.webp",
       "expectedPublicPath": "/catalog/products/mini-regua-de-leds-usb.webp",
       "expectedFilePath": "public/catalog/products/mini-regua-de-leds-usb.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mini-regua-de-leds-usb.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mini Regua de LEDs USB\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mini Regua de LEDs USB, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; alimentacao: USB, tamanho: compacto, uso: mesa e rack\nConstraints: the product must match this description: Barrinha USB pra iluminar bancada, rack ou canto escuro do setupzinho.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -406,8 +406,8 @@
       "expectedFile": "luminaria-clip-usb-go.webp",
       "expectedPublicPath": "/catalog/products/luminaria-clip-usb-go.webp",
       "expectedFilePath": "public/catalog/products/luminaria-clip-usb-go.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/luminaria-clip-usb-go.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Luminária Clip USB Go\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Luminária Clip USB Go, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; alimentacao: USB, fixacao: clip, haste: flexivel\nConstraints: the product must match this description: Clip flexível com LED pra notebook, livro e improviso noturno honesto.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -419,8 +419,8 @@
       "expectedFile": "mini-lanterna-usb-flash.webp",
       "expectedPublicPath": "/catalog/products/mini-lanterna-usb-flash.webp",
       "expectedFilePath": "public/catalog/products/mini-lanterna-usb-flash.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mini-lanterna-usb-flash.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mini Lanterna USB Flash\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mini Lanterna USB Flash, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; recarga: USB, uso: bolso, luz: LED\nConstraints: the product must match this description: Lanterna recarregável pequenininha pra mochila, carro e apagão de leve.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -432,8 +432,8 @@
       "expectedFile": "mini-ventilador-usb-desk.webp",
       "expectedPublicPath": "/catalog/products/mini-ventilador-usb-desk.webp",
       "expectedFilePath": "public/catalog/products/mini-ventilador-usb-desk.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mini-ventilador-usb-desk.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mini Ventilador USB Desk\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mini Ventilador USB Desk, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; alimentacao: USB, uso: mesa, tamanho: mini\nConstraints: the product must match this description: Ventinho de mesa sem luxo, mas já salva o calor do teclado quente.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -445,8 +445,8 @@
       "expectedFile": "aquecedor-de-caneca-usb.webp",
       "expectedPublicPath": "/catalog/products/aquecedor-de-caneca-usb.webp",
       "expectedFilePath": "public/catalog/products/aquecedor-de-caneca-usb.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/aquecedor-de-caneca-usb.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Aquecedor de Caneca USB\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Aquecedor de Caneca USB, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; alimentacao: USB, uso: caneca, formato: base\nConstraints: the product must match this description: Base simples pra café não desistir da vida tão rápido.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -458,8 +458,8 @@
       "expectedFile": "escova-de-teclado-dust-off.webp",
       "expectedPublicPath": "/catalog/products/escova-de-teclado-dust-off.webp",
       "expectedFilePath": "public/catalog/products/escova-de-teclado-dust-off.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/escova-de-teclado-dust-off.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Escova de Teclado Dust Off\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Escova de Teclado Dust Off, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: teclado, cerdas: macias, formato: compacto\nConstraints: the product must match this description: Escovinha fina pra tirar migalha e poeira sem desmontar o teclado inteiro.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -471,8 +471,8 @@
       "expectedFile": "limpador-de-tela-duo.webp",
       "expectedPublicPath": "/catalog/products/limpador-de-tela-duo.webp",
       "expectedFilePath": "public/catalog/products/limpador-de-tela-duo.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/limpador-de-tela-duo.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Limpador de Tela Duo\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Limpador de Tela Duo, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: tela, formato: 2 em 1, recarga: simples\nConstraints: the product must match this description: Spray e flanela no mesmo corpo pra limpar tela sem virar novela.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -484,8 +484,8 @@
       "expectedFile": "pincel-antiestatico-nano.webp",
       "expectedPublicPath": "/catalog/products/pincel-antiestatico-nano.webp",
       "expectedFilePath": "public/catalog/products/pincel-antiestatico-nano.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/pincel-antiestatico-nano.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Pincel Antiestático Nano\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Pincel Antiestático Nano, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: limpeza fina, cerdas: antiestaticas, tamanho: nano\nConstraints: the product must match this description: Pincel pequeno pra limpeza delicada de teclado, entrada e placa leve.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -497,8 +497,8 @@
       "expectedFile": "limpador-de-fone-clean-tip.webp",
       "expectedPublicPath": "/catalog/products/limpador-de-fone-clean-tip.webp",
       "expectedFilePath": "public/catalog/products/limpador-de-fone-clean-tip.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/limpador-de-fone-clean-tip.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Limpador de Fone Clean Tip\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Limpador de Fone Clean Tip, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: fone, formato: caneta, pontas: 3 em 1\nConstraints: the product must match this description: Kit simples pra limpar fone intra e case sem sofrimento.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -510,8 +510,8 @@
       "expectedFile": "descanso-de-cabo-mesa.webp",
       "expectedPublicPath": "/catalog/products/descanso-de-cabo-mesa.webp",
       "expectedFilePath": "public/catalog/products/descanso-de-cabo-mesa.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/descanso-de-cabo-mesa.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Descanso de Cabo Mesa\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Descanso de Cabo Mesa, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: borda da mesa, fixacao: adesiva, pacote: 2 unidades\nConstraints: the product must match this description: Peça simples que segura cabo na borda e evita puxão idiota.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -523,8 +523,8 @@
       "expectedFile": "suporte-de-carregador-wall-dock.webp",
       "expectedPublicPath": "/catalog/products/suporte-de-carregador-wall-dock.webp",
       "expectedFilePath": "public/catalog/products/suporte-de-carregador-wall-dock.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-de-carregador-wall-dock.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte de Carregador Wall Dock\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte de Carregador Wall Dock, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: carregador, fixacao: adesiva, local: parede\nConstraints: the product must match this description: Segura carregador e cabo na parede sem largar tudo no chão.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -536,8 +536,8 @@
       "expectedFile": "organizador-de-tomada-plug-nest.webp",
       "expectedPublicPath": "/catalog/products/organizador-de-tomada-plug-nest.webp",
       "expectedFilePath": "public/catalog/products/organizador-de-tomada-plug-nest.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/organizador-de-tomada-plug-nest.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Organizador de Tomada Plug Nest\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Organizador de Tomada Plug Nest, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: tomadas, formato: caixa, material: ABS\nConstraints: the product must match this description: Caixinha simples pra tomada, fonte e excesso de fio sumirem da vista.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -549,8 +549,8 @@
       "expectedFile": "mouse-bungee-basic.webp",
       "expectedPublicPath": "/catalog/products/mouse-bungee-basic.webp",
       "expectedFilePath": "public/catalog/products/mouse-bungee-basic.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mouse-bungee-basic.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mouse Bungee Basic\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mouse Bungee Basic, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: mouse com fio, base: antiderrapante, formato: simples\nConstraints: the product must match this description: Segura o fio do mouse e deixa a mesa menos zona por quase nada.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -562,8 +562,8 @@
       "expectedFile": "suporte-de-headset-hook.webp",
       "expectedPublicPath": "/catalog/products/suporte-de-headset-hook.webp",
       "expectedFilePath": "public/catalog/products/suporte-de-headset-hook.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-de-headset-hook.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte de Headset Hook\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte de Headset Hook, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: headset, fixacao: mesa, material: ABS\nConstraints: the product must match this description: Gancho de mesa pra headset parar de viver largado na cadeira.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -575,8 +575,8 @@
       "expectedFile": "descanso-adesivo-de-pulso.webp",
       "expectedPublicPath": "/catalog/products/descanso-adesivo-de-pulso.webp",
       "expectedFilePath": "public/catalog/products/descanso-adesivo-de-pulso.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/descanso-adesivo-de-pulso.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Descanso Adesivo de Pulso\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Descanso Adesivo de Pulso, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: mouse ou teclado, fixacao: adesiva, toque: macio\nConstraints: the product must match this description: Apoio simples pra punho que quebra o galho em mesa reta demais.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -588,8 +588,8 @@
       "expectedFile": "protetor-de-quina-rgb-fake.webp",
       "expectedPublicPath": "/catalog/products/protetor-de-quina-rgb-fake.webp",
       "expectedFilePath": "public/catalog/products/protetor-de-quina-rgb-fake.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/protetor-de-quina-rgb-fake.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Protetor de Quina RGB Fake\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Protetor de Quina RGB Fake, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: quina de mesa, material: silicone, pacote: 4 unidades\nConstraints: the product must match this description: Protetor de quina com visual tech pra mesa sem machucar cotovelo.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -601,8 +601,8 @@
       "expectedFile": "adesivo-antiderrapante-grip-pad.webp",
       "expectedPublicPath": "/catalog/products/adesivo-antiderrapante-grip-pad.webp",
       "expectedFilePath": "public/catalog/products/adesivo-antiderrapante-grip-pad.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/adesivo-antiderrapante-grip-pad.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Adesivo Antiderrapante Grip Pad\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Adesivo Antiderrapante Grip Pad, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: bases, pacote: 8 pads, material: borracha\nConstraints: the product must match this description: Pads simples pra base de teclado, caixinha ou suporte parar de sambar.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -614,8 +614,8 @@
       "expectedFile": "mini-ferramenta-de-precisao-kit.webp",
       "expectedPublicPath": "/catalog/products/mini-ferramenta-de-precisao-kit.webp",
       "expectedFilePath": "public/catalog/products/mini-ferramenta-de-precisao-kit.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mini-ferramenta-de-precisao-kit.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mini Ferramenta de Precisão Kit\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mini Ferramenta de Precisão Kit, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; conteudo: bits basicos, uso: eletronicos leves, case: sim\nConstraints: the product must match this description: Kit básico de chave pequena pra eletrônico simples e bugiganga teimosa.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -627,8 +627,8 @@
       "expectedFile": "abridor-de-chip-pocket.webp",
       "expectedPublicPath": "/catalog/products/abridor-de-chip-pocket.webp",
       "expectedFilePath": "public/catalog/products/abridor-de-chip-pocket.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/abridor-de-chip-pocket.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Abridor de Chip Pocket\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Abridor de Chip Pocket, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: SIM card, material: metal, pacote: 2 unidades\nConstraints: the product must match this description: Ferramenta pequena pra bandeja de chip não depender de clipe torto.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -640,8 +640,8 @@
       "expectedFile": "trava-de-cabo-mini-lock.webp",
       "expectedPublicPath": "/catalog/products/trava-de-cabo-mini-lock.webp",
       "expectedFilePath": "public/catalog/products/trava-de-cabo-mini-lock.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/trava-de-cabo-mini-lock.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Trava de Cabo Mini Lock\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Trava de Cabo Mini Lock, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: cabos, fixacao: adesiva, pacote: 4 unidades\nConstraints: the product must match this description: Prende cabo em rota fixa e evita puxão acidental em carregador ou USB.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -653,8 +653,8 @@
       "expectedFile": "case-de-pilha-snap-box.webp",
       "expectedPublicPath": "/catalog/products/case-de-pilha-snap-box.webp",
       "expectedFilePath": "public/catalog/products/case-de-pilha-snap-box.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/case-de-pilha-snap-box.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Case de Pilha Snap Box\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Case de Pilha Snap Box, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: pilha e bateria, material: plastico, porte: bolso\nConstraints: the product must match this description: Caixinha compacta pra pilha ou bateria pequena não ficar solta na bolsa.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -666,8 +666,8 @@
       "expectedFile": "bolsinha-tech-grid.webp",
       "expectedPublicPath": "/catalog/products/bolsinha-tech-grid.webp",
       "expectedFilePath": "public/catalog/products/bolsinha-tech-grid.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/bolsinha-tech-grid.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Bolsinha Tech Grid\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Bolsinha Tech Grid, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: acessorios, fechamento: zip, formato: organizador\nConstraints: the product must match this description: Bolsinha de acessórios pra cabo, adaptador e miudeza nerd do dia a dia.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -679,8 +679,8 @@
       "expectedFile": "organizador-de-mochila-tech.webp",
       "expectedPublicPath": "/catalog/products/organizador-de-mochila-tech.webp",
       "expectedFilePath": "public/catalog/products/organizador-de-mochila-tech.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/organizador-de-mochila-tech.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Organizador de Mochila Tech\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Organizador de Mochila Tech, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: mochila, bolsos: multiplos, material: nylon\nConstraints: the product must match this description: Divisórias leves pra miudeza eletrônica parar de passear na mochila.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -692,8 +692,8 @@
       "expectedFile": "suporte-de-parede-para-roteador.webp",
       "expectedPublicPath": "/catalog/products/suporte-de-parede-para-roteador.webp",
       "expectedFilePath": "public/catalog/products/suporte-de-parede-para-roteador.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-de-parede-para-roteador.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte de Parede para Roteador\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte de Parede para Roteador, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: roteador leve, fixacao: parede, material: ABS\nConstraints: the product must match this description: Base leve pra roteador pequeno sair do chão e respirar melhor.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -705,8 +705,8 @@
       "expectedFile": "suporte-de-controle-wall-pop.webp",
       "expectedPublicPath": "/catalog/products/suporte-de-controle-wall-pop.webp",
       "expectedFilePath": "public/catalog/products/suporte-de-controle-wall-pop.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-de-controle-wall-pop.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte de Controle Wall Pop\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte de Controle Wall Pop, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: controle, fixacao: adesiva, pacote: 2 unidades\nConstraints: the product must match this description: Gancho de parede simples pra controle remoto ou joystick leve.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -718,8 +718,8 @@
       "expectedFile": "abafador-de-porta-key-quiet.webp",
       "expectedPublicPath": "/catalog/products/abafador-de-porta-key-quiet.webp",
       "expectedFilePath": "public/catalog/products/abafador-de-porta-key-quiet.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/abafador-de-porta-key-quiet.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Abafador de Porta Key Quiet\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Abafador de Porta Key Quiet, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: porta, material: silicone, pacote: kit\nConstraints: the product must match this description: Peça simples pra diminuir batida seca em porta de quarto ou escritório.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -731,8 +731,8 @@
       "expectedFile": "luz-de-porta-usb-car.webp",
       "expectedPublicPath": "/catalog/products/luz-de-porta-usb-car.webp",
       "expectedFilePath": "public/catalog/products/luz-de-porta-usb-car.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/luz-de-porta-usb-car.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Luz de Porta USB Car\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Luz de Porta USB Car, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; alimentacao: USB, uso: carro, luz: LED\nConstraints: the product must match this description: Luzinha USB pequena pra carro, bagageiro ou canto escuro do painel.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -744,8 +744,8 @@
       "expectedFile": "suporte-de-celular-vent-clip.webp",
       "expectedPublicPath": "/catalog/products/suporte-de-celular-vent-clip.webp",
       "expectedFilePath": "public/catalog/products/suporte-de-celular-vent-clip.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-de-celular-vent-clip.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte de Celular Vent Clip\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte de Celular Vent Clip, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: carro, fixacao: saida de ar, ajuste: basico\nConstraints: the product must match this description: Suporte simples de saída de ar pra GPS não virar teste de reflexo.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -757,8 +757,8 @@
       "expectedFile": "mini-lanterna-de-chaveiro-beam.webp",
       "expectedPublicPath": "/catalog/products/mini-lanterna-de-chaveiro-beam.webp",
       "expectedFilePath": "public/catalog/products/mini-lanterna-de-chaveiro-beam.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mini-lanterna-de-chaveiro-beam.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mini Lanterna de Chaveiro Beam\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mini Lanterna de Chaveiro Beam, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: chaveiro, luz: LED, porte: mini\nConstraints: the product must match this description: Luzinha de chaveiro pra mochila, fechadura e improviso noturno baratinho.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -770,8 +770,8 @@
       "expectedFile": "tag-localizador-analogica.webp",
       "expectedPublicPath": "/catalog/products/tag-localizador-analogica.webp",
       "expectedFilePath": "public/catalog/products/tag-localizador-analogica.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/tag-localizador-analogica.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Tag Localizador Analógica\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Tag Localizador Analógica, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: identificacao, material: ABS, argola: sim\nConstraints: the product must match this description: Chaveiro simples e colorido pra bolsa, mala ou case não sumirem na correria.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -783,8 +783,8 @@
       "expectedFile": "suporte-de-tablet-fold-easy.webp",
       "expectedPublicPath": "/catalog/products/suporte-de-tablet-fold-easy.webp",
       "expectedFilePath": "public/catalog/products/suporte-de-tablet-fold-easy.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-de-tablet-fold-easy.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte de Tablet Fold Easy\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte de Tablet Fold Easy, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: tablet, formato: dobravel, material: ABS\nConstraints: the product must match this description: Apoio dobrável pra tablet ou ebook sem gastar espaço nem paciência.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -796,8 +796,8 @@
       "expectedFile": "case-de-cartao-sd-pocket.webp",
       "expectedPublicPath": "/catalog/products/case-de-cartao-sd-pocket.webp",
       "expectedFilePath": "public/catalog/products/case-de-cartao-sd-pocket.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/case-de-cartao-sd-pocket.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Case de Cartão SD Pocket\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Case de Cartão SD Pocket, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: cartoes, capacidade: 4 a 6, formato: compacto\nConstraints: the product must match this description: Guarda cartão SD e microSD num case que cabe no bolso sem drama.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -809,8 +809,8 @@
       "expectedFile": "protetor-de-plug-soft-cap.webp",
       "expectedPublicPath": "/catalog/products/protetor-de-plug-soft-cap.webp",
       "expectedFilePath": "public/catalog/products/protetor-de-plug-soft-cap.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/protetor-de-plug-soft-cap.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Protetor de Plug Soft Cap\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Protetor de Plug Soft Cap, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: plugs, material: silicone, pacote: 6 unidades\nConstraints: the product must match this description: Capinhas simples pra ponta de cabo não ficar raspando e marcando.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -822,8 +822,8 @@
       "expectedFile": "mouse-pad-mini-spot.webp",
       "expectedPublicPath": "/catalog/products/mouse-pad-mini-spot.webp",
       "expectedFilePath": "public/catalog/products/mouse-pad-mini-spot.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/mouse-pad-mini-spot.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Mouse Pad Mini Spot\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Mouse Pad Mini Spot, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: mouse, base: antiderrapante, tamanho: mini\nConstraints: the product must match this description: Mouse pad pequeno pra canto de notebook, balcão ou trampo improvisado.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -835,8 +835,8 @@
       "expectedFile": "suporte-de-cabo-charger-hook.webp",
       "expectedPublicPath": "/catalog/products/suporte-de-cabo-charger-hook.webp",
       "expectedFilePath": "public/catalog/products/suporte-de-cabo-charger-hook.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-de-cabo-charger-hook.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte de Cabo Charger Hook\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte de Cabo Charger Hook, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: carregador, fixacao: adesiva, pacote: 3 unidades\nConstraints: the product must match this description: Gancho simples pra deixar carregador sempre no mesmo ponto da mesa.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -848,8 +848,8 @@
       "expectedFile": "suporte-multiuso-stick-arm.webp",
       "expectedPublicPath": "/catalog/products/suporte-multiuso-stick-arm.webp",
       "expectedFilePath": "public/catalog/products/suporte-multiuso-stick-arm.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/suporte-multiuso-stick-arm.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Suporte Multiuso Stick Arm\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Suporte Multiuso Stick Arm, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: multiuso, fixacao: adesiva, ajuste: simples\nConstraints: the product must match this description: Braço adesivo pequeno pra segurar controle, celular leve ou cabo grosso.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -861,8 +861,8 @@
       "expectedFile": "kit-anti-poeira-laptop.webp",
       "expectedPublicPath": "/catalog/products/kit-anti-poeira-laptop.webp",
       "expectedFilePath": "public/catalog/products/kit-anti-poeira-laptop.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/kit-anti-poeira-laptop.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Kit Anti Poeira Laptop\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Kit Anti Poeira Laptop, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; conteudo: tampas e escova, uso: notebook, formato: kit\nConstraints: the product must match this description: Pacotinho com tampas e escovinha pra notebook não virar criadouro de pó.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -874,8 +874,8 @@
       "expectedFile": "fone-de-ouvido-zip-p2.webp",
       "expectedPublicPath": "/catalog/products/fone-de-ouvido-zip-p2.webp",
       "expectedFilePath": "public/catalog/products/fone-de-ouvido-zip-p2.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/fone-de-ouvido-zip-p2.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Fone de Ouvido Zip P2\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Fone de Ouvido Zip P2, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; conexao: P2, uso: audio basico, microfone: simples\nConstraints: the product must match this description: Fone com cabo simples pra quebra-galho honesto em celular, notebook e ônibus.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     },
     {
@@ -887,8 +887,8 @@
       "expectedFile": "pirulito-teste-pagamento.webp",
       "expectedPublicPath": "/catalog/products/pirulito-teste-pagamento.webp",
       "expectedFilePath": "public/catalog/products/pirulito-teste-pagamento.webp",
-      "existingAsset": null,
-      "status": "missing",
+      "existingAsset": "/catalog/products/pirulito-teste-pagamento.webp",
+      "status": "present",
       "prompt": "Use case: product-mockup\nAsset type: square ecommerce product image\nPrimary request: realistic product photo for \"Pirulito Teste Pagamento\"\nScene/backdrop: clean dark-commerce backdrop, matte graphite base, subtle studio reflections, no clutter\nSubject: Pirulito Teste Pagamento, shown alone as the clear hero object for a product card and product page\nStyle/medium: realistic ecommerce photography, polished but honest, no cartoon look, no exaggerated luxury styling\nComposition/framing: square 1:1, product centered, strong silhouette, enough negative space for mobile crop, focus total no produto\nLighting/mood: modern studio lighting, strong readable contrast, soft key light, controlled cyan and green rim accents\nColor palette: black, graphite, neutral metallics, controlled cyan and green accents, no purple dominance\nMaterials/textures: highlight the real object materials; uso: teste, checkout: pagamento, frete: cupom TESTEFRETE\nConstraints: the product must match this description: Item de teste para validar checkout com valor minimo e fluxo real do PagBank.\nAvoid: text, logo, watermark, people, hands, packaging, cables or accessories not implied by the item, fake brand markings, messy background, blurred subject"
     }
   ],

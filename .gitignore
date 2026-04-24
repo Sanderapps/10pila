@@ -8,3 +8,12 @@ coverage
 .env*.local
 *.log
 prisma/dev.db
+tsconfig.tsbuildinfo
+docs/*.jpg
+docs/*.png
+docs/*.webp
+!public/catalog/products/*.webp
+!public/brand/*.webp
+!public/brand/*.svg
+!public/brand/*.png
+!public/home/posters/*.webp
