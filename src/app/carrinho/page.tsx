@@ -5,7 +5,7 @@ import { CartActions } from "@/components/cart-actions";
 import { CartSummary } from "@/components/cart-summary";
 import { EmptyState } from "@/components/empty-state";
 import { CartIcon } from "@/components/icons";
-import { resolveCartCoupon } from "@/lib/commerce/cart-pricing";
+import { resolveCartPricing } from "@/lib/commerce/cart-pricing";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL, freightCents } from "@/lib/utils/money";
@@ -25,8 +25,8 @@ export default async function CartPage() {
     return total + price * item.quantity;
   }, 0);
   const freight = freightCents();
-  const coupon = await resolveCartCoupon(user.id, subtotal, freight);
-  const total = coupon?.totalCents ?? subtotal + freight;
+  const pricing = await resolveCartPricing(user.id, subtotal, freight);
+  const total = pricing.totalCents;
 
   return (
     <main className="container grid gap-8 py-10 pb-32 lg:pb-10">
@@ -107,10 +107,13 @@ export default async function CartPage() {
             })}
           </section>
           <CartSummary
-            couponCode={coupon?.code ?? null}
-            productDiscount={coupon?.productDiscountCents ? centsToBRL(coupon.productDiscountCents) : null}
-            freightDiscount={coupon?.freightDiscountCents ? centsToBRL(coupon.freightDiscountCents) : null}
-            freight={centsToBRL(coupon?.effectiveFreightCents ?? freight)}
+            couponCode={pricing.code}
+            discountTotal={pricing.discountCents ? centsToBRL(pricing.discountCents) : null}
+            freightCampaignLabel={pricing.freightCampaignLabel}
+            couponTouchesFreight={pricing.freightDiscountCents > pricing.freightCampaignDiscountCents}
+            productDiscount={pricing.productDiscountCents ? centsToBRL(pricing.productDiscountCents) : null}
+            freightDiscount={pricing.freightDiscountCents ? centsToBRL(pricing.freightDiscountCents) : null}
+            freight={centsToBRL(pricing.effectiveFreightCents)}
             subtotal={centsToBRL(subtotal)}
             total={centsToBRL(total)}
           />

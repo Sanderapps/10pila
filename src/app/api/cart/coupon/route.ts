@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/session";
-import { computeCoupon } from "@/lib/commerce/coupons";
+import { resolvePricingWithCoupon } from "@/lib/commerce/cart-pricing";
 import { prisma } from "@/lib/db/prisma";
 import { freightCents } from "@/lib/utils/money";
 
@@ -29,7 +29,9 @@ export async function POST(request: Request) {
       where: { userId: user.id },
       include: { product: true }
     }),
-    prisma.order.count({ where: { userId: user.id } })
+    prisma.order.count({
+      where: { userId: user.id, status: { in: ["PAID", "PROCESSING", "SHIPPED", "DELIVERED"] } }
+    })
   ]);
 
   if (!coupon) {
@@ -41,16 +43,16 @@ export async function POST(request: Request) {
     return total + price * item.quantity;
   }, 0);
 
-  const result = computeCoupon({
-    coupon,
+  const result = resolvePricingWithCoupon({
     subtotalCents,
     freightCents: freightCents(),
+    coupon,
     hasPreviousOrders: orderCount > 0,
     currentUserId: user.id
   });
 
-  if (!result.valid) {
-    return NextResponse.json({ error: result.message ?? "Cupom invalido." }, { status: 400 });
+  if (!result.code) {
+    return NextResponse.json({ error: "Cupom invalido." }, { status: 400 });
   }
 
   await prisma.cartCouponApplication.upsert({
@@ -70,7 +72,9 @@ export async function POST(request: Request) {
     message:
       coupon.type === "FREE_SHIPPING"
         ? "Cupom aplicado. O frete entrou no desconto sem mexer no valor dos produtos."
-        : "Cupom aplicado no carrinho."
+        : result.freightCampaignLabel
+          ? "Cupom aplicado. O frete gratis da primeira semana continua valendo no total."
+          : "Cupom aplicado no carrinho."
   });
 }
 

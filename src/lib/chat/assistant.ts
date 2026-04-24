@@ -40,6 +40,22 @@ type AnswerInput = {
   history?: ChatHistoryMessage[];
 };
 
+type ChatIntent =
+  | "order"
+  | "greeting"
+  | "browsing"
+  | "chat"
+  | "recommendation"
+  | "promotion"
+  | "cheaper"
+  | "link"
+  | "compare"
+  | "details"
+  | "similar"
+  | "add_to_cart"
+  | "specific_item"
+  | "unknown";
+
 const STOPWORDS = new Set([
   "a",
   "ao",
@@ -174,6 +190,62 @@ function isCasualConversation(message: string) {
   return isGreeting(message) || isJustBrowsing(message) || wantsChat(message);
 }
 
+function detectIntent(message: string): ChatIntent {
+  if (wantsOrders(message)) {
+    return "order";
+  }
+
+  if (wantsAddToCart(message)) {
+    return "add_to_cart";
+  }
+
+  if (wantsLink(message)) {
+    return "link";
+  }
+
+  if (wantsCompare(message)) {
+    return "compare";
+  }
+
+  if (wantsDetails(message)) {
+    return "details";
+  }
+
+  if (wantsSimilar(message)) {
+    return "similar";
+  }
+
+  if (wantsCheaper(message)) {
+    return "cheaper";
+  }
+
+  if (wantsPromos(message)) {
+    return "promotion";
+  }
+
+  if (wantsRecommendation(message)) {
+    return "recommendation";
+  }
+
+  if (wantsSpecificItem(message)) {
+    return "specific_item";
+  }
+
+  if (isJustBrowsing(message)) {
+    return "browsing";
+  }
+
+  if (wantsChat(message)) {
+    return "chat";
+  }
+
+  if (isGreeting(message)) {
+    return "greeting";
+  }
+
+  return "unknown";
+}
+
 function wantsProductSuggestionsNow(message: string) {
   return (
     wantsLink(message) ||
@@ -220,28 +292,30 @@ function quickActionsFor(
   pathname?: string
 ) {
   const actions = new Set<string>();
+  const intent = detectIntent(message);
 
-  if (isCasualConversation(message)) {
+  if (intent === "greeting" || intent === "browsing" || intent === "chat") {
     if (pathname?.startsWith("/produtos/")) {
+      actions.add("adicionar 1 ao carrinho");
       actions.add("ver detalhes");
       actions.add("comparar");
     } else {
-      actions.add("achar algo util");
       actions.add("mais barato");
       actions.add("ver promocoes");
+      actions.add("achar algo util");
     }
 
     return Array.from(actions).slice(0, 4);
   }
 
   if (hasProducts) {
-    if (wantsDetails(message)) {
+    if (intent === "details") {
       actions.add("ver detalhes");
     }
-    if (wantsCompare(message) || wantsSimilar(message)) {
+    if (intent === "compare" || intent === "similar") {
       actions.add("comparar");
     }
-    if (wantsAddToCart(message)) {
+    if (intent === "add_to_cart") {
       actions.add("adicionar 1 ao carrinho");
     }
     actions.add("ver detalhes");
@@ -249,7 +323,7 @@ function quickActionsFor(
     actions.add("adicionar 1 ao carrinho");
   }
 
-  if (wantsOrders(message)) {
+  if (intent === "order") {
     actions.add("acompanhar pedido");
     actions.add("ir para o carrinho");
   } else {
@@ -261,20 +335,22 @@ function quickActionsFor(
 }
 
 function conversationalReply(message: string) {
-  if (isGreeting(message)) {
-    return "Oi. Posso te ajudar a encontrar um produto, comparar opcoes ou tirar uma duvida sobre a compra.";
+  const intent = detectIntent(message);
+
+  if (intent === "greeting") {
+    return "Oi. Vai querer produto, comparacao ou so apertar tecla?";
   }
 
-  if (isJustBrowsing(message)) {
-    return "Tudo certo. Fica a vontade. Se quiser, eu posso separar os mais baratos ou mostrar algo por tipo de uso.";
+  if (intent === "browsing") {
+    return "Beleza. Olha logo. Se cansar de rodar em circulo, eu puxo os mais baratos.";
   }
 
-  if (wantsChat(message)) {
-    return "Claro. Posso conversar e tambem ajudar com produto, pedido ou carrinho quando voce precisar.";
+  if (intent === "chat") {
+    return "Posso falar, mas ideal mesmo era isso virar compra.";
   }
 
-  if (wantsRecommendation(message)) {
-    return "Posso sim. Voce quer algo para celular, mesa, organizacao, limpeza ou algo mais barato?";
+  if (intent === "recommendation") {
+    return "Posso. Mas me da um minimo util: celular, mesa, organizacao, limpeza ou o menos caro.";
   }
 
   return null;
@@ -359,7 +435,7 @@ async function orderContext(userId?: string) {
     return {
       context: "Cliente nao esta logado. Nao revele pedidos sem login.",
       reply:
-        "Pra consultar pedido eu preciso do login. Seguranca primeiro, pedido alheio nao entra no radar."
+        "Pra consultar pedido eu preciso do login. Milagre eu ainda nao faco."
     };
   }
 
@@ -373,7 +449,7 @@ async function orderContext(userId?: string) {
   if (orders.length === 0) {
     return {
       context: "Cliente logado sem pedidos encontrados.",
-      reply: "Nao achei pedido na sua conta ainda. Se quiser, eu te ajudo a montar o primeiro."
+      reply: "Nao achei pedido na sua conta. Ate agora ficou so na vontade."
     };
   }
 
@@ -409,6 +485,7 @@ function fallbackReply(
   providerStatus: AIReplyStatus,
   pathname?: string
 ): ChatAnswer {
+  const intent = detectIntent(message);
   const fallbackReason: ChatAnswer["fallbackReason"] =
     providerStatus === "provider_error"
       ? "provider_error"
@@ -428,7 +505,7 @@ function fallbackReply(
     };
   }
 
-  if (wantsOrders(message) && orderData) {
+  if (intent === "order" && orderData) {
     return {
       reply: orderData.reply,
       products: [],
@@ -441,7 +518,7 @@ function fallbackReply(
   if (products.length === 0) {
     return {
       reply:
-        "Nao achei um item batendo certinho com isso agora. Me manda o nome, a categoria ou o tipo de produto que eu refino sem chutar.",
+        "Nao achei nada que bata direito com isso. Fala nome, categoria ou uso real e eu procuro sem palpite torto.",
       products: [],
       quickActions: ["ver promocoes", "mais barato"],
       source: "fallback",
@@ -449,12 +526,12 @@ function fallbackReply(
     };
   }
 
-  if (wantsLink(message)) {
+  if (intent === "link") {
     const first = products[0];
     return {
       reply: `Link certo: [${first.name}](${productUrl(first.slug)})\n${first.name} | ${centsToBRL(
         first.promotionalCents ?? first.priceCents
-      )} | ${first.stock} em estoque.\nSe quiser, eu comparo com outro sem enrolacao.`,
+      )} | ${first.stock} em estoque.\nTa ai. Se quiser comparar com outro, fala logo.`,
       products: cards.slice(0, 1),
       quickActions: quickActionsFor(message, cards.length > 0, pathname),
       source: "fallback",
@@ -462,10 +539,10 @@ function fallbackReply(
     };
   }
 
-  if (wantsRecommendation(message) && products.length > 0 && searchTerms(message).length <= 1) {
+  if (intent === "recommendation" && products.length > 0 && searchTerms(message).length <= 1) {
     return {
       reply:
-        "Posso recomendar, mas antes eu calibro isso melhor contigo: tu quer algo mais util, mais curioso ou mais custo-beneficio?",
+        "Posso recomendar, mas faz tua parte: quer algo util, curioso ou so o menor estrago possivel no preco?",
       products: [],
       quickActions: ["mais barato", "achar algo util", "comparar"],
       source: "fallback",
@@ -481,7 +558,7 @@ function fallbackReply(
   });
 
   return {
-    reply: `${wantsCheaper(message) ? "Puxei as opcoes mais em conta que achei no estoque real:" : "Achei isso aqui no estoque real da loja:"}\n${lines.join("\n")}`,
+    reply: `${intent === "cheaper" ? "Ta. Puxei o que menos machuca o bolso no estoque real:" : intent === "promotion" ? "Ta. Separei o que ta com cara mais comercial no estoque atual:" : "Achei isso aqui no estoque real. Nao e bonito, mas vende:"}\n${lines.join("\n")}`,
     products: shouldShowCards(message, pathname) ? cards : [],
     quickActions: quickActionsFor(message, cards.length > 0, pathname),
     source: "fallback",
@@ -496,6 +573,7 @@ export async function answerFromStoreData({
   pathname,
   history
 }: AnswerInput): Promise<ChatAnswer> {
+  const intent = detectIntent(message);
   const [products, orderData, currentProduct] = await Promise.all([
     relevantProducts(message, currentProductSlug),
     wantsOrders(message) ? orderContext(userId) : Promise.resolve(null),
@@ -515,11 +593,11 @@ export async function answerFromStoreData({
     };
   }
 
-  if (wantsOrders(message) && !userId) {
+  if (intent === "order" && !userId) {
     return {
       reply:
         orderData?.reply ??
-        "Pra falar de pedido eu preciso que voce esteja logado. Seguranca primeiro, sem furar fila.",
+        "Pra falar de pedido eu preciso que voce esteja logado. Nao vou adivinhar compra alheia.",
       products: [],
       quickActions: ["ver promocoes", "mais barato", "ir para o carrinho"],
       source: "fallback",

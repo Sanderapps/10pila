@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/session";
-import { computeCoupon } from "@/lib/commerce/coupons";
+import { resolvePricingWithCoupon } from "@/lib/commerce/cart-pricing";
 import { prisma } from "@/lib/db/prisma";
 import { createPagBankCheckout } from "@/lib/payments/pagbank";
 import { logError, logInfo, logWarn } from "@/lib/utils/ops-log";
@@ -88,27 +88,18 @@ export async function POST(request: Request) {
       where: { userId: user.id, status: { in: ["PAID", "PROCESSING", "SHIPPED", "DELIVERED"] } }
     })
   ]);
-  const couponResult = couponApplication
-    ? computeCoupon({
-        coupon: couponApplication.coupon,
-        subtotalCents,
-        freightCents: fixedFreight,
-        hasPreviousOrders: orderCount > 0,
-        currentUserId: user.id
-      })
-    : null;
-  const effectiveFreightCents =
-    couponApplication && couponResult?.valid ? couponResult.effectiveFreightCents : fixedFreight;
-  const productDiscountCents =
-    couponApplication && couponResult?.valid ? couponResult.productDiscountCents : 0;
-  const freightDiscountCents =
-    couponApplication && couponResult?.valid ? couponResult.freightDiscountCents : 0;
-  const discountCents =
-    couponApplication && couponResult?.valid ? couponResult.discountCents : 0;
-  const totalCents =
-    couponApplication && couponResult?.valid
-      ? couponResult.totalCents
-      : subtotalCents + fixedFreight;
+  const pricing = resolvePricingWithCoupon({
+    subtotalCents,
+    freightCents: fixedFreight,
+    coupon: couponApplication?.coupon ?? null,
+    currentUserId: user.id,
+    hasPreviousOrders: orderCount > 0
+  });
+  const effectiveFreightCents = pricing.effectiveFreightCents;
+  const productDiscountCents = pricing.productDiscountCents;
+  const freightDiscountCents = pricing.freightDiscountCents;
+  const discountCents = pricing.discountCents;
+  const totalCents = pricing.totalCents;
   const addressInput = {
     recipient: parsed.data.recipient.trim(),
     phone: parsed.data.phone.trim(),
@@ -191,8 +182,7 @@ export async function POST(request: Request) {
           userId: user.id,
           addressId: address.id,
           status: "AWAITING_PAYMENT",
-          couponCode:
-            couponApplication && couponResult?.valid ? couponApplication.coupon.code : undefined,
+          couponCode: pricing.code ?? undefined,
           subtotalCents,
           productDiscountCents,
           freightDiscountCents,
@@ -253,7 +243,7 @@ export async function POST(request: Request) {
     subtotalCents,
     totalCents,
     couponCode:
-      couponApplication && couponResult?.valid ? couponApplication.coupon.code : null,
+      pricing.code,
     productDiscountCents,
     freightDiscountCents,
     checkoutMode:

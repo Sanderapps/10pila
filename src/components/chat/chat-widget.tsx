@@ -115,7 +115,7 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Oi, eu sou o PilaBot. Posso te ajudar a encontrar um produto, tirar uma duvida ou revisar uma compra."
+      content: "Oi. Eu sou o PilaBot. Fala o que voce quer e eu vejo o que da pra te empurrar do estoque."
     }
   ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -312,13 +312,25 @@ export function ChatWidget() {
     setCartLoadingId("");
 
     if (response.status === 401) {
+      setMessages((current) => [
+        ...current,
+        {
+          role: "assistant",
+          content: "Pra enfiar item no carrinho pelo chat eu preciso do teu login antes. Faz isso e eu retomo sem voce repetir a novela.",
+          note: "login necessario",
+          source: "fallback",
+          fallbackReason: "auth_required"
+        }
+      ]);
       savePendingCartAction({
         productId,
         quantity: 1,
         pathname,
         source: "chat"
       });
-      router.push(`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`);
+      window.setTimeout(() => {
+        router.push(`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`);
+      }, 500);
       return;
     }
 
@@ -328,8 +340,8 @@ export function ChatWidget() {
         {
           role: "assistant",
         content: response.ok
-          ? "Adicionei 1 no carrinho. Achado guardado sem drama."
-          : data.error ?? "Nao consegui adicionar agora.",
+          ? "Pronto. Joguei 1 no carrinho. Finalmente."
+          : data.error ?? "Nao consegui adicionar agora. Que fase.",
         note: response.ok ? "acao executada" : "falha de carrinho",
         source: "fallback"
       }
@@ -368,7 +380,7 @@ export function ChatWidget() {
           ...current,
           {
             role: "assistant",
-            content: "Retomei a acao depois do login e adicionei 1 no carrinho.",
+            content: "Voltei do login e retomei a acao. Item no carrinho. Ja era pra estar feito antes.",
             note: "acao retomada apos login",
             source: "fallback"
           }
@@ -388,7 +400,7 @@ export function ChatWidget() {
           content:
             data && typeof data.error === "string"
               ? data.error
-              : "Nao consegui retomar a adicao ao carrinho agora.",
+              : "Nao consegui retomar a adicao ao carrinho agora. Lindo.",
           note: "falha ao retomar acao",
           source: "fallback"
         }
@@ -427,7 +439,7 @@ export function ChatWidget() {
         ...current,
         {
           role: "assistant",
-          content: "A rede deu rage quit agora. Tenta de novo em alguns segundos.",
+          content: "A rede morreu no meio do caminho. Tenta de novo se ainda quiser comprar.",
           source: "fallback",
           fallbackReason: "network_error",
           note: "erro de rede"
@@ -472,7 +484,7 @@ export function ChatWidget() {
             ? data.reply
             : !response.ok
               ? "Deu ruim aqui no chat. Tenta de novo em instantes."
-              : "Buguei com classe, mas nao inventei moda. Tenta de novo.",
+              : "Buguei. Pelo menos nao inventei resposta.",
         products: Array.isArray(data.products) ? (data.products as ChatProductCard[]) : [],
         source,
         fallbackReason,
@@ -599,7 +611,7 @@ export function ChatWidget() {
                     <div>
                       <p className="text-sm font-black">PilaBot</p>
                       <p className="chat-head-subtitle text-xs text-[var(--muted)]">
-                        {isPurchasePage ? "assistente de fechamento" : "vendedor tech"}
+                        {isPurchasePage ? "vendedor entediado de fechamento" : "vendedor mal pago e entediado"}
                       </p>
                     </div>
                   </div>
@@ -639,8 +651,8 @@ export function ChatWidget() {
                     </p>
                     <p className="text-sm text-[var(--muted)]">
                       {isPurchasePage
-                        ? "Estou aqui para ajudar com entrega, cupom, carrinho e fechamento do pedido."
-                        : "Posso tirar duvida, encontrar um link, comparar produtos ou te ajudar a escolher algo util."}
+                        ? "Estou aqui pra destravar entrega, cupom, carrinho e fechamento. Ja que ninguem mais fez."
+                        : "Posso achar link, comparar produto, puxar o mais barato ou encurtar teu caminho ate a compra."}
                     </p>
                   </div>
                 </div>
@@ -754,7 +766,7 @@ export function ChatWidget() {
                   onBlur={() => setComposerFocused(false)}
                   onFocus={() => setComposerFocused(true)}
                   name="message"
-                  placeholder="Manda a boa"
+                  placeholder="Fala o que voce quer comprar"
                 />
                 <button className="btn shrink-0" disabled={loading} type="submit">
                   Enviar

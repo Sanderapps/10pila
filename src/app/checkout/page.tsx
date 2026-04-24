@@ -2,7 +2,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/empty-state";
 import { OrderSignalIllustration } from "@/components/brand-illustrations";
 import { CheckoutForm } from "@/components/checkout-form";
-import { resolveCartCoupon } from "@/lib/commerce/cart-pricing";
+import { resolveCartPricing } from "@/lib/commerce/cart-pricing";
 import { requireUser } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { centsToBRL, freightCents } from "@/lib/utils/money";
@@ -37,9 +37,9 @@ export default async function CheckoutPage({
     return total + price * item.quantity;
   }, 0);
   const freight = freightCents();
-  const coupon = await resolveCartCoupon(user.id, subtotal, freight);
-  const effectiveFreight = coupon?.effectiveFreightCents ?? freight;
-  const total = coupon?.totalCents ?? subtotal + freight;
+  const pricing = await resolveCartPricing(user.id, subtotal, freight);
+  const effectiveFreight = pricing.effectiveFreightCents;
+  const total = pricing.totalCents;
   const paymentStatus = recentOrder?.payment?.status ?? "PENDING";
   const paymentStatusLabel =
     paymentStatus === "APPROVED"
@@ -200,9 +200,12 @@ export default async function CheckoutPage({
               unitPrice: centsToBRL(item.product.promotionalCents ?? item.product.priceCents),
               totalPrice: centsToBRL((item.product.promotionalCents ?? item.product.priceCents) * item.quantity)
             }))}
-            couponCode={coupon?.code ?? null}
-            productDiscount={coupon?.productDiscountCents ? centsToBRL(coupon.productDiscountCents) : null}
-            freightDiscount={coupon?.freightDiscountCents ? centsToBRL(coupon.freightDiscountCents) : null}
+            couponCode={pricing.code}
+            discountTotal={pricing.discountCents ? centsToBRL(pricing.discountCents) : null}
+            freightCampaignLabel={pricing.freightCampaignLabel}
+            couponTouchesFreight={pricing.freightDiscountCents > pricing.freightCampaignDiscountCents}
+            productDiscount={pricing.productDiscountCents ? centsToBRL(pricing.productDiscountCents) : null}
+            freightDiscount={pricing.freightDiscountCents ? centsToBRL(pricing.freightDiscountCents) : null}
             subtotal={centsToBRL(subtotal)}
             freight={centsToBRL(effectiveFreight)}
             total={centsToBRL(total)}
@@ -217,22 +220,32 @@ export default async function CheckoutPage({
                 <span>Produtos</span>
                 <strong>{centsToBRL(subtotal)}</strong>
               </p>
-              {coupon?.productDiscountCents ? (
+              {pricing.productDiscountCents ? (
                 <p className="flex justify-between text-[var(--accent)]">
-                  <span>Desconto nos produtos ({coupon.code})</span>
-                  <strong>- {centsToBRL(coupon.productDiscountCents)}</strong>
+                  <span>Desconto nos produtos{pricing.code ? ` (${pricing.code})` : ""}</span>
+                  <strong>- {centsToBRL(pricing.productDiscountCents)}</strong>
                 </p>
               ) : null}
-              {coupon?.freightDiscountCents ? (
+              {pricing.freightDiscountCents ? (
                 <p className="flex justify-between text-[var(--accent-2)]">
-                  <span>Desconto no frete ({coupon.code})</span>
-                  <strong>- {centsToBRL(coupon.freightDiscountCents)}</strong>
+                  <span>
+                    Desconto no frete
+                    {pricing.code && pricing.freightDiscountCents !== pricing.freightCampaignDiscountCents ? ` (${pricing.code})` : ""}
+                    {pricing.freightCampaignLabel ? ` • ${pricing.freightCampaignLabel}` : ""}
+                  </span>
+                  <strong>- {centsToBRL(pricing.freightDiscountCents)}</strong>
                 </p>
               ) : null}
               <p className="flex justify-between">
-                <span>Frete fixo</span>
+                <span>Frete final</span>
                 <strong>{centsToBRL(effectiveFreight)}</strong>
               </p>
+              {pricing.discountCents ? (
+                <p className="flex justify-between text-[var(--accent)]">
+                  <span>Economia final</span>
+                  <strong>- {centsToBRL(pricing.discountCents)}</strong>
+                </p>
+              ) : null}
             </div>
             <div className="rounded-lg border border-[var(--line)] bg-black/20 p-4">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--muted)]">Total final</p>
@@ -243,6 +256,7 @@ export default async function CheckoutPage({
               <span className="chip">pedido revisavel antes do pagamento</span>
               <span className="chip">pagamento seguro via PagBank</span>
               <span className="chip">acompanhamento na 10PILA depois do pagamento</span>
+              {pricing.freightCampaignLabel ? <span className="chip text-[var(--accent-2)]">{pricing.freightCampaignLabel}</span> : null}
             </div>
           </aside>
         </div>

@@ -4,13 +4,15 @@ import type { Product } from "@prisma/client";
 import type { CSSProperties } from "react";
 import { BoltIcon, CartIcon } from "@/components/icons";
 import { categoryVisual } from "@/lib/catalog/visuals";
-import { centsToBRL } from "@/lib/utils/money";
+import { resolveFreightOffer } from "@/lib/commerce/freight-offers";
+import { centsToBRL, freightCents } from "@/lib/utils/money";
 
 export function ProductCard({ product }: { product: Product }) {
   const price = product.promotionalCents ?? product.priceCents;
   const hasDiscount = product.promotionalCents !== null;
   const stockTone = product.stock > 0 ? "chip" : "chip text-[var(--danger)]";
   const visual = categoryVisual(product.category ?? undefined);
+  const freightOffer = resolveFreightOffer(freightCents());
 
   return (
     <article className="panel interactive-panel catalog-card shine group grid overflow-hidden">
@@ -65,6 +67,9 @@ export function ProductCard({ product }: { product: Product }) {
             <p className="text-xl font-black text-[var(--accent)]">
               {centsToBRL(price)}
             </p>
+            {freightOffer.campaignShortLabel ? (
+              <p className="mt-1 text-xs font-bold text-[var(--accent-2)]">{freightOffer.campaignShortLabel}</p>
+            ) : null}
           </div>
           <span className={stockTone}>
             {product.stock > 0 ? `${product.stock} em estoque` : "sem estoque"}

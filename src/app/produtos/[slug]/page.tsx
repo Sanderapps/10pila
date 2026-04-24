@@ -4,8 +4,9 @@ import type { CSSProperties } from "react";
 import { AddToCartButton } from "@/components/add-to-cart-button";
 import { BoltIcon, ShieldIcon, SparkIcon, TruckIcon } from "@/components/icons";
 import { categoryVisual } from "@/lib/catalog/visuals";
+import { resolveFreightOffer } from "@/lib/commerce/freight-offers";
 import { prisma } from "@/lib/db/prisma";
-import { centsToBRL } from "@/lib/utils/money";
+import { centsToBRL, freightCents } from "@/lib/utils/money";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,7 @@ export default async function ProductPage({
   const price = product.promotionalCents ?? product.priceCents;
   const hasDiscount = product.promotionalCents !== null;
   const visual = categoryVisual(product.category ?? undefined);
+  const freightOffer = resolveFreightOffer(freightCents());
   const specifications =
     product.specifications && typeof product.specifications === "object"
       ? Object.entries(product.specifications as Record<string, string>)
@@ -47,6 +49,7 @@ export default async function ProductPage({
         <div className="grid gap-2 text-sm text-[var(--muted)] md:min-w-[240px]">
           <span className="chip bg-black/40">estoque real</span>
           <span className="chip bg-black/40">pagamento seguro</span>
+          {freightOffer.campaignLabel ? <span className="chip bg-black/40 text-[var(--accent-2)]">{freightOffer.campaignLabel}</span> : null}
         </div>
       </section>
 
@@ -87,6 +90,9 @@ export default async function ProductPage({
             ) : null}
             <p className="text-4xl font-black text-[var(--accent)]">{centsToBRL(price)}</p>
             <p className="text-sm text-[var(--muted)]">Pix, cartao e boleto no ambiente seguro do PagBank.</p>
+            {freightOffer.campaignMessage ? (
+              <p className="text-sm font-bold text-[var(--accent-2)]">{freightOffer.campaignMessage}</p>
+            ) : null}
           </div>
           <div className="grid gap-2 sm:grid-cols-3">
             <span className="chip">
@@ -95,7 +101,7 @@ export default async function ProductPage({
             </span>
             <span className="chip">
               <TruckIcon />
-              frete no trilho
+              {freightOffer.campaignShortLabel ?? "frete no trilho"}
             </span>
             <span className="chip">
               <BoltIcon />

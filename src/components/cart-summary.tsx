@@ -9,6 +9,9 @@ type CartSummaryProps = {
   subtotal: string;
   freight: string;
   total: string;
+  discountTotal?: string | null;
+  freightCampaignLabel?: string | null;
+  couponTouchesFreight?: boolean;
   productDiscount?: string | null;
   freightDiscount?: string | null;
   couponCode?: string | null;
@@ -18,6 +21,9 @@ export function CartSummary({
   subtotal,
   freight,
   total,
+  discountTotal,
+  freightCampaignLabel,
+  couponTouchesFreight,
   productDiscount,
   freightDiscount,
   couponCode
@@ -101,7 +107,11 @@ export function CartSummary({
           ) : null}
           {freightDiscount ? (
             <p className="flex justify-between text-[var(--accent-2)]">
-              <span>Desconto no frete{couponCode ? ` (${couponCode})` : ""}</span>
+              <span>
+                Desconto no frete
+                {couponCode && couponTouchesFreight ? ` (${couponCode})` : ""}
+                {freightCampaignLabel ? ` • ${freightCampaignLabel}` : ""}
+              </span>
               <strong>- {freightDiscount}</strong>
             </p>
           ) : null}
@@ -110,12 +120,14 @@ export function CartSummary({
             <strong>{freight}</strong>
           </p>
         </div>
+        {discountTotal ? <p className="text-sm font-bold text-[var(--accent)]">Economia final: - {discountTotal}</p> : null}
         <p className="text-3xl font-black text-[var(--accent)]">{total}</p>
         <div className="grid gap-2 text-sm text-[var(--muted)]">
           <span className="chip">estoque validado</span>
-          <span className="chip">frete calculado no checkout</span>
+          <span className="chip">frete refletido no total</span>
           <span className="chip">pagamento seguro via PagBank</span>
           <span className="chip">pedido revisavel antes do pagamento</span>
+          {freightCampaignLabel ? <span className="chip text-[var(--accent-2)]">{freightCampaignLabel}</span> : null}
         </div>
         <form className="grid gap-2" onSubmit={handleCouponSubmit}>
           <label className="label">
@@ -166,7 +178,7 @@ export function CartSummary({
           <div className="grid gap-1">
             <p className="text-xs font-black uppercase text-[var(--accent-2)]">Total {total}</p>
             <p className="text-xs text-[var(--muted)]">
-              {couponCode ? `Cupom ${couponCode} aplicado • ` : ""}Frete e descontos revisados no resumo
+              {freightCampaignLabel ? `${freightCampaignLabel} • ` : ""}{couponCode ? `Cupom ${couponCode} aplicado • ` : ""}Frete e descontos revisados no resumo
             </p>
           </div>
           <Link className="btn shine min-h-11 px-4 text-sm" href="/checkout">

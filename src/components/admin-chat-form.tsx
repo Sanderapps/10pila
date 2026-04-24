@@ -26,7 +26,7 @@ const MODES = [
   { value: "SALES", label: "vendas" },
   { value: "SUPPORT", label: "suporte" },
   { value: "BALANCED", label: "equilibrado" },
-  { value: "AMIGAVEL", label: "amigavel" }
+  { value: "AMIGAVEL", label: "entediado" }
 ] as const;
 
 export function AssistantConfigForm({ initialConfig }: { initialConfig: ConfigValues }) {

@@ -15,8 +15,9 @@ import { HeroMediaStage } from "@/components/hero-media-stage";
 import { ProductCard } from "@/components/product-card";
 import { getCurrentUser } from "@/lib/auth/session";
 import { resolveHomePosterPath, resolveHomeVideoPath } from "@/lib/catalog/media";
+import { resolveFreightOffer } from "@/lib/commerce/freight-offers";
 import { prisma } from "@/lib/db/prisma";
-import { centsToBRL } from "@/lib/utils/money";
+import { centsToBRL, freightCents } from "@/lib/utils/money";
 
 export const dynamic = "force-dynamic";
 
@@ -124,6 +125,7 @@ export default async function HomePage() {
     resolveHomePosterPath("indique-e-ganhe-10") ?? underTwenty[1]?.imageUrl ?? featured[4]?.imageUrl ?? heroPoster;
   const promoPosterWeekly =
     resolveHomePosterPath("drop-da-semana") ?? featured[0]?.imageUrl ?? underTwenty[2]?.imageUrl ?? heroPoster;
+  const freightOffer = resolveFreightOffer(freightCents());
   const secondaryCta =
     user?.role === "ADMIN"
       ? { href: "/admin", label: "Abrir admin" }
@@ -182,7 +184,7 @@ export default async function HomePage() {
             </span>
             <span className="chip">
               <TruckIcon />
-              frete fixo
+              {freightOffer.campaignShortLabel ?? "frete fixo"}
             </span>
             <span className="chip">
               <BoltIcon />
@@ -209,10 +211,11 @@ export default async function HomePage() {
                 ? `${centsToBRL(productPrice(spotlight))} e pronto pra sair do estoque. Um item simples, util e facil de encaixar no pedido.`
                 : "Produto com foto, estoque e preco vindo direto do banco."}
             </p>
-            <div className="flex flex-wrap gap-2 pt-2 text-xs text-[var(--muted)]">
+          <div className="flex flex-wrap gap-2 pt-2 text-xs text-[var(--muted)]">
               <span className="chip brand-badge">utilidade real</span>
               <span className="chip brand-badge">preco redondo</span>
               <span className="chip brand-badge">compra facil</span>
+              {freightOffer.campaignShortLabel ? <span className="chip brand-badge text-[var(--accent-2)]">{freightOffer.campaignShortLabel}</span> : null}
             </div>
           </div>
         </div>
@@ -229,6 +232,11 @@ export default async function HomePage() {
             Se voce so quer encontrar uma coisinha util e seguir a vida, comeca por aqui. Tem cabo, clip, limpeza e
             organizacao com preco de item que entra no carrinho sem briga.
           </p>
+          {freightOffer.campaignMessage ? (
+            <p className="rounded-lg border border-[var(--line)] bg-black/25 px-3 py-3 text-sm font-bold text-[var(--accent-2)]">
+              {freightOffer.campaignMessage}
+            </p>
+          ) : null}
           <div className="flex flex-wrap gap-2 text-sm text-[var(--muted)]">
             <span className="chip">cabos</span>
             <span className="chip">mesa</span>

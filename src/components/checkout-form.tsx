@@ -32,6 +32,9 @@ type CheckoutFormProps = {
   initialAddresses: CheckoutAddress[];
   items: CheckoutItem[];
   couponCode?: string | null;
+  discountTotal?: string | null;
+  freightCampaignLabel?: string | null;
+  couponTouchesFreight?: boolean;
   productDiscount?: string | null;
   freightDiscount?: string | null;
   subtotal: string;
@@ -127,6 +130,9 @@ export function CheckoutForm({
   initialAddresses,
   items,
   couponCode,
+  discountTotal,
+  freightCampaignLabel,
+  couponTouchesFreight,
   productDiscount,
   freightDiscount,
   subtotal,
@@ -615,7 +621,11 @@ export function CheckoutForm({
                 ) : null}
                 {freightDiscount ? (
                   <p className="flex justify-between text-[var(--accent-2)]">
-                    <span>Desconto no frete{couponCode ? ` (${couponCode})` : ""}</span>
+                    <span>
+                      Desconto no frete
+                      {couponCode && couponTouchesFreight ? ` (${couponCode})` : ""}
+                      {freightCampaignLabel ? ` • ${freightCampaignLabel}` : ""}
+                    </span>
                     <strong>- {freightDiscount}</strong>
                   </p>
                 ) : null}
@@ -623,6 +633,12 @@ export function CheckoutForm({
                   <span>Frete</span>
                   <strong>{freight}</strong>
                 </p>
+                {discountTotal ? (
+                  <p className="flex justify-between text-[var(--accent)]">
+                    <span>Economia final</span>
+                    <strong>- {discountTotal}</strong>
+                  </p>
+                ) : null}
                 <p className="mt-1 flex justify-between border-t border-[var(--line)] pt-3 text-base font-black text-[var(--accent)]">
                   <span>Total final</span>
                   <span>{total}</span>
@@ -634,6 +650,7 @@ export function CheckoutForm({
                 </span>
                 <span className="chip w-fit bg-black/50">checkout hospedado</span>
                 <span className="chip w-fit bg-black/50">pedido volta para sua conta</span>
+                {freightCampaignLabel ? <span className="chip w-fit bg-black/50 text-[var(--accent-2)]">{freightCampaignLabel}</span> : null}
               </div>
               <div className="mt-4 rounded-lg border border-[var(--line)] bg-[rgba(10,15,20,0.85)] p-3 text-sm text-[var(--muted)]">
                 Voce sera redirecionado para o PagBank para concluir o pagamento em ambiente seguro. Depois, o

@@ -3,7 +3,9 @@ import { SearchShelfIllustration } from "@/components/brand-illustrations";
 import { ProductCard } from "@/components/product-card";
 import { EmptyState } from "@/components/empty-state";
 import { SearchIcon, SparkIcon } from "@/components/icons";
+import { resolveFreightOffer } from "@/lib/commerce/freight-offers";
 import { prisma } from "@/lib/db/prisma";
+import { freightCents } from "@/lib/utils/money";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +17,7 @@ export default async function ProductsPage({
   const { q, sort } = await searchParams;
   const query = q?.trim();
   const browsingCatalog = !query;
+  const freightOffer = resolveFreightOffer(freightCents());
   const orderBy =
     sort === "price-asc"
       ? [{ promotionalCents: "asc" as const }, { priceCents: "asc" as const }]
@@ -114,6 +117,7 @@ export default async function ProductsPage({
                 {filter.label}
               </Link>
             ))}
+            {freightOffer.campaignLabel ? <span className="chip text-[var(--accent-2)]">{freightOffer.campaignLabel}</span> : null}
           </div>
         ) : null}
         <form className="surface grid gap-3 p-3 md:grid-cols-[1fr_180px]">
@@ -158,6 +162,9 @@ export default async function ProductsPage({
                       Esse e o melhor ponto de entrada pra compra rapida. Tem cabo, suporte, limpeza e utilidade pequena
                       com preco baixo e pouca chance de arrependimento.
                     </p>
+                    {freightOffer.campaignMessage ? (
+                      <p className="text-sm font-bold text-[var(--accent-2)]">{freightOffer.campaignMessage}</p>
+                    ) : null}
                   </div>
                   <div className="flex flex-wrap gap-2 text-sm text-[var(--muted)]">
                     <span className="chip">cabos</span>
